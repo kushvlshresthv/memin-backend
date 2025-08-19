@@ -94,7 +94,10 @@ public class MeetingMinutePreparationService {
 
         modelData.put("meetingHeldDay", getMeetingHeldDay(meeting.getHeldDate()));
         modelData.put("partOfDay", getPartOfDay(meeting.getHeldTime()));
-        modelData.put("meetingHeldTime", toNepaliDigits(meeting.getHeldTime().toString()));
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+        String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
+        modelData.put("meetingHeldTime", toNepaliDigits(meetingHeldTime));
         modelData.put("meetingHeldPlace", meeting.getHeldPlace());
         modelData.put("committeeDescription", committee.getDescription());
         modelData.put("committeeName", meeting.getCommittee().getName());
