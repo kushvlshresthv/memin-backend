@@ -230,4 +230,8 @@ public class MemberService {
         List<Member> allMembers = memberRepository.findAllMembersByCreatedBy(username);
         return allMembers;
     }
+
+    public Member findMemberById(int memberId) {
+        return memberRepository.findMemberById(memberId);
+    }
 }

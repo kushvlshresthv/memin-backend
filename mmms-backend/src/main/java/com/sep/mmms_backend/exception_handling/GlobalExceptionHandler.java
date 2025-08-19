@@ -137,4 +137,10 @@ public class GlobalExceptionHandler {
         log.error("MeetingNotAccessibleException: {}", ex.getMessage());
         return ResponseEntity.badRequest().body(new Response(ex.getMessage()));
     }
+
+    @ExceptionHandler(MembershipDoesNotExistException.class)
+    public ResponseEntity<Response> memberDoesNotExist(MembershipDoesNotExistException ex) {
+        log.error("MembershipDoesNotExistException: {}", ex.getMessage());
+        return ResponseEntity.badRequest().body(new Response(ex.getMessage()));
+    }
 }

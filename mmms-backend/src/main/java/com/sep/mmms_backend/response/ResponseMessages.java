@@ -39,6 +39,7 @@ public enum ResponseMessages {
     MEMBER_UPDATION_SUCCESS("Member updated successfully"),
 
     HTTP_MESSAGE_NOT_READABLE("HTTP message is not readable"),
+    MEMBERSHIP_REMOVED_SUCCESSFULLY("Membership removed successfully"),
     ;
 
 

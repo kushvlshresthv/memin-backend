@@ -25,6 +25,7 @@ public enum ExceptionMessages {
     COMMITTEE_OR_MEETING_NOT_ACCESSIBLE("Committee or meeting not accessible"),
     MEMBERSHIP_ALREADY_EXISTS("Membership already exists"),
     MEETING_DOES_NOT_BELONG_TO_COMMITTEE("The specified meeting does not belong to the committee"),
+    MEMBERSHIP_DOES_NOT_EXIST("Requested membership does not exist"),
 
     TODO("Implement Exception Handling Properly");
     ;

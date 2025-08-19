@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CommitteeMembershipRepository extends JpaRepository<CommitteeMembership, Integer> {
@@ -20,4 +21,15 @@ public interface CommitteeMembershipRepository extends JpaRepository<CommitteeMe
             @Param("accessibleMemberIds") List<Integer> accessibleMemberIds,
             @Param("committeeId") Integer committeeId
     );
+
+
+    /**
+     * This method simply returns the membership associated between the provided committeeId and memberId
+     */
+    @Query("SELECT cm FROM CommitteeMembership cm " +
+            "WHERE cm.id.committeeId = :committeeId " +
+            "AND cm.id.memberId = :memberId")
+    Optional<CommitteeMembership> findMembershipBetweenCommitteeAndMember(
+            @Param("committeeId") Integer committeeId,
+            @Param("memberId") Integer memberId);
 }

@@ -2,10 +2,12 @@ package com.sep.mmms_backend.controller;
 
 import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
+import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.exceptions.IllegalOperationException;
 import com.sep.mmms_backend.response.Response;
 import com.sep.mmms_backend.response.ResponseMessages;
 import com.sep.mmms_backend.service.CommitteeService;
+import com.sep.mmms_backend.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,11 @@ import java.util.List;
 public class CommitteeController {
 
     private final CommitteeService committeeService;
+    private final MemberService memberService;
 
-    public CommitteeController(CommitteeService committeeService) {
+    public CommitteeController(CommitteeService committeeService, MemberService memberService) {
         this.committeeService = committeeService;
+        this.memberService = memberService;
     }
 
 
@@ -95,5 +99,16 @@ public class CommitteeController {
         Committee committee = committeeService.findCommitteeById(committeeId);
         committeeService.addMembershipsToCommittee(committee, newMemberships, authentication.getName());
         return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBER_ADDITION_SUCCESS));
+    }
+
+
+
+    @DeleteMapping("/removeCommitteeMembership")
+    //TODO: Create Tests
+    public ResponseEntity<Response> removeCommitteeMembership(@RequestParam int committeeId, @RequestParam int memberId, Authentication authentication) {
+        Committee committee = committeeService.findCommitteeById(committeeId);
+        Member member = memberService.findMemberById(memberId);
+        committeeService.removeCommitteeMembership(committee, member, authentication.getName());
+        return ResponseEntity.ok(new Response(ResponseMessages.MEMBERSHIP_REMOVED_SUCCESSFULLY));
     }
 }
