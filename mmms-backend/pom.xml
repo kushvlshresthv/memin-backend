@@ -121,11 +121,21 @@
 			<version>1.17.2</version>
 		</dependency>
 
+<!--		To use this compile the original source-->
+<!--		When i compiled the lib from source, i had to also change the method signature of some important methods to public in the original source-->
 <!--		<dependency>-->
 <!--			<groupId>np.com.bahadur.converter.date.nepali</groupId>-->
 <!--			<artifactId>nepali-english-date-converter</artifactId>-->
 <!--			<version>1.0.0</version>-->
 <!--		</dependency>-->
+
+		<dependency>
+			<groupId>np.com.bahadur.converter.date.nepali</groupId>
+			<artifactId>nepali-english-date-converter</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/nepali-date/nepali-english-date-converter-1.0.0.jar</systemPath>
+		</dependency>
 
 	</dependencies>
 

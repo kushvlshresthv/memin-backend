@@ -8,6 +8,7 @@ import com.sep.mmms_backend.exceptions.CommitteeDoesNotExistException;
 import com.sep.mmms_backend.exceptions.IllegalOperationException;
 import com.sep.mmms_backend.exceptions.MeetingDoesNotExistException;
 import com.sep.mmms_backend.repository.CommitteeRepository;
+import np.com.bahadur.converter.date.nepali.DateConverter;
 import org.apache.poi.xwpf.usermodel.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -77,10 +78,10 @@ public class MeetingMinutePreparationService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
 
-//        DateConverter dc = new DateConverter();
+        DateConverter dc = new DateConverter();
         try {
-//            modelData.put("meetingHeldDate", toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion)));
-            modelData.put("meetingHeldDate", toNepaliDigits(formattedDateForBSConversion));
+            modelData.put("meetingHeldDate", toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion)));
+//            modelData.put("meetingHeldDate", toNepaliDigits(formattedDateForBSConversion));
         } catch(Exception e) {
 
             //TODO: Handle this exception
