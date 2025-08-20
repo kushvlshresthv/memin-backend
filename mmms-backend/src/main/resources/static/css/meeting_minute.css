@@ -1,6 +1,30 @@
+/*@media print {*/
+/*    body {*/
+/*        margin: 0;*/
+/*    }*/
+/*}*/
+
 @media print {
-    body {
+    /* Hide everything on the page by default */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Make the #a4-box and all its children visible */
+    #a4-box, #a4-box * {
+        visibility: visible;
+    }
+
+    /* Position the #a4-box to fill the entire print page */
+    #a4-box {
+        position: absolute;
+        left: 0;
+        top: 0;
         margin: 0;
+        padding: 1in; /* Optional: adds a standard print margin */
+        box-shadow: none; /* Remove the screen shadow for printing */
+        width: auto; /* Let it fit the page width */
+        height: auto; /* Let the height adjust to content */
     }
 }
 

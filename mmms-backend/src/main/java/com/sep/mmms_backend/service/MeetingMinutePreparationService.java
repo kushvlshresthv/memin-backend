@@ -80,7 +80,7 @@ public class MeetingMinutePreparationService {
 
         DateConverter dc = new DateConverter();
         try {
-            modelData.put("meetingHeldDate", toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion)));
+            modelData.put("meetingHeldDate", toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/")));
 //            modelData.put("meetingHeldDate", toNepaliDigits(formattedDateForBSConversion));
         } catch(Exception e) {
 
@@ -95,7 +95,7 @@ public class MeetingMinutePreparationService {
         modelData.put("meetingHeldDay", getMeetingHeldDay(meeting.getHeldDate()));
         modelData.put("partOfDay", getPartOfDay(meeting.getHeldTime()));
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
         String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
         modelData.put("meetingHeldTime", toNepaliDigits(meetingHeldTime));
         modelData.put("meetingHeldPlace", meeting.getHeldPlace());
@@ -267,7 +267,7 @@ public class MeetingMinutePreparationService {
         //TODO: Optimize (there might be better ways to get coordinator membership
         for(CommitteeMembership membership : memberships) {
             if(membership.getRole().equalsIgnoreCase("Coordinator"))
-                return membership.getMember().getFirstNameNepali() + " " + membership.getMember().getLastNameNepali();
+                return membership.getMember().getPost() + " " + membership.getMember().getFirstNameNepali() + " " + membership.getMember().getLastNameNepali();
         }
 
         return "[Error: No Coordinator]";

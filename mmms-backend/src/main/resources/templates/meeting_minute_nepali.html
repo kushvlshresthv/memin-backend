@@ -19,9 +19,9 @@
             <span th:text="${meetingHeldTime}"></span> बजे,
             <span th:text="${meetingHeldPlace}"></span> मा
             <span th:text="${committeeDescription}"></span> का लागि गठित
-            <span th:text="${committeeName}"></span> को
-            संयोजक <span th:text="${coordinatorFullName}">coordinator name</span> को
-            अध्यक्षतामा बैठक बसेको थियो। बैठकबाट देहाय अनुसारका छलफल तथा निर्णयहरू गरियो।
+            <span th:text="${committeeName}"></span> समितिका
+            संयोजक <span th:text="${coordinatorFullName}">coordinator name</span>ज्यूको
+            संयोजकत्वमा बैठक बसी देहाय बमोजिमका छलफल तथा निर्णय गरियो।
         </p>
     </div>
 
@@ -50,7 +50,7 @@
 
 
     <div class="agendas" th:if="${!#lists.isEmpty(agendas)}">
-        <h5 class="heading"><b>प्रस्ताव</b></h5>
+        <h5 class="heading"><b>प्रस्तावहरु:</b></h5>
         <ol class="agenda-lists" style="list-style-type: none; padding-left: 0;">
             <li th:each="agenda, iterStat : ${agendas}"
                 class="decision"
