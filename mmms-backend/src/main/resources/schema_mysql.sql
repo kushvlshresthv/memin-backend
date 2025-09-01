@@ -121,3 +121,15 @@ ALTER TABLE committees
     MODIFY committee_description TEXT
         CHARACTER SET utf8mb4
         COLLATE utf8mb4_unicode_ci NOT NULL;
+
+
+ALTER TABLE meetings
+    MODIFY meeting_title VARCHAR(255)
+        CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci NOT NULL,
+    MODIFY meeting_description TEXT
+        CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci,
+    MODIFY meeting_held_place VARCHAR(255)
+        CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci NOT NULL;
