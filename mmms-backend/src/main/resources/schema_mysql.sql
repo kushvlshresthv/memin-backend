@@ -111,25 +111,3 @@ CREATE TABLE IF NOT EXISTS agendas (
                                        agenda TEXT,
                                        FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-
-# TODO: alter table query, will fix later to modify ta create table statement itself
-ALTER TABLE committees
-    MODIFY committee_name VARCHAR(255)
-        CHARACTER SET utf8mb4
-        COLLATE utf8mb4_unicode_ci NOT NULL,
-    MODIFY committee_description TEXT
-        CHARACTER SET utf8mb4
-        COLLATE utf8mb4_unicode_ci NOT NULL;
-
-
-ALTER TABLE meetings
-    MODIFY meeting_title VARCHAR(255)
-        CHARACTER SET utf8mb4
-        COLLATE utf8mb4_unicode_ci NOT NULL,
-    MODIFY meeting_description TEXT
-        CHARACTER SET utf8mb4
-        COLLATE utf8mb4_unicode_ci,
-    MODIFY meeting_held_place VARCHAR(255)
-        CHARACTER SET utf8mb4
-        COLLATE utf8mb4_unicode_ci NOT NULL;
