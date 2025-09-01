@@ -113,6 +113,11 @@ CREATE TABLE IF NOT EXISTS agendas (
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
--- Grant privileges to the new user
-# GRANT ALL PRIVILEGES ON mmms_db.* TO 'doece'@'%';
-# FLUSH PRIVILEGES;
+# TODO: alter table query, will fix later to modify ta create table statement itself
+ALTER TABLE committees
+    MODIFY committee_name VARCHAR(255)
+        CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci NOT NULL,
+    MODIFY committee_description TEXT
+        CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci NOT NULL;

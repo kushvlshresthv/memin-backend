@@ -188,25 +188,25 @@ public class MeetingMinutePreparationService {
         rolePriority.put("Vice Coordinator", 4);
         rolePriority.put("Secretary", 5);
         rolePriority.put("Joint Secretary", 6);
-        rolePriority.put("Member-Secretary", 7);
 
         // 3. Financial Oversight
-        rolePriority.put("Treasurer", 8);
+        rolePriority.put("Treasurer", 7);
 
         // 4. Specialized Leadership Roles
-        rolePriority.put("Program Coordinator", 9);
-        rolePriority.put("Technical Coordinator", 10);
-        rolePriority.put("Event Manager", 11);
+        rolePriority.put("Program Coordinator", 8);
+        rolePriority.put("Technical Coordinator", 9);
+        rolePriority.put("Event Manager", 10);
 
         // 5. Communication & External Relations
-        rolePriority.put("Spokesperson", 12);
+        rolePriority.put("Spokesperson", 11);
 
         // 6. Advisory / Oversight
-        rolePriority.put("Advisor", 13);
-        rolePriority.put("Observer", 14);
+        rolePriority.put("Advisor", 12);
+        rolePriority.put("Observer", 13);
 
         // 7. General Membership
-        rolePriority.put("Member", 15);
+        rolePriority.put("Member", 14);
+        rolePriority.put("Member-Secretary", 15);
 
         // 8. Invitee (lowest priority)
         rolePriority.put("Invitee", 17);
