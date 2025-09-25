@@ -10,33 +10,33 @@ This project addresses the following institutional challenges:
 
 1. **Committee Management** - Track active committees from a centralized dashboard
 
-   ![Dashboard](images/Dashboard.png)
+   ![Dashboard](assets/images/Dashboard.png)
 
 2. **Meeting History** - Maintain records of previously created meeting minutes
 
-   ![Committee Details](images/CommitteeDetails.png)
+   ![Committee Details](assets/images/CommitteeDetails.png)
 
 3. **Document Generation** - Create standardized meeting minutes using templates
 
-   ![Preview](images/Preview.png)
+   ![Preview](assets/images/Preview.png)
 
 ## System Workflow
 
 1. **Committee Creation** - Admin establishes committees in the system that mirror real institutional committees
 
-   ![Create Committee](images/CreateCommittee.png)
+   ![Create Committee](assets/images/CreateCommittee.png)
 
 2. **Member Management** - Admin creates member profiles for all committee participants or reuses existing profiles
 
-   ![Create Member](images/CreateMember.png)
+   ![Create Member](assets/images/CreateMember.png)
 
 3. **Meeting Documentation** - Admin creates meetings, records agendas, and documents decisions
 
-   ![Create Meeting](images/CreateMeeting.png)
+   ![Create Meeting](assets/images/CreateMeeting.png)
 
 4. **Document Export** - Admin previews and downloads meeting minutes as Word documents for final formatting
 
-   ![Document Export](images/Docx.png)
+   ![Document Export](assets/images/Docx.png)
 
 ## Additional Features
 
