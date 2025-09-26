@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * NOTE: all the exceptions are handled by this class. Except if Authentication fails, which is then handled by AuthenticationEntryPoint
+ */
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
