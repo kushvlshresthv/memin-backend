@@ -23,7 +23,7 @@ CREATE TABLE committees (
         status VARCHAR(255) NOT NULL,
         max_no_of_meetings INT,
         FOREIGN KEY (created_by) REFERENCES app_users(uid)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 CREATE TABLE members (
@@ -55,7 +55,7 @@ CREATE TABLE committee_memberships (
            PRIMARY KEY (committee_id, member_id),
            FOREIGN KEY (committee_id) REFERENCES committees(committee_id),
            FOREIGN KEY (member_id) REFERENCES members(member_id)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE meetings (
           meeting_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -73,7 +73,7 @@ CREATE TABLE meetings (
 
           committee_id INT NOT NULL,
           FOREIGN KEY (committee_id) REFERENCES committees(committee_id)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
 CREATE TABLE meeting_attendees (
@@ -92,7 +92,7 @@ CREATE TABLE meeting_invitees(
            PRIMARY KEY (member_id, meeting_id),
            FOREIGN KEY (member_id) REFERENCES members(member_id),
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE decisions (
            decision_id INT AUTO_INCREMENT PRIMARY KEY,
