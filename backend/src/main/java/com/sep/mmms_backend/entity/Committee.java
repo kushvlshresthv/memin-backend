@@ -1,6 +1,7 @@
 package com.sep.mmms_backend.entity;
 
 import com.sep.mmms_backend.enums.CommitteeStatus;
+import com.sep.mmms_backend.enums.MinuteLanguage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

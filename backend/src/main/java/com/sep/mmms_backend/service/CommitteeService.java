@@ -23,7 +23,7 @@ public class CommitteeService {
     private final MemberRepository memberRepository;
     private final CommitteeMembershipRepository committeeMembershipRepository;
 
-    public CommitteeService(CommitteeRepository committeeRepository,  AppUserService appUserService, EntityValidator entityValidator, MemberRepository memberRepository, CommitteeMembershipRepository committeeMembershipRepository)  {
+    public CommitteeService(CommitteeRepository committeeRepository,  AppUserService appUserService, EntityValidator entityValidator, MemberRepository memberRepository, CommitteeMembershipRepository committeeMembershipRepository )  {
        this.committeeRepository = committeeRepository;
        this.appUserService = appUserService;
        this.entityValidator = entityValidator;
@@ -72,6 +72,8 @@ public class CommitteeService {
 
         return committeeRepository.save(committee);
     }
+
+
 
 
 

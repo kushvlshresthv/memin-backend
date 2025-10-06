@@ -21,9 +21,14 @@ CREATE TABLE committees (
         modified_by VARCHAR(255) NOT NULL,
         modified_date DATE NOT NULL,
         status VARCHAR(255) NOT NULL,
+        minuteLanguage VARCHAR(255) /*NOT NULL*/,
+        openingParagraph TEXT /*NOT NULL*/,
         max_no_of_meetings INT,
         FOREIGN KEY (created_by) REFERENCES app_users(uid)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+
 
 
 CREATE TABLE members (
