@@ -99,6 +99,15 @@ public class CommitteeController {
         return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_OVERVIEW_RETRIEVED_SUCCESSFULLY, overview));
     }
 
+    @GetMapping("/getAllMembersOfCommittee")
+    public ResponseEntity<Response> getAllMembersOfCommittee(@RequestParam int committeeId, Authentication authentication) {
+        Committee committee = committeeService.findCommitteeById(committeeId);
+
+        List<MemberOfCommitteeDto> membersOfCommittee = committeeService.getMembersOfCommittee(committee, authentication.getName());
+
+        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBERS_RETRIEVED_SUCCESSFULLY, membersOfCommittee));
+    }
+
 
 
 

@@ -112,6 +112,17 @@ public class CommitteeService {
     }
 
 
+    @Transactional
+    @CheckCommitteeAccess
+    public List<MemberOfCommitteeDto> getMembersOfCommittee(Committee committee, String username) {
+        List<MemberOfCommitteeDto> membersOfCommittee = committee.getMemberships().stream().map(membership-> {
+            Member member = membership.getMember();
+            String memberFullName = member.getFirstName() + " " + member.getLastName();
+            return new MemberOfCommitteeDto(member.getId(), memberFullName, membership.getRole());
+        }).toList();
+
+        return membersOfCommittee;
+    }
 
     //TODO: Create Tests
     @Transactional

@@ -33,6 +33,7 @@ public enum ResponseMessages {
     COMMITTEE_UPDATION_SUCCESS("Committee updated successfully"),
     COMMITTEE_DELETED_SUCCESSFULLY("Committee deleted successfully"),
     COMMITTEE_OVERVIEW_RETRIEVED_SUCCESSFULLY("Committee overview retrieved successfully"),
+    COMMITTEE_MEMBERS_RETRIEVED_SUCCESSFULLY("Committee members retrieved successfully"),
 
     //MEMBER RELATED:
     MEMBER_CREATION_SUCCESS("Member created successfully"),
