@@ -91,6 +91,17 @@ public class CommitteeController {
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEES_RETRIEVED_SUCCESSFULLY,committeeDetails));
     }
 
+    @GetMapping("/getCommitteeOverview")
+    public ResponseEntity<Response> getCommitteeOverview(@RequestParam int committeeId, Authentication authentication) {
+        Committee committee = committeeService.findCommitteeById(committeeId);
+        CommitteeOverviewDto overview = committeeService.getCommitteeOverview(committee, authentication.getName());
+
+        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_OVERVIEW_RETRIEVED_SUCCESSFULLY, overview));
+    }
+
+
+
+
     @PostMapping("/addMembersToCommittee")
     //NOTE: LinkedHashSet is made LinkedHashSet to preserve order and avoid duplicate memberIds
     //TODO: Fix (this route should not add more coordinator to the committee)

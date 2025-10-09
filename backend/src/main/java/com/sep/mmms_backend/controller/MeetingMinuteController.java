@@ -23,6 +23,7 @@ public class MeetingMinuteController {
         public MeetingMinuteController(MeetingMinutePreparationService meetingMinutePreparationService) {
             this.meetingMinutePreparationService = meetingMinutePreparationService;
         }
+
         @GetMapping("api/previewMeetingMinute")
         public Object holiday(Model model,
                               @RequestParam int committeeId,

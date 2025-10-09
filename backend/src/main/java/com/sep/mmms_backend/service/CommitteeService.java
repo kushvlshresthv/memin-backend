@@ -11,6 +11,7 @@ import com.sep.mmms_backend.validators.EntityValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,6 +75,41 @@ public class CommitteeService {
     }
 
 
+    @Transactional
+    @CheckCommitteeAccess
+    public CommitteeOverviewDto getCommitteeOverview(Committee committee, String username) {
+        CommitteeOverviewDto committeeOverview = new CommitteeOverviewDto();
+        committeeOverview.setName(committee.getName());
+        committeeOverview.setDescription(committee.getDescription());
+        committeeOverview.setCreatedDate(committee.getCreatedDate());
+        committeeOverview.setMemberCount(committee.getMemberships().size());
+        committeeOverview.setMeetingCount(committee.getMeetings().size());
+        int decisionCount = 0;
+        for(Meeting meeting : committee.getMeetings()) {
+            decisionCount =+ meeting.getDecisions().size();
+        }
+        committeeOverview.setDecisionCount(decisionCount);
+
+        Optional<CommitteeMembership> coordinatorMembership = committee.getMemberships().stream().filter(membership->
+           membership.getRole().equalsIgnoreCase("coordinator")
+        ).findFirst();
+
+        if(coordinatorMembership.isPresent()) {
+            committeeOverview.setCoordinatorName(coordinatorMembership.get().getMember().getFirstName() + " " + coordinatorMembership.get().getMember().getLastName());
+        } else {
+            committeeOverview.setCoordinatorName("No Coordinator");
+        }
+
+        List<LocalDate> meetingDates = committee.getMeetings().stream().map(Meeting::getHeldDate).collect(Collectors.toList());
+
+        Comparator<LocalDate> comparator = LocalDate::compareTo;
+        meetingDates.sort(comparator);
+
+        committeeOverview.setFirstMeetingDate(meetingDates.getFirst());
+        committeeOverview.setLastMeetingDate(meetingDates.getLast());
+        committeeOverview.setMeetingDates(meetingDates);
+        return committeeOverview;
+    }
 
 
 
