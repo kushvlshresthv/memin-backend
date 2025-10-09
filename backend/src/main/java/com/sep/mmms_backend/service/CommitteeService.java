@@ -175,6 +175,7 @@ public class CommitteeService {
      */
 
     //TODO: Create Tests
+    @Deprecated
     @CheckCommitteeAccess
     public CommitteeDetailsDto getCommitteeDetails(Committee committee, String username) {
         return new CommitteeDetailsDto(committee);

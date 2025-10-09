@@ -1,5 +1,10 @@
 package com.sep.mmms_backend.service;
 
+import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
+import com.sep.mmms_backend.dto.AgendaDto;
+import com.sep.mmms_backend.dto.CommitteeMembershipDto;
+import com.sep.mmms_backend.dto.DecisionDto;
+import com.sep.mmms_backend.dto.MinuteDataDto;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
@@ -107,10 +112,74 @@ public class MeetingMinutePreparationService {
 
 
         //This should be done last because this also parses the roles to nepali
-        modelData.put("membershipsForMinute", getSortedMembershipsForMinute(committee, meeting, committeeId));
+        modelData.put("membershipsForMinute", getSortedMembershipsForMinute(committee, meeting));
 
         return modelData;
     }
+
+
+    @CheckCommitteeAccess(shouldValidateMeeting = true)
+    public MinuteDataDto prepareDataForNepaliMinute(Committee committee, Meeting meeting, String username) {
+        MinuteDataDto minuteData = new MinuteDataDto();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
+
+        DateConverter dc = new DateConverter();
+        try {
+            minuteData.setMeetingHeldDateNepali(toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/")));
+        } catch(Exception e) {
+            System.out.println("TODO: Handle Exception");
+        }
+        minuteData.setMeetingHeldDate(meeting.getHeldDate());
+
+        minuteData.setMeetingHeldDay(getMeetingHeldDay(meeting.getHeldDate()));
+
+        minuteData.setPartOfDay(getPartOfDay(meeting.getHeldTime()));
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
+        String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
+
+        minuteData.setMeetingHeldTime(meetingHeldTime);
+
+        minuteData.setMeetingHeldPlace(meeting.getHeldPlace());
+
+        minuteData.setCommitteeDescription(meeting.getDescription());
+
+        minuteData.setCommitteeName(meeting.getCommittee().getName());
+
+        minuteData.setCoordinatorFullName(getCoordinatorFullName(committee.getMemberships()));
+
+        minuteData.setDecisions(meeting.getDecisions().stream().map(decision-> new DecisionDto(decision.getDecisionId(), decision.getDecision())).toList());
+        minuteData.setAgendas(meeting.getAgendas().stream().map(agenda-> new AgendaDto(agenda.getAgendaId(), agenda.getAgenda())).toList());
+
+        minuteData.setCommitteeMemberships(getMembershipForMinute(committee));
+
+
+        return minuteData;
+    }
+
+    //TODO: all roles are being parsed manually, instead fetch it from nepal-profile of the members
+    private List<CommitteeMembershipDto> getMembershipForMinute(Committee committee) {
+        List<CommitteeMembershipDto> memberships;
+
+        memberships = committee.getMemberships().stream().map(membership -> {
+            Member member = membership.getMember();
+            String fullName = member.getPost() + ". " + member.getFirstName() + " " + member.getLastName();
+            return new CommitteeMembershipDto(fullName, membership.getRole());
+        }).toList();
+
+        return memberships;
+
+    }
+
+
+
+
+
+
+
 
 
     private String toNepaliDigits(String input) {
@@ -156,7 +225,8 @@ public class MeetingMinutePreparationService {
         return partOfDay;
     }
 
-    private List<CommitteeMembership> getSortedMembershipsForMinute(Committee committee , Meeting meeting, int committeeId) {
+    @Deprecated
+    private List<CommitteeMembership> getSortedMembershipsForMinute(Committee committee , Meeting meeting) {
         List<CommitteeMembership> membershipsForMinute = committee.getMemberships();
         for(Member invitee: meeting.getInvitees()) {
             CommitteeMembership inviteeMembership = new CommitteeMembership();
@@ -172,6 +242,7 @@ public class MeetingMinutePreparationService {
     /**
      * Sorts memberships object based on role in the order: 'coordinator -> member -> member_secretary -> invitee'
      */
+    @Deprecated
     private void sortMembershipByRole(List<CommitteeMembership> memberships) {
         if (memberships == null || memberships.isEmpty()) {
             return;
@@ -219,6 +290,7 @@ public class MeetingMinutePreparationService {
     }
 
 
+    @Deprecated
     private void parseRoleForMinute(List<CommitteeMembership> memberships) {
         // Nepali translations mapped to English roles
         Map<String, String> roleTranslations = Map.ofEntries(

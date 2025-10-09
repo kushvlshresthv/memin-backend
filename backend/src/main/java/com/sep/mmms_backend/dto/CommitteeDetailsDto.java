@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@Deprecated
 public class CommitteeDetailsDto {
     private final int id;
     private final String name;

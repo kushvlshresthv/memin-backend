@@ -29,26 +29,30 @@
 }
 
 
-body {
-    background: #f0f0f0;
-    margin: 0;
-    padding: 2rem;
-    line-height: 1.8rem;
-}
+/*body {*/
+/*    background: #f0f0f0;*/
+/*    margin: 0;*/
+/*    padding: 2rem;*/
+/*    line-height: 1.8rem;*/
+/*}*/
 
-body.english {
-    font-family: 'Times New Roman', 'serif';
-}
+/*body.english {*/
+/*    font-family: 'Times New Roman', 'serif';*/
+/*}*/
 
-body.nepali {
-    font-family: 'martel', 'Times New Roman', sans-serif;
-}
+/*body.nepali {*/
+/*    font-family: 'martel', 'Times New Roman', sans-serif;*/
+/*}*/
 
 #a4-box {
+
+    line-height: 1.8rem;
+
+
     width: 210mm;
     height: 297mm;
     margin: 0 auto;
-    background: white;
+    /*background: white;*/
     padding: 30mm 20mm;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;

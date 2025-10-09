@@ -83,6 +83,8 @@ public class CommitteeController {
      */
 
 
+
+    @Deprecated
     //TODO: Create Tests
     @GetMapping("/getCommitteeDetails")
     public ResponseEntity<Response> getCommitteeDetails(@RequestParam int committeeId, Authentication authentication) {
