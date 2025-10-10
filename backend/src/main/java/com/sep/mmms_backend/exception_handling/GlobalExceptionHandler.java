@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         );
 
        log.error("Exception Handled: {}: {}", ex.getMessage(), errorMessages);
-       return ResponseEntity.badRequest().body(new Response(ex.getMessage(), errorMessages));
+       return ResponseEntity.badRequest().body(new Response(ex.getMessage() + ": " + errorMessages));
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)

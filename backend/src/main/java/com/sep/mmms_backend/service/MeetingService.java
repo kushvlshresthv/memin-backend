@@ -2,6 +2,7 @@ package com.sep.mmms_backend.service;
 
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
 import com.sep.mmms_backend.dto.MeetingCreationDto;
+import com.sep.mmms_backend.dto.MeetingSummaryDto;
 import com.sep.mmms_backend.dto.MeetingUpdationDto;
 import com.sep.mmms_backend.entity.*;
 import com.sep.mmms_backend.exceptions.*;
@@ -63,6 +64,13 @@ public class MeetingService {
             meeting.setInvitees(foundMembers);
         }
         return meetingRepository.save(meeting);
+    }
+
+
+    @CheckCommitteeAccess
+    public List<MeetingSummaryDto> getMeetingOfCommittee(Committee committee, String username) {
+        List<Meeting> meetings = committee.getMeetings();
+        return meetings.stream().map(MeetingSummaryDto::new).toList();
     }
 
     //TODO: Create Tests

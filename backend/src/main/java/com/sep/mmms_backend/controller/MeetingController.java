@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 
 @RestController
 @RequestMapping("api")
@@ -43,6 +44,15 @@ public class MeetingController {
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_CREATION_SUCCESSFUL, savedMeetingSummary));
     }
 
+    @GetMapping("/getMeetingsOfCommittee")
+    public ResponseEntity<Response> getMeetingsOfCommittee(@RequestParam(required=true) int committeeId, Authentication authentication) {
+        Committee committee = committeeService.findCommitteeById(committeeId);
+
+        List<MeetingSummaryDto> meetings = meetingService.getMeetingOfCommittee(committee, authentication.getName());
+
+        return ResponseEntity.ok(new Response(ResponseMessages.MEETINGS_OF_COMMITTEE, meetings));
+    }
+
 
     //TODO: Create Tests
     @PostMapping("/updateMeetingDetails")
@@ -55,6 +65,7 @@ public class MeetingController {
         MeetingDetailsDto meetingDetailsDto = new MeetingDetailsDto(savedMeeting);
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS, meetingDetailsDto));
     }
+
 
 
     //TODO: Create Tests
