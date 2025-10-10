@@ -31,26 +31,27 @@ CREATE TABLE committees (
 
 
 
-CREATE TABLE members (
-         member_id INT AUTO_INCREMENT PRIMARY KEY,
-         uuid VARCHAR(36) NOT NULL UNIQUE,
+CREATE TABLE members_new (
+                         member_id INT AUTO_INCREMENT PRIMARY KEY,
+                         member_uuid VARCHAR(36) NOT NULL UNIQUE,
 
-         first_name VARCHAR(255) NOT NULL,
-         last_name VARCHAR(255) NOT NULL,
+                         member_first_name VARCHAR(255) NOT NULL,
+                         member_last_name VARCHAR(255) NOT NULL,
 
-         first_name_nepali VARCHAR(255) NULL,
-         last_name_nepali VARCHAR(255) NULL,
+                         member_username VARCHAR(255) NOT NULL UNIQUE,
 
-         institution VARCHAR(255),
-         post VARCHAR(255),
-         qualification VARCHAR(255),
-         email VARCHAR(255),
+                         member_institution VARCHAR(255),
+                         member_post VARCHAR(255),
+                         member_title VARCHAR(255) NOT NULL,
+                         member_email VARCHAR(255) NOT NULL,
 
-         created_by VARCHAR(255) NOT NULL,
-         created_date DATE NOT NULL,
-         modified_by VARCHAR(255) NOT NULL,
-         modified_date DATE NOT NULL
+                         member_created_by VARCHAR(255) NOT NULL,
+                         member_created_date DATE NOT NULL,
+                         member_modified_by VARCHAR(255) NOT NULL,
+                         member_modified_date DATE NOT NULL
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
 
 CREATE TABLE committee_memberships (
            committee_id INT NOT NULL,
@@ -59,7 +60,7 @@ CREATE TABLE committee_memberships (
            role VARCHAR(255) NOT NULL,
            PRIMARY KEY (committee_id, member_id),
            FOREIGN KEY (committee_id) REFERENCES committees(committee_id),
-           FOREIGN KEY (member_id) REFERENCES members(member_id)
+           FOREIGN KEY (member_id) REFERENCES members_new(member_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE meetings (
@@ -86,7 +87,7 @@ CREATE TABLE meeting_attendees (
            meeting_id INT NOT NULL,
 
            PRIMARY KEY (member_id, meeting_id),
-           FOREIGN KEY (member_id) REFERENCES members(member_id),
+           FOREIGN KEY (member_id) REFERENCES members_new(member_id),
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 );
 
@@ -95,7 +96,7 @@ CREATE TABLE meeting_invitees(
            meeting_id INT NOT NULL,
 
            PRIMARY KEY (member_id, meeting_id),
-           FOREIGN KEY (member_id) REFERENCES members(member_id),
+           FOREIGN KEY (member_id) REFERENCES members_new(member_id),
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

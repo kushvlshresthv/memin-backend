@@ -339,7 +339,7 @@ public class MeetingMinutePreparationService {
         //TODO: Optimize (there might be better ways to get coordinator membership
         for(CommitteeMembership membership : memberships) {
             if(membership.getRole().equalsIgnoreCase("Coordinator"))
-                return membership.getMember().getPost() + " " + membership.getMember().getFirstNameNepali() + " " + membership.getMember().getLastNameNepali();
+                return membership.getMember().getTitle() + ". " + membership.getMember().getFirstName() + " " + membership.getMember().getLastName();
         }
 
         return "[Error: No Coordinator]";

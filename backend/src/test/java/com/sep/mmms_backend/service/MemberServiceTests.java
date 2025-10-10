@@ -1,7 +1,7 @@
 package com.sep.mmms_backend.service;
 
 
-import com.sep.mmms_backend.dto.MemberCreationDto;
+import com.sep.mmms_backend.dto.MemberCreationDtoDeprecated;
 import com.sep.mmms_backend.dto.MemberDetailsDto;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.Meeting;
@@ -76,7 +76,7 @@ public class MemberServiceTests {
     class SaveNewMember {
         private final int committeeId = 1;
         private final String username = "testUser";
-        private MemberCreationDto memberCreationDto;
+        private MemberCreationDtoDeprecated memberCreationDto;
         private Committee committee;
         private Member savedMember;
 
@@ -87,7 +87,7 @@ public class MemberServiceTests {
             committee = helper.getCommittee();
 
             // Create a valid MemberCreationDto
-            memberCreationDto = new MemberCreationDto();
+            memberCreationDto = new MemberCreationDtoDeprecated();
             memberCreationDto.setFirstName("John");
             memberCreationDto.setLastName("Doe");
             memberCreationDto.setFirstNameNepali("जोन");
@@ -102,8 +102,8 @@ public class MemberServiceTests {
             savedMember.setId(1);
             savedMember.setFirstName("John");
             savedMember.setLastName("Doe");
-            savedMember.setFirstNameNepali("जोन");
-            savedMember.setLastNameNepali("डो");
+//            savedMember.setFirstNameNepali("जोन");
+//            savedMember.setLastNameNepali("डो");
             savedMember.setInstitution("Test Institution");
             savedMember.setPost("Test Post");
             savedMember.setEmail("john.doe@example.com");
@@ -120,7 +120,7 @@ public class MemberServiceTests {
 
             // Act & Assert
             ValidationFailureException ex = assertThrows(ValidationFailureException.class, () -> {
-                memberService.saveNewMember(memberCreationDto, committee, username);
+                memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
             });
 
             assertThat(ex.getMessage()).isEqualTo(ExceptionMessages.VALIDATION_FAILED.toString());
@@ -139,7 +139,7 @@ public class MemberServiceTests {
 
             // Act & Assert
             ValidationFailureException ex = assertThrows(ValidationFailureException.class, () -> {
-                memberService.saveNewMember(memberCreationDto, committee, username);
+                memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
             });
 
             assertThat(ex.getMessage()).isEqualTo(ExceptionMessages.VALIDATION_FAILED.toString());
@@ -158,7 +158,7 @@ public class MemberServiceTests {
 
             // Act & Assert
             ValidationFailureException ex = assertThrows(ValidationFailureException.class, () -> {
-                memberService.saveNewMember(memberCreationDto, committee, username);
+                memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
             });
 
             assertThat(ex.getMessage()).isEqualTo(ExceptionMessages.VALIDATION_FAILED.toString());
@@ -177,7 +177,7 @@ public class MemberServiceTests {
 
             // Act & Assert
             ValidationFailureException ex = assertThrows(ValidationFailureException.class, () -> {
-                memberService.saveNewMember(memberCreationDto, committee, username);
+                memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
             });
 
             assertThat(ex.getMessage()).isEqualTo(ExceptionMessages.VALIDATION_FAILED.toString());
@@ -200,7 +200,7 @@ public class MemberServiceTests {
 
 
             // Act
-            Member result = memberService.saveNewMember(memberCreationDto, committee, username);
+            Member result = memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
 
             // Assert
             assertThat(result).isNotNull();
@@ -223,15 +223,15 @@ public class MemberServiceTests {
                 // Mock RequestContextHolder
 
             // Act
-            Member result = memberService.saveNewMember(memberCreationDto, committee, username);
+            Member result = memberService.saveNewMemberDeprecated(memberCreationDto, committee, username);
 
             // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(savedMember.getId());
             assertThat(result.getFirstName()).isEqualTo(savedMember.getFirstName());
             assertThat(result.getLastName()).isEqualTo(savedMember.getLastName());
-            assertThat(result.getFirstNameNepali()).isEqualTo(savedMember.getFirstNameNepali());
-            assertThat(result.getLastNameNepali()).isEqualTo(savedMember.getLastNameNepali());
+//            assertThat(result.getFirstNameNepali()).isEqualTo(savedMember.getFirstNameNepali());
+//            assertThat(result.getLastNameNepali()).isEqualTo(savedMember.getLastNameNepali());
             assertThat(result.getInstitution()).isEqualTo(savedMember.getInstitution());
             assertThat(result.getPost()).isEqualTo(savedMember.getPost());
             assertThat(result.getEmail()).isEqualTo(savedMember.getEmail());
@@ -356,7 +356,7 @@ public class MemberServiceTests {
             assertThat(member.getLastName()).isEqualTo(result.getLastName());
             assertThat(member.getInstitution()).isEqualTo(result.getInstitution());
             assertThat(member.getPost()).isEqualTo(result.getPost());
-            assertThat(member.getQualification()).isEqualTo(result.getQualification());
+//            assertThat(member.getQualification()).isEqualTo(result.getQualification());
 
             // Check committee info
             assertThat(result.getCommitteeWithMeetings().isEmpty()).isFalse();

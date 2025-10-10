@@ -119,6 +119,12 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
         }
     }
 
-
-
+    /**
+     * returns all members with the provided memberIds if they are accessible by the 'username' by checking the 'createdBy' field
+     */
+    @Query("SELECT m FROM Member m WHERE m.username = :memberUsername AND m.createdBy = :authUsername")
+    Optional<Member> findAccessibleMemberByUsername(
+            @Param("memberUsername") String memberUsername,
+            @Param("authUsername") String authUsername
+    );
 }

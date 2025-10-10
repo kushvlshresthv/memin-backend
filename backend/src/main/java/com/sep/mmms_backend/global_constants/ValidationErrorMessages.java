@@ -5,6 +5,8 @@ package com.sep.mmms_backend.global_constants;
 public class ValidationErrorMessages {
     public static final String INVALID_USERNAME_FORMAT = "invalid username format :: username must only contain 'a-z' 'A-Z' '0-9' '_' ";
 
+    public static final String USERNAME_NOT_AVAILABLE = "the selected username is already in user";
+
     public static final String FIELD_CANNOT_BE_EMPTY = "This field cannot be empty";
 
     public static final String VALID_EMAIL_REQUIRED = "This field requires a valid email address";

@@ -1,26 +1,21 @@
 package com.sep.mmms_backend.service;
 
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
-import com.sep.mmms_backend.dto.MemberCreationDto;
-import com.sep.mmms_backend.dto.MemberDetailsDto;
-import com.sep.mmms_backend.dto.MemberUpdationDto;
-import com.sep.mmms_backend.dto.MemberWithoutCommitteeDto;
+import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.exceptions.ExceptionMessages;
 import com.sep.mmms_backend.exceptions.IllegalOperationException;
-import com.sep.mmms_backend.exceptions.InvalidRequestException;
 import com.sep.mmms_backend.exceptions.MemberDoesNotExistException;
-import com.sep.mmms_backend.repository.CommitteeRepository;
 import com.sep.mmms_backend.repository.MemberRepository;
 import com.sep.mmms_backend.validators.EntityValidator;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -69,7 +64,8 @@ public class MemberService {
 
     @Transactional
     @CheckCommitteeAccess
-    public Member saveNewMember(MemberCreationDto memberDto,Committee committee,String username) {
+    @Deprecated
+    public Member saveNewMemberDeprecated(MemberCreationDtoDeprecated memberDto, Committee committee, String username) {
         entityValidator.validate(memberDto);
 
         Member member = new Member();
@@ -77,9 +73,9 @@ public class MemberService {
         member.setLastName(memberDto.getLastName());
         member.setPost(memberDto.getPost());
         if(memberDto.getFirstNameNepali() != null && !memberDto.getFirstNameNepali().isEmpty())
-            member.setFirstNameNepali(memberDto.getFirstNameNepali());
+//            member.setFirstNameNepali(memberDto.getFirstNameNepali());
         if(memberDto.getLastNameNepali() != null && !memberDto.getLastNameNepali().isEmpty())
-            member.setLastNameNepali(memberDto.getLastNameNepali());
+//            member.setLastNameNepali(memberDto.getLastNameNepali());
         if(memberDto.getFirstNameNepali() != null && !memberDto.getFirstNameNepali().isEmpty())
             member.setEmail(memberDto.getEmail());
         if(memberDto.getEmail() != null && !memberDto.getEmail().isEmpty())
@@ -97,8 +93,30 @@ public class MemberService {
 
 
 
+    @Transactional
+    public Member saveNewMember(MemberCreationDto memberDto, String username) {
+
+        entityValidator.validate(memberDto);
+
+        Member member = new Member();
+        member.setFirstName(memberDto.getFirstName());
+        member.setLastName(memberDto.getLastName());
+        member.setUsername(memberDto.getUsername());
+        if(memberDto.getInstitution() != null && !memberDto.getInstitution().isEmpty()) {
+            member.setInstitution(memberDto.getInstitution());
+        }
+        member.setPost(memberDto.getPost());
+        member.setTitle(memberDto.getTitle());
+        member.setEmail(memberDto.getEmail());
+
+        //persists the membershp as well
+        return memberRepository.save(member);
+    }
+
+
     //similar to saveNewMember, but just does not save the membership with the committee
-    public Member saveNewInvitee(MemberCreationDto memberDto){
+    @Deprecated
+    public Member saveNewInvitee(MemberCreationDtoDeprecated memberDto){
         //TODO: do something about this workaround
         memberDto.setRole("toPassValidation");
         entityValidator.validate(memberDto);
@@ -106,8 +124,8 @@ public class MemberService {
         Member member = new Member();
         member.setFirstName(memberDto.getFirstName());
         member.setLastName(memberDto.getLastName());
-        member.setFirstNameNepali(memberDto.getFirstNameNepali());
-        member.setLastNameNepali(memberDto.getLastNameNepali());
+//        member.setFirstNameNepali(memberDto.getFirstNameNepali());
+//        member.setLastNameNepali(memberDto.getLastNameNepali());
 
         if(memberDto.getEmail() != null && !memberDto.getEmail().isEmpty())
             member.setEmail(memberDto.getEmail());
@@ -119,6 +137,7 @@ public class MemberService {
     }
 
     @Transactional
+    @Deprecated
     public Member updateExistingMemberDetails(MemberUpdationDto newMemberData, String username) {
 
         if(newMemberData.getId() == null) {
@@ -140,9 +159,9 @@ public class MemberService {
         if(newMemberData.getPost() != null && !newMemberData.getPost().isBlank())
             existingMember.setPost(newMemberData.getPost());
         if(newMemberData.getFirstNameNepali() != null && !newMemberData.getFirstNameNepali().isBlank())
-            existingMember.setFirstNameNepali(newMemberData.getFirstNameNepali());
+//            existingMember.setFirstNameNepali(newMemberData.getFirstNameNepali());
         if(newMemberData.getLastNameNepali() != null && !newMemberData.getLastNameNepali().isBlank())
-            existingMember.setLastNameNepali(newMemberData.getLastNameNepali());
+//            existingMember.setLastNameNepali(newMemberData.getLastNameNepali());
         if(newMemberData.getInstitution() != null && !newMemberData.getInstitution().isBlank())
             existingMember.setInstitution(newMemberData.getInstitution());
 
@@ -233,5 +252,10 @@ public class MemberService {
 
     public Member findMemberById(int memberId) {
         return memberRepository.findMemberById(memberId);
+    }
+
+    public Member findAccessibleMemberByUsername(String username) {
+        Optional<Member> member = memberRepository.findAccessibleMemberByUsername(username, SecurityContextHolder.getContext().getAuthentication().getName());
+        return member.orElse(null);
     }
 }

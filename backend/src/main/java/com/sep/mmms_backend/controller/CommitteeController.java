@@ -94,7 +94,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getCommitteeOverview")
-    public ResponseEntity<Response> getCommitteeOverview(@RequestParam int committeeId, Authentication authentication) {
+    public ResponseEntity<Response> getCommitteeOverview(@RequestParam(required=true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
         CommitteeOverviewDto overview = committeeService.getCommitteeOverview(committee, authentication.getName());
 
@@ -102,7 +102,7 @@ public class CommitteeController {
     }
 
     @GetMapping("/getAllMembersOfCommittee")
-    public ResponseEntity<Response> getAllMembersOfCommittee(@RequestParam int committeeId, Authentication authentication) {
+    public ResponseEntity<Response> getAllMembersOfCommittee(@RequestParam(required=true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
 
         List<MemberOfCommitteeDto> membersOfCommittee = committeeService.getMembersOfCommittee(committee, authentication.getName());

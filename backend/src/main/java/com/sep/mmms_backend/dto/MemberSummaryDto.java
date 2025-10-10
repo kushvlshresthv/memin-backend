@@ -15,8 +15,8 @@ public class MemberSummaryDto {
     private final int memberId;
     private final String firstName;
     private final String lastName;
-    private final String firstNameNepali;
-    private final String lastNameNepali;
+//    private final String firstNameNepali;
+//    private final String lastNameNepali;
     private final String institution;
     private final String post;
     private String role ;
@@ -36,8 +36,8 @@ public class MemberSummaryDto {
                 break;
             }
         }
-        this.firstNameNepali = member.getFirstNameNepali();
-        this.lastNameNepali = member.getLastNameNepali();
+//        this.firstNameNepali = member.getFirstNameNepali();
+//        this.lastNameNepali = member.getLastNameNepali();
     }
 
 
@@ -61,7 +61,7 @@ public class MemberSummaryDto {
         this.institution = institution;
         this.post = post;
         this.role = role;
-        this.firstNameNepali = firstNameNepali;
-        this.lastNameNepali = lastNameNepali;
+//        this.firstNameNepali = firstNameNepali;
+//        this.lastNameNepali = lastNameNepali;
     }
 }

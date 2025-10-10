@@ -14,7 +14,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="members")
+@Table(name="members_new")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Entity
@@ -26,52 +26,56 @@ public class Member {
     @Column(name="member_id")
     private Integer id;
 
-    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
+    @Column(name = "member_uuid", nullable = false, unique = true, updatable = false)
     private String uuid;
 
 
-    @Column(name="first_name", nullable=false)
+    @Column(name="member_first_name", nullable=false)
     private String firstName;
 
-    @Column(name="last_name", nullable=false)
+    @Column(name="member_last_name", nullable=false)
     private String lastName;
 
-    //TODO: consider making the following two fields non-nullable
-    @Column(name="first_name_nepali")
-    private String firstNameNepali;
+    @Column(name="member_username", nullable = false)
+    private String username;
 
-    @Column(name="last_name_nepali")
-    private String lastNameNepali;
-
+    @Column(name="member_institution")
     private String institution;  //example: Pulchowk Campus, IOE
 
+    @Column(name="member_post")
     private String post; //example: professor
 
+    @Column(name="member_title", nullable = false)
+    private String title;
+
     //consider removing this field, as it is redundant to 'post'
+    @Deprecated
     private String qualification; //example: Dr, Prof, Mr
 
-    @Column
+
+    @Column(name="member_email", nullable = false)
     private String email;
 
-    @Column(name = "created_by", updatable = false, nullable = false)
+    @Column(name = "member_created_by", updatable = false, nullable = false)
     @CreatedBy
     private String createdBy;
 
-    @Column(name = "created_date", updatable = false, nullable = false)
+    @Column(name = "member_created_date", updatable = false, nullable = false)
     @CreatedDate
     private LocalDate createdDate;
 
-    @Column(name = "modified_by",  nullable = false)
+    @Column(name = "member_modified_by",  nullable = false)
     @CreatedBy
     private String modifiedBy;
 
-    @Column(name = "modified_date", nullable = false)
+    @Column(name = "member_modified_date", nullable = false)
     @CreatedDate
     private LocalDate modifiedDate;
 
     @OneToMany(mappedBy="member", cascade=CascadeType.PERSIST)
     private List<CommitteeMembership> memberships = new LinkedList<>();
 
+    @Deprecated
     @ManyToMany(mappedBy = "attendees", fetch = FetchType.LAZY)
     Set<Meeting> attendedMeetings = new HashSet<>();
 

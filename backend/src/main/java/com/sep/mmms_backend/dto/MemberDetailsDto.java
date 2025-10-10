@@ -67,11 +67,11 @@ public class MemberDetailsDto {
     private final int memberId;
     private final String firstName;
     private final String lastName;
-    private final String firstNameNepali;
-    private final String lastNameNepali;
+//    private final String firstNameNepali;
+//    private final String lastNameNepali;
     private final String institution;
     private final String post;
-    private final String qualification;
+//    private final String qualification;
     private final String email;
     private final List<CommitteeWithMeetings> committeeWithMeetings;
 
@@ -89,12 +89,12 @@ public class MemberDetailsDto {
         this.memberId = member.getId();
         this.firstName = member.getFirstName();
         this.lastName = member.getLastName();
-        this.firstNameNepali = member.getFirstNameNepali();
-        this.lastNameNepali = member.getLastNameNepali();
+//        this.firstNameNepali = member.getFirstNameNepali();
+//        this.lastNameNepali = member.getLastNameNepali();
         this.institution = member.getInstitution();
         this.post = member.getPost();
         this.email = member.getEmail();
-        this.qualification = member.getQualification();
+//        this.qualification = member.getQualification();
         this.committeeWithMeetings = List.copyOf(committeeWithMeetings);
     }
 
@@ -108,8 +108,8 @@ public class MemberDetailsDto {
             @JsonProperty("memberId") int memberId,
             @JsonProperty("firstName") String firstName,
             @JsonProperty("lastName") String lastName,
-            @JsonProperty("firstNameNepali") String firstNameNepali,
-            @JsonProperty("lastNameNepali") String lastNameNepali,
+//            @JsonProperty("firstNameNepali") String firstNameNepali,
+//            @JsonProperty("lastNameNepali") String lastNameNepali,
             @JsonProperty("institution") String institution,
             @JsonProperty("post") String post,
             @JsonProperty("qualification") String qualification,
@@ -122,9 +122,9 @@ public class MemberDetailsDto {
         this.institution = institution;
         this.post = post;
         this.email = email;
-        this.qualification = qualification;
+//        this.qualification = qualification;
         this.committeeWithMeetings = committeeWithMeetings;
-        this.firstNameNepali = firstNameNepali;
-        this.lastNameNepali = lastNameNepali;
+//        this.firstNameNepali = firstNameNepali;
+//        this.lastNameNepali = lastNameNepali;
     }
 }

@@ -2,28 +2,28 @@ INSERT INTO app_users (username, password, email, firstname, lastname)
 VALUES ('username', '{noop}password', 'username@gmail.com', 'admin', 'admin'),
        ('not_username', '{noop}password', 'username@gmail.com', 'admin', 'admin');
 
-INSERT INTO members (
-    first_name, last_name, institution, post, qualification, email,
-    created_by, created_date, modified_by, modified_date, uuid, first_name_nepali, last_name_nepali
+INSERT INTO members_new (
+    member_username, member_institution, member_post, member_title, member_email,
+    member_created_by, member_created_date, member_modified_by, member_modified_date, member_uuid, member_first_name, member_last_name
 )
 VALUES
-    ('Hari',   'Bahadur',    'Nepal Engineering College',              'प्रा.',     'MSc IT',                  'hari.bahadur@example.com',   'username', '2025-07-04', 'username', '2025-07-04', UUID(), 'हरि', 'बहादुर'),
-    ('Gita',   'Oli',        'Ministry of Education',                  'डा.',                 'MPA',                     'gita.oli@example.com',        'username', '2025-07-05', 'username', '2025-07-05', UUID(), 'गिता', 'ओली'),
-    ('Bikash', 'Lama',       'Nist College',                           'डा.',                     'PhD Computer Science',    'bikash.lama@example.com',     'username', '2025-07-06', 'username', '2025-07-06', UUID(), 'विकाश', 'लामा'),
-    ('Sunita', 'Maharjan',   'St. Xaviers College',                    'प्रा.',                'MSc Environmental Science','sunita.maharjan@example.com','username', '2025-07-07', 'username', '2025-07-07', UUID(), 'सुनिता', 'महार्जन'),
-    ('Kamal',  'Pandey',     'Pulchowk Campus',                        'डा.',     'PhD Civil Engineering',   'kamal.pandey@example.com',    'username', '2025-07-12', 'username', '2025-07-12', UUID(), 'कमल', 'पाण्डे'),
-    ('Deepa',  'Gurung',     'Patan College for Professional Studies', 'प्रा.',              'MBS',                     'deepa.gurung@example.com',    'username', '2025-07-13', 'username', '2025-07-13', UUID(), 'दीपा', 'गुरुङ'),
-    ('Nabin',  'Tamang',     'Softwarica College',                     'प्रा.',                 'MSc Computer Science',    'nabin.tamang@example.com',    'username', '2025-07-14', 'username', '2025-07-14', UUID(), 'नविन', 'तामाङ'),
-    ('Anita',  'Shrestha',   'Tribhuvan University',                  'डा.',       'MA Sociology',           'anita.shrestha@example.com',  'username', '2025-07-15', 'username', '2025-07-15', UUID(), 'अनिता', 'श्रेष्ठ'),
-    ('Ramesh', 'Karki',      'Nepal Telecom',                         'डा.',               'BSc CSIT',               'ramesh.karki@example.com',    'username', '2025-07-16', 'username', '2025-07-16', UUID(), 'रामेश', 'कार्की'),
-    ('Sita',   'Basnet',     'Kathmandu University',                  'डा.',          'PhD Biotechnology',      'sita.basnet@example.com',     'username', '2025-07-17', 'username', '2025-07-17', UUID(), 'सीता', 'बास्नेत'),
-    ('Prakash','Rana',       'Nepal Police Academy',                  'डा.',     'M.Ed',                   'prakash.rana@example.com',    'username', '2025-07-18', 'username', '2025-07-18', UUID(), 'प्रकाश', 'राना'),
-    ('Meena',  'Thapa',      'Nepal Rastra Bank',                     'डा.',                'MA Economics',           'meena.thapa@example.com',     'username', '2025-07-19', 'username', '2025-07-19', UUID(), 'मीना', 'थापा'),
-    ('Dipesh', 'KC',         'Kathford College',                      'प्रा.',                      'MSc IT',                 'dipesh.kc@example.com',       'username', '2025-07-20', 'username', '2025-07-20', UUID(), 'दिपेश', 'के.सी.'),
-    ('Sarita', 'Dhakal',     'Pokhara University',                    'प्रा.',                'PhD Management',         'sarita.dhakal@example.com',   'username', '2025-07-21', 'username', '2025-07-21', UUID(), 'सरिता', 'ढकाल'),
-    ('Bijay',  'Gurung',     'Nepal Electricity Authority',           'प्रा.',      'BE Electrical',          'bijay.gurung@example.com',    'username', '2025-07-22', 'username', '2025-07-22', UUID(), 'विजय', 'गुरुङ'),
-    ('Rojina', 'Maharjan',   'Prime College',                         'प्रा.',                 'MSc CSIT',               'rojina.maharjan@example.com', 'username', '2025-07-23', 'username', '2025-07-23', UUID(), 'रोजिना', 'महार्जन'),
-    ('Suman',  'Bista',      'Everest Engineering College',           'डा.',                     'PhD Information Systems','suman.bista@example.com',    'username', '2025-07-24', 'username', '2025-07-24', UUID(), 'सुमन', 'बिष्ट');
+    ( 'hari_bahadur', 'Nepal Engineering College',              'प्रा.',     'Campus Cheif',                  'hari.bahadur@example.com',   'username', '2025-07-04', 'username', '2025-07-04', UUID(), 'हरि', 'बहादुर'),
+    ( 'gita_oli', 'Ministry of Education',                  'डा.',                 'IOM Delegate',                     'gita.oli@example.com',        'username', '2025-07-05', 'username', '2025-07-05', UUID(), 'गिता', 'ओली'),
+    ('bikash_lama', 'Nist College',                           'डा.',                     'IMO Chief',    'bikash.lama@example.com',     'username', '2025-07-06', 'username', '2025-07-06', UUID(), 'विकाश', 'लामा'),
+    ('sunita_maharjan ', 'St. Xaviers College',                    'प्रा.',                'MSc Environmental Science','sunita.maharjan@example.com','username', '2025-07-07', 'username', '2025-07-07', UUID(), 'सुनिता', 'महार्जन'),
+    ('kamal_pandey', 'Pulchowk Campus',                        'डा.',     'PhD Civil Engineering',   'kamal.pandey@example.com',    'username', '2025-07-12', 'username', '2025-07-12', UUID(), 'कमल', 'पाण्डे'),
+    ('deepa_gurung' , 'Patan College for Professional Studies', 'प्रा.',              'MBS',                     'deepa.gurung@example.com',    'username', '2025-07-13', 'username', '2025-07-13', UUID(), 'दीपा', 'गुरुङ'),
+    ('nabin_tamang','Softwarica College',                     'प्रा.',                 'MSc Computer Science',    'nabin.tamang@example.com',    'username', '2025-07-14', 'username', '2025-07-14', UUID(), 'नविन', 'तामाङ'),
+    ('anita_shrestha','Tribhuvan University',                  'डा.',       'MA Sociology',           'anita.shrestha@example.com',  'username', '2025-07-15', 'username', '2025-07-15', UUID(), 'अनिता', 'श्रेष्ठ'),
+    ('ramesh_karki' , 'Nepal Telecom',                         'डा.',               'BSc CSIT',               'ramesh.karki@example.com',    'username', '2025-07-16', 'username', '2025-07-16', UUID(), 'रामेश', 'कार्की'),
+    ( 'sita_basnet' , 'Kathmandu University',                  'डा.',          'PhD Biotechnology',      'sita.basnet@example.com',     'username', '2025-07-17', 'username', '2025-07-17', UUID(), 'सीता', 'बास्नेत'),
+    (' prakash rana', 'Nepal Police Academy',                  'डा.',     'M.Ed',                   'prakash.rana@example.com',    'username', '2025-07-18', 'username', '2025-07-18', UUID(), 'प्रकाश', 'राना'),
+    ('meena_thapa', 'Nepal Rastra Bank',                     'डा.',                'MA Economics',           'meena.thapa@example.com',     'username', '2025-07-19', 'username', '2025-07-19', UUID(), 'मीना', 'थापा'),
+    ( 'dipesh_kc', 'Kathford College',                      'प्रा.',                      'MSc IT',                 'dipesh.kc@example.com',       'username', '2025-07-20', 'username', '2025-07-20', UUID(), 'दिपेश', 'के.सी.'),
+    ('sarita_dhakal' , 'Pokhara University',                    'प्रा.',                'PhD Management',         'sarita.dhakal@example.com',   'username', '2025-07-21', 'username', '2025-07-21', UUID(), 'सरिता', 'ढकाल'),
+    ('bijay_gurung', 'Nepal Electricity Authority',           'प्रा.',      'EEC Chief',          'bijay.gurung@example.com',    'username', '2025-07-22', 'username', '2025-07-22', UUID(), 'विजय', 'गुरुङ'),
+    ('rojina_maharjan', 'Prime College',                         'प्रा.',                 'MSc CSIT',               'rojina.maharjan@example.com', 'username', '2025-07-23', 'username', '2025-07-23', UUID(), 'रोजिना', 'महार्जन'),
+    ('suman_bista', 'Everest Engineering College',           'डा.',                     'PhD Information Systems','suman.bista@example.com',    'username', '2025-07-24', 'username', '2025-07-24', UUID(), 'सुमन', 'बिष्ट');
 
 
 

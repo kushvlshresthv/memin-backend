@@ -2,7 +2,6 @@ package com.sep.mmms_backend.controller;
 
 import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
-import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.response.Response;
 import com.sep.mmms_backend.response.ResponseMessages;
@@ -43,20 +42,29 @@ public class MemberController {
      */
 
 
-    @PostMapping("/createMember")
-    public ResponseEntity<Response> createMember(@RequestParam(required = true) int committeeId, @RequestBody(required=true) MemberCreationDto memberDto , Authentication authentication) {
+    @PostMapping("/createMemberDepricated")
+    @Deprecated
+    public ResponseEntity<Response> createMember(@RequestParam(required = true) int committeeId, @RequestBody(required=true) MemberCreationDtoDeprecated memberDto , Authentication authentication) {
        Committee committee= committeeService.findCommitteeById(committeeId);
-       Member member = memberService.saveNewMember(memberDto, committee, authentication.getName());
+       Member member = memberService.saveNewMemberDeprecated(memberDto, committee, authentication.getName());
 
        MemberSummaryDto memberSummaryDto = new MemberSummaryDto(member, committeeId);
 
         return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, memberSummaryDto));
     }
 
+    @PostMapping("/createMember")
+    public ResponseEntity<Response> createNewMember(@RequestBody(required=true) MemberCreationDto memberDto , Authentication authentication ) {
+       Member member = memberService.saveNewMember(memberDto, authentication.getName());
+       return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, member));
+    }
+
+
+
 
     //This route is simular to 'createMember' but does not create a membership for the member
     @PostMapping("/createInvitee")
-    public ResponseEntity<Response> createInvitee(@RequestBody(required=true) MemberCreationDto memberDto) {
+    public ResponseEntity<Response> createInvitee(@RequestBody(required=true) MemberCreationDtoDeprecated memberDto) {
         Member member = memberService.saveNewInvitee(memberDto);
         MemberSearchResultDto searchResultDto = new MemberSearchResultDto(member);
         //returning search result dto, because frontend adds this newly created member below the search bar as search result

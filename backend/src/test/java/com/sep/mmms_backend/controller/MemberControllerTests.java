@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sep.mmms_backend.config.AppConfig;
 import com.sep.mmms_backend.config.SecurityConfiguration;
-import com.sep.mmms_backend.dto.MemberCreationDto;
+import com.sep.mmms_backend.dto.MemberCreationDtoDeprecated;
 import com.sep.mmms_backend.dto.MemberDetailsDto;
 import com.sep.mmms_backend.dto.MemberSummaryDto;
 import com.sep.mmms_backend.entity.Committee;
@@ -90,7 +90,7 @@ public class MemberControllerTests {
     class CreateMemberRoute {
         private Committee committee;
         private final String username = "testUser";
-        private MemberCreationDto memberCreationDto;
+        private MemberCreationDtoDeprecated memberCreationDto;
         private Member createdMember;
 
         @BeforeEach
@@ -99,7 +99,7 @@ public class MemberControllerTests {
             committee = helper.getCommittee();
 
             // Create MemberCreationDto with required fields
-            memberCreationDto = new MemberCreationDto();
+            memberCreationDto = new MemberCreationDtoDeprecated();
             // Use reflection to set fields since MemberCreationDto only has getters
             memberCreationDto.setFirstName( "John");
             memberCreationDto.setLastName( "Doe");
@@ -118,8 +118,8 @@ public class MemberControllerTests {
             createdMember = helper.getMember();
             createdMember.setFirstName("John");
             createdMember.setLastName("Doe");
-            createdMember.setFirstNameNepali("जोन");
-            createdMember.setLastNameNepali("डो");
+//            createdMember.setFirstNameNepali("जोन");
+//            createdMember.setLastNameNepali("डो");
             createdMember.setInstitution("Test Institution");
             createdMember.setPost("Test Post");
             createdMember.setEmail("john.doe@example.com");
@@ -157,7 +157,7 @@ public class MemberControllerTests {
             objectNode.put("additionField", "additionalValue");
             String requestBody = mapper.writeValueAsString(objectNode);
 
-            Mockito.when(memberService.saveNewMember(any(MemberCreationDto.class), eq(committee), eq(username)))
+            Mockito.when(memberService.saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username)))
                     .thenReturn(createdMember);
 
             // Act
@@ -188,7 +188,7 @@ public class MemberControllerTests {
 
             // Verify
             Mockito.verify(memberService, Mockito.never())
-                    .saveNewMember(any(MemberCreationDto.class), any(), anyString());
+                    .saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), any(), anyString());
         }
 
         // 3. Check whether the response message is ResponseMessages.MEMBER_CREATION_SUCCESS
@@ -198,7 +198,7 @@ public class MemberControllerTests {
         @DisplayName("Should return success message and correct member data")
         void testSuccessfulMemberCreation() throws Exception {
             // Arrange
-            Mockito.when(memberService.saveNewMember(any(MemberCreationDto.class), eq(committee), eq(username)))
+            Mockito.when(memberService.saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username)))
                     .thenReturn(createdMember);
 
             // Act
@@ -222,7 +222,7 @@ public class MemberControllerTests {
 
             // Verify
             Mockito.verify(memberService, Mockito.times(1))
-                    .saveNewMember(any(MemberCreationDto.class), eq(committee), eq(username));
+                    .saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username));
         }
     }
 
@@ -340,7 +340,7 @@ public class MemberControllerTests {
             assertThat(result.getLastName()).isEqualTo(member.getLastName());
             assertThat(result.getInstitution()).isEqualTo(member.getInstitution());
             assertThat(result.getPost()).isEqualTo(member.getPost());
-            assertThat(result.getQualification()).isEqualTo(member.getQualification());
+//            assertThat(result.getQualification()).isEqualTo(member.getQualification());
 
             // Verify committee and meeting info
             assertThat(result.getCommitteeWithMeetings()).isNotEmpty();
