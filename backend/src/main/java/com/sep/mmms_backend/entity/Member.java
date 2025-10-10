@@ -48,11 +48,6 @@ public class Member {
     @Column(name="member_title", nullable = false)
     private String title;
 
-    //consider removing this field, as it is redundant to 'post'
-    @Deprecated
-    private String qualification; //example: Dr, Prof, Mr
-
-
     @Column(name="member_email", nullable = false)
     private String email;
 
@@ -74,10 +69,6 @@ public class Member {
 
     @OneToMany(mappedBy="member", cascade=CascadeType.PERSIST)
     private List<CommitteeMembership> memberships = new LinkedList<>();
-
-    @Deprecated
-    @ManyToMany(mappedBy = "attendees", fetch = FetchType.LAZY)
-    Set<Meeting> attendedMeetings = new HashSet<>();
 
 
     @ManyToMany(mappedBy = "invitees", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

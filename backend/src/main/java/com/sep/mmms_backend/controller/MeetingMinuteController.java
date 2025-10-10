@@ -34,42 +34,6 @@ public class MeetingMinuteController {
             this.committeeService = committeeService;
         }
 
-        @GetMapping("api/previewMeetingMinute")
-        public Object holiday(Model model,
-                              @RequestParam int committeeId,
-                              @RequestParam int meetingId,
-                              @RequestParam(required=false) String download,
-                              Authentication authentication)
-                {
-            try {
-
-                String templateName ="meeting_minute_nepali";
-
-                Map<String, Object> meetingMinuteData = meetingMinutePreparationService.prepareMeetingMinuteData(committeeId, meetingId, authentication.getName());
-                meetingMinuteData.put("numUtils", new NumberUtils());
-
-                if(download != null && download.equalsIgnoreCase("docx")) {
-                    meetingMinuteData.put("download", true);
-                    String htmlContent = meetingMinutePreparationService.renderHtmlTemplate(templateName, meetingMinuteData);
-                    byte[] docxBytes = meetingMinutePreparationService.createWordDocumentFromHtml(htmlContent);
-
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-                    String filename = "MeetingMinutes_" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".docx";
-                    headers.setContentDispositionFormData("attachment", filename);
-                    headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
-                    return new ResponseEntity<>(docxBytes, headers, HttpStatus.OK);
-                }
-
-                meetingMinuteData.put("download", false);
-                model.addAllAttributes(meetingMinuteData);
-                return templateName;
-            } catch (Exception e) {
-                return "committee_not_accessible";
-            }
-        }
-
         @GetMapping("api/getDataForNepaliMinute")
         public ResponseEntity<Response> getDataForMinute(@RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
             Committee committee = committeeService.findCommitteeById(committeeId);

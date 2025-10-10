@@ -62,35 +62,6 @@ public class MemberService {
      * Even if there are other memberships in the Member parameter, they are discarded
      */
 
-    @Transactional
-    @CheckCommitteeAccess
-    @Deprecated
-    public Member saveNewMemberDeprecated(MemberCreationDtoDeprecated memberDto, Committee committee, String username) {
-        entityValidator.validate(memberDto);
-
-        Member member = new Member();
-        member.setFirstName(memberDto.getFirstName());
-        member.setLastName(memberDto.getLastName());
-        member.setPost(memberDto.getPost());
-        if(memberDto.getFirstNameNepali() != null && !memberDto.getFirstNameNepali().isEmpty())
-//            member.setFirstNameNepali(memberDto.getFirstNameNepali());
-        if(memberDto.getLastNameNepali() != null && !memberDto.getLastNameNepali().isEmpty())
-//            member.setLastNameNepali(memberDto.getLastNameNepali());
-        if(memberDto.getFirstNameNepali() != null && !memberDto.getFirstNameNepali().isEmpty())
-            member.setEmail(memberDto.getEmail());
-        if(memberDto.getEmail() != null && !memberDto.getEmail().isEmpty())
-            member.setInstitution(memberDto.getInstitution());
-
-        CommitteeMembership membership = new CommitteeMembership();
-        membership.setRole(memberDto.getRole());
-        membership.setCommittee(committee);
-
-        member.addMembership(membership);
-
-        //persists the membershp as well
-        return memberRepository.save(member);
-    }
-
 
 
     @Transactional
@@ -114,59 +85,59 @@ public class MemberService {
     }
 
 
-    //similar to saveNewMember, but just does not save the membership with the committee
-    @Deprecated
-    public Member saveNewInvitee(MemberCreationDtoDeprecated memberDto){
-        //TODO: do something about this workaround
-        memberDto.setRole("toPassValidation");
-        entityValidator.validate(memberDto);
+//    //similar to saveNewMember, but just does not save the membership with the committee
+//    @Deprecated
+//    public Member saveNewInvitee(MemberCreationDtoDeprecated memberDto){
+//        //TODO: do something about this workaround
+//        memberDto.setRole("toPassValidation");
+//        entityValidator.validate(memberDto);
+//
+//        Member member = new Member();
+//        member.setFirstName(memberDto.getFirstName());
+//        member.setLastName(memberDto.getLastName());
+////        member.setFirstNameNepali(memberDto.getFirstNameNepali());
+////        member.setLastNameNepali(memberDto.getLastNameNepali());
+//
+//        if(memberDto.getEmail() != null && !memberDto.getEmail().isEmpty())
+//            member.setEmail(memberDto.getEmail());
+//        member.setInstitution(memberDto.getInstitution());
+//        member.setPost(memberDto.getPost());
+//
+//
+//        return memberRepository.save(member);
+//    }
 
-        Member member = new Member();
-        member.setFirstName(memberDto.getFirstName());
-        member.setLastName(memberDto.getLastName());
-//        member.setFirstNameNepali(memberDto.getFirstNameNepali());
-//        member.setLastNameNepali(memberDto.getLastNameNepali());
-
-        if(memberDto.getEmail() != null && !memberDto.getEmail().isEmpty())
-            member.setEmail(memberDto.getEmail());
-        member.setInstitution(memberDto.getInstitution());
-        member.setPost(memberDto.getPost());
-
-
-        return memberRepository.save(member);
-    }
-
-    @Transactional
-    @Deprecated
-    public Member updateExistingMemberDetails(MemberUpdationDto newMemberData, String username) {
-
-        if(newMemberData.getId() == null) {
-            throw new IllegalOperationException("TODO:(Exception) handle this exception");
-        }
-
-        Member existingMember = memberRepository.findMemberById(newMemberData.getId());
-        if(!existingMember.getCreatedBy().equals(username)) {
-            throw new IllegalOperationException("TODO: (Exception) handle this exception");
-            //maybe create MemberNotAccessible exception
-        }
-
-        if(newMemberData.getFirstName() != null && !newMemberData.getFirstName().isBlank())
-            existingMember.setFirstName(newMemberData.getFirstName());
-        if(newMemberData.getLastName() != null && !newMemberData.getLastName().isBlank())
-            existingMember.setLastName(newMemberData.getLastName());
-        if(newMemberData.getEmail() != null && !newMemberData.getEmail().isBlank())
-            existingMember.setEmail(newMemberData.getEmail());
-        if(newMemberData.getPost() != null && !newMemberData.getPost().isBlank())
-            existingMember.setPost(newMemberData.getPost());
-        if(newMemberData.getFirstNameNepali() != null && !newMemberData.getFirstNameNepali().isBlank())
-//            existingMember.setFirstNameNepali(newMemberData.getFirstNameNepali());
-        if(newMemberData.getLastNameNepali() != null && !newMemberData.getLastNameNepali().isBlank())
-//            existingMember.setLastNameNepali(newMemberData.getLastNameNepali());
-        if(newMemberData.getInstitution() != null && !newMemberData.getInstitution().isBlank())
-            existingMember.setInstitution(newMemberData.getInstitution());
-
-        return memberRepository.save(existingMember);
-    }
+//    @Transactional
+//    @Deprecated
+//    public Member updateExistingMemberDetails(MemberUpdationDto newMemberData, String username) {
+//
+//        if(newMemberData.getId() == null) {
+//            throw new IllegalOperationException("TODO:(Exception) handle this exception");
+//        }
+//
+//        Member existingMember = memberRepository.findMemberById(newMemberData.getId());
+//        if(!existingMember.getCreatedBy().equals(username)) {
+//            throw new IllegalOperationException("TODO: (Exception) handle this exception");
+//            //maybe create MemberNotAccessible exception
+//        }
+//
+//        if(newMemberData.getFirstName() != null && !newMemberData.getFirstName().isBlank())
+//            existingMember.setFirstName(newMemberData.getFirstName());
+//        if(newMemberData.getLastName() != null && !newMemberData.getLastName().isBlank())
+//            existingMember.setLastName(newMemberData.getLastName());
+//        if(newMemberData.getEmail() != null && !newMemberData.getEmail().isBlank())
+//            existingMember.setEmail(newMemberData.getEmail());
+//        if(newMemberData.getPost() != null && !newMemberData.getPost().isBlank())
+//            existingMember.setPost(newMemberData.getPost());
+//        if(newMemberData.getFirstNameNepali() != null && !newMemberData.getFirstNameNepali().isBlank())
+////            existingMember.setFirstNameNepali(newMemberData.getFirstNameNepali());
+//        if(newMemberData.getLastNameNepali() != null && !newMemberData.getLastNameNepali().isBlank())
+////            existingMember.setLastNameNepali(newMemberData.getLastNameNepali());
+//        if(newMemberData.getInstitution() != null && !newMemberData.getInstitution().isBlank())
+//            existingMember.setInstitution(newMemberData.getInstitution());
+//
+//        return memberRepository.save(existingMember);
+//    }
 
 
     public boolean existsById(int memberId) {
@@ -199,49 +170,50 @@ public class MemberService {
 
 
 
-    @Transactional(readOnly = true)  //this makes the session/connection stays open for lazy loading, disables auto commmit mode and optimizes for reads
-    public MemberDetailsDto getMemberDetails(int memberId, String username) {
-        Member member = memberRepository.findMemberById(memberId);
-        if(!member.getCreatedBy().equals(username)) {
-            throw new IllegalOperationException(ExceptionMessages.MEMBER_NOT_ACCESSIBLE);
-        }
-
-        Set<Committee> committees = member.getMemberships().stream().map(CommitteeMembership::getCommittee).collect(Collectors.toSet());
-
-
-        Set<Meeting> attendedMeetings = member.getAttendedMeetings();
-        List<MemberDetailsDto.CommitteeWithMeetings> committeeWithMeetings = new ArrayList<>();
-
-        Map<Integer, String> committeeIdToRoleMap = member.getMemberships().stream().collect(Collectors.toMap(
-                membership-> membership.getCommittee().getId(),
-                CommitteeMembership::getRole
-        ));
-
-        //all committee(with role) the member has joined + all meetings in the committee with information of attended or not
-        for(Committee committee : committees) {
-            List<Meeting> allMeetingsOfCommittee = committee.getMeetings();
-
-            String role = committeeIdToRoleMap.get(committee.getId());
-            MemberDetailsDto.CommitteeInfo committeeInfo = new MemberDetailsDto.CommitteeInfo(committee.getId(), committee.getName(), committee.getDescription(), role);
-
-
-            List<MemberDetailsDto.MeetingInfo> meetingInfos = new ArrayList<>();
-            committee.getMeetings().forEach(meeting-> {
-
-                boolean hasAttendedMeeting = false;
-                if(attendedMeetings != null && attendedMeetings.contains(meeting)) {
-                    hasAttendedMeeting = true;
-                }
-
-                MemberDetailsDto.MeetingInfo meetingInfo = new MemberDetailsDto.MeetingInfo(meeting.getId(), meeting.getTitle(), meeting.getDescription(),hasAttendedMeeting );
-
-                meetingInfos.add(meetingInfo);
-            });
-
-            committeeWithMeetings.add(new MemberDetailsDto.CommitteeWithMeetings(committeeInfo, meetingInfos));
-        }
-        return new MemberDetailsDto(member, committeeWithMeetings);
-    }
+//    @Deprecated
+//    @Transactional(readOnly = true)  //this makes the session/connection stays open for lazy loading, disables auto commmit mode and optimizes for reads
+//    public MemberDetailsDto getMemberDetails(int memberId, String username) {
+//        Member member = memberRepository.findMemberById(memberId);
+//        if(!member.getCreatedBy().equals(username)) {
+//            throw new IllegalOperationException(ExceptionMessages.MEMBER_NOT_ACCESSIBLE);
+//        }
+//
+//        Set<Committee> committees = member.getMemberships().stream().map(CommitteeMembership::getCommittee).collect(Collectors.toSet());
+//
+//
+//        Set<Meeting> attendedMeetings = member.getAttendedMeetings();
+//        List<MemberDetailsDto.CommitteeWithMeetings> committeeWithMeetings = new ArrayList<>();
+//
+//        Map<Integer, String> committeeIdToRoleMap = member.getMemberships().stream().collect(Collectors.toMap(
+//                membership-> membership.getCommittee().getId(),
+//                CommitteeMembership::getRole
+//        ));
+//
+//        //all committee(with role) the member has joined + all meetings in the committee with information of attended or not
+//        for(Committee committee : committees) {
+//            List<Meeting> allMeetingsOfCommittee = committee.getMeetings();
+//
+//            String role = committeeIdToRoleMap.get(committee.getId());
+//            MemberDetailsDto.CommitteeInfo committeeInfo = new MemberDetailsDto.CommitteeInfo(committee.getId(), committee.getName(), committee.getDescription(), role);
+//
+//
+//            List<MemberDetailsDto.MeetingInfo> meetingInfos = new ArrayList<>();
+//            committee.getMeetings().forEach(meeting-> {
+//
+//                boolean hasAttendedMeeting = false;
+//                if(attendedMeetings != null && attendedMeetings.contains(meeting)) {
+//                    hasAttendedMeeting = true;
+//                }
+//
+//                MemberDetailsDto.MeetingInfo meetingInfo = new MemberDetailsDto.MeetingInfo(meeting.getId(), meeting.getTitle(), meeting.getDescription(),hasAttendedMeeting );
+//
+//                meetingInfos.add(meetingInfo);
+//            });
+//
+//            committeeWithMeetings.add(new MemberDetailsDto.CommitteeWithMeetings(committeeInfo, meetingInfos));
+//        }
+//        return new MemberDetailsDto(member, committeeWithMeetings);
+//    }
 
 
     public List<Member> getAllMembers(String username) {

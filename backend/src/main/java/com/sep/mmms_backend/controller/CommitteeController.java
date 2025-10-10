@@ -84,15 +84,6 @@ public class CommitteeController {
 
 
 
-    @Deprecated
-    //TODO: Create Tests
-    @GetMapping("/getCommitteeDetails")
-    public ResponseEntity<Response> getCommitteeDetails(@RequestParam int committeeId, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        CommitteeDetailsDto committeeDetails = committeeService.getCommitteeDetails(committee, authentication.getName());
-        return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEES_RETRIEVED_SUCCESSFULLY,committeeDetails));
-    }
-
     @GetMapping("/getCommitteeOverview")
     public ResponseEntity<Response> getCommitteeOverview(@RequestParam(required=true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);

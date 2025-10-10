@@ -80,7 +80,6 @@ public class MemberBuilder {
         member.setLastName(this.lastName);
         member.setInstitution(this.institution);
         member.setPost(this.post);
-        member.setQualification(this.qualification);
         member.setEmail(this.email);
         if(memberships != null && !memberships.isEmpty()) {
             for(CommitteeMembership membership: memberships) {
@@ -88,7 +87,6 @@ public class MemberBuilder {
             }
         }
         member.setMemberships(this.memberships);
-        member.setAttendedMeetings(this.attendedMeetings);
         return member;
     }
 }

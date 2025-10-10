@@ -174,12 +174,6 @@ public class CommitteeService {
      * NOTE: membership is populated in the Members object, not in the committee object
      */
 
-    //TODO: Create Tests
-    @Deprecated
-    @CheckCommitteeAccess
-    public CommitteeDetailsDto getCommitteeDetails(Committee committee, String username) {
-        return new CommitteeDetailsDto(committee);
-    }
 
     //TODO: This method also loads all the meetings associated with a committee which isn't required(probably lazy loaded though) or maybe write a custom query
     //TODO: Create Tests

@@ -35,23 +35,7 @@ public class MemberController {
     }
 
 
-    /**
-     *
-     * @param committeeId id of the committee to which the new memeber is going to be associated with
-     * @param memberDto member data to be persisted
-     */
 
-
-    @PostMapping("/createMemberDepricated")
-    @Deprecated
-    public ResponseEntity<Response> createMember(@RequestParam(required = true) int committeeId, @RequestBody(required=true) MemberCreationDtoDeprecated memberDto , Authentication authentication) {
-       Committee committee= committeeService.findCommitteeById(committeeId);
-       Member member = memberService.saveNewMemberDeprecated(memberDto, committee, authentication.getName());
-
-       MemberSummaryDto memberSummaryDto = new MemberSummaryDto(member, committeeId);
-
-        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, memberSummaryDto));
-    }
 
     @PostMapping("/createMember")
     public ResponseEntity<Response> createNewMember(@RequestBody(required=true) MemberCreationDto memberDto , Authentication authentication ) {
@@ -63,24 +47,25 @@ public class MemberController {
 
 
     //This route is simular to 'createMember' but does not create a membership for the member
-    @PostMapping("/createInvitee")
-    public ResponseEntity<Response> createInvitee(@RequestBody(required=true) MemberCreationDtoDeprecated memberDto) {
-        Member member = memberService.saveNewInvitee(memberDto);
-        MemberSearchResultDto searchResultDto = new MemberSearchResultDto(member);
-        //returning search result dto, because frontend adds this newly created member below the search bar as search result
-        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, searchResultDto));
-    }
+
+//    @PostMapping("/createInvitee")
+//    public ResponseEntity<Response> createInvitee(@RequestBody(required=true) MemberCreationDtoDeprecated memberDto) {
+//        Member member = memberService.saveNewInvitee(memberDto);
+//        MemberSearchResultDto searchResultDto = new MemberSearchResultDto(member);
+//        //returning search result dto, because frontend adds this newly created member below the search bar as search result
+//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, searchResultDto));
+//    }
 
 
-
-    @PostMapping("/updateMemberDetails")
-    public ResponseEntity<Response> updateMemberDetails(@RequestBody(required=true) MemberUpdationDto memberUpdationDto, Authentication authentication) {
-        Member updatedMember = memberService.updateExistingMemberDetails(memberUpdationDto, authentication.getName());
-
-        MemberWithoutCommitteeDto updatedMemberWithoutCommitteeDto = new MemberWithoutCommitteeDto(updatedMember);
-
-        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_UPDATION_SUCCESS, updatedMemberWithoutCommitteeDto));
-    }
+//    @Deprecated
+//    @PostMapping("/updateMemberDetails")
+//    public ResponseEntity<Response> updateMemberDetails(@RequestBody(required=true) MemberUpdationDto memberUpdationDto, Authentication authentication) {
+//        Member updatedMember = memberService.updateExistingMemberDetails(memberUpdationDto, authentication.getName());
+//
+//        MemberWithoutCommitteeDto updatedMemberWithoutCommitteeDto = new MemberWithoutCommitteeDto(updatedMember);
+//
+//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_UPDATION_SUCCESS, updatedMemberWithoutCommitteeDto));
+//    }
 
     /** <h2>IMPORTANT NOTE</h2>
      * whether a particular member is acceesbile by a particular user is checked by com  aring username
@@ -90,11 +75,12 @@ public class MemberController {
      * the resason the 'created_by' section was not choosen to be 'id' is because, to retreive the 'id' of the current user, a database operation is required, which flushes the context to save the entity before the 'created_by' section is populated in the entity causing an error
      */
 
-    @GetMapping("/getMemberDetails")
-    public ResponseEntity<Response> getMemberDetails(@RequestParam(required=true) int memberId, Authentication authentication) {
-        MemberDetailsDto memberDetailsDto = memberService.getMemberDetails(memberId, authentication.getName());
-        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_DETAIL_RETRIEVED_SUCCESSFULLY, memberDetailsDto));
-    }
+//    @Deprecated
+//    @GetMapping("/getMemberDetails")
+//    public ResponseEntity<Response> getMemberDetails(@RequestParam(required=true) int memberId, Authentication authentication) {
+//        MemberDetailsDto memberDetailsDto = memberService.getMemberDetails(memberId, authentication.getName());
+//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_DETAIL_RETRIEVED_SUCCESSFULLY, memberDetailsDto));
+//    }
 
 
     //TODO: Create Tests

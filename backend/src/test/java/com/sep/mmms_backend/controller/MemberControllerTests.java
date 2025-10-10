@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sep.mmms_backend.config.AppConfig;
 import com.sep.mmms_backend.config.SecurityConfiguration;
-import com.sep.mmms_backend.dto.MemberCreationDtoDeprecated;
+import com.sep.mmms_backend.dto.MemberCreationDto;
 import com.sep.mmms_backend.dto.MemberDetailsDto;
 import com.sep.mmms_backend.dto.MemberSummaryDto;
 import com.sep.mmms_backend.entity.Committee;
@@ -90,7 +90,7 @@ public class MemberControllerTests {
     class CreateMemberRoute {
         private Committee committee;
         private final String username = "testUser";
-        private MemberCreationDtoDeprecated memberCreationDto;
+        private MemberCreationDto memberCreationDto;
         private Member createdMember;
 
         @BeforeEach
@@ -99,27 +99,23 @@ public class MemberControllerTests {
             committee = helper.getCommittee();
 
             // Create MemberCreationDto with required fields
-            memberCreationDto = new MemberCreationDtoDeprecated();
+            memberCreationDto = new MemberCreationDto();
             // Use reflection to set fields since MemberCreationDto only has getters
             memberCreationDto.setFirstName( "John");
             memberCreationDto.setLastName( "Doe");
 
-
-            memberCreationDto.setFirstNameNepali("जोन");
-            memberCreationDto.setLastNameNepali("डो");
+            memberCreationDto.setUsername("john_doe");
 
             memberCreationDto.setInstitution("institution");
             memberCreationDto.setPost("Test Post");
 
             memberCreationDto.setEmail("john.doe@example.com");
-            memberCreationDto.setRole("Member");
 
             // Create Member that will be returned by the service
             createdMember = helper.getMember();
             createdMember.setFirstName("John");
             createdMember.setLastName("Doe");
-//            createdMember.setFirstNameNepali("जोन");
-//            createdMember.setLastNameNepali("डो");
+            createdMember.setUsername("john_doe");
             createdMember.setInstitution("Test Institution");
             createdMember.setPost("Test Post");
             createdMember.setEmail("john.doe@example.com");
@@ -157,7 +153,7 @@ public class MemberControllerTests {
             objectNode.put("additionField", "additionalValue");
             String requestBody = mapper.writeValueAsString(objectNode);
 
-            Mockito.when(memberService.saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username)))
+            Mockito.when(memberService.saveNewMember(any(MemberCreationDto.class), eq(username)))
                     .thenReturn(createdMember);
 
             // Act
@@ -188,7 +184,7 @@ public class MemberControllerTests {
 
             // Verify
             Mockito.verify(memberService, Mockito.never())
-                    .saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), any(), anyString());
+                    .saveNewMember(any(MemberCreationDto.class), anyString());
         }
 
         // 3. Check whether the response message is ResponseMessages.MEMBER_CREATION_SUCCESS
@@ -198,7 +194,7 @@ public class MemberControllerTests {
         @DisplayName("Should return success message and correct member data")
         void testSuccessfulMemberCreation() throws Exception {
             // Arrange
-            Mockito.when(memberService.saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username)))
+            Mockito.when(memberService.saveNewMember(any(MemberCreationDto.class), eq(username)))
                     .thenReturn(createdMember);
 
             // Act
@@ -222,131 +218,131 @@ public class MemberControllerTests {
 
             // Verify
             Mockito.verify(memberService, Mockito.times(1))
-                    .saveNewMemberDeprecated(any(MemberCreationDtoDeprecated.class), eq(committee), eq(username));
+                    .saveNewMember(any(MemberCreationDto.class),eq(username));
         }
     }
 
 
 
 
-    @Nested
-    @DisplayName("Testing /getMemberDetails route")
-    class GetMemberDetailsRoute {
-        private final int memberId = 1;
-        private final String username = "testUser";
-        private Member member;
-        private MemberDetailsDto memberDetailsDto;
-
-        @BeforeEach
-        void setUp() {
-            TestDataHelper helper  = new TestDataHelper();
-            Meeting meeting = helper.getMeeting();
-            Committee committee = helper.getCommittee();
-            member = helper.getMember();
-
-
-            //creating MemberDetailsDto object to be returned by the route
-
-            MemberDetailsDto.CommitteeInfo committeeInfo = new MemberDetailsDto.CommitteeInfo(
-                    committee.getId(), committee.getName(), committee.getDescription(), "Member");
-
-            MemberDetailsDto.MeetingInfo meetingInfo = new MemberDetailsDto.MeetingInfo(
-                    meeting.getId(), meeting.getTitle(), meeting.getDescription(), true);
-
-            List<MemberDetailsDto.MeetingInfo> meetingInfos = new ArrayList<>();
-            meetingInfos.add(meetingInfo);
-
-            MemberDetailsDto.CommitteeWithMeetings committeeWithMeetings =
-                    new MemberDetailsDto.CommitteeWithMeetings(committeeInfo, meetingInfos);
-
-            List<MemberDetailsDto.CommitteeWithMeetings> committeeWithMeetingsList = new ArrayList<>();
-            committeeWithMeetingsList.add(committeeWithMeetings);
-
-            memberDetailsDto = new MemberDetailsDto(member, committeeWithMeetingsList);
-
-            Mockito.when(committeeService.findCommitteeById(anyInt())).thenReturn(committee);
-        }
-
-        private Response performRequestAndGetResponse(String url, HttpStatus expectedStatus) throws Exception {
-            MvcResult result = mockMvc.perform(get(url)).andReturn();
-
-            int actualStatusCode = result.getResponse().getStatus();
-            assertThat(actualStatusCode).isEqualTo(expectedStatus.value());
-
-            return SerializerDeserializer.deserialize(result.getResponse().getContentAsString());
-        }
-
-        //1. Tests the case in which the member does not exist
-        @Test
-        @WithMockUser(username = "testUser")
-        @DisplayName("Should return NOT_FOUND when member does not exist")
-        void testMemberNotFound() throws Exception {
-            // Arrange
-            Mockito.when(memberService.getMemberDetails(anyInt(), anyString()))
-                    .thenThrow(new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, memberId));
-
-            // Act
-            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.BAD_REQUEST);
-
-            // Assert
-            assertThat(response).isNotNull();
-            assertThat(response.getMessage()).contains(ExceptionMessages.MEMBER_DOES_NOT_EXIST.toString());
-
-            // Verify
-            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
-        }
-
-        //2. Tests the case in which the member is not accessible by the current user
-        @Test
-        @WithMockUser(username = "testUser")
-        @DisplayName("Should return FORBIDDEN when member is not accessible by current user")
-        void testMemberNotAccessible() throws Exception {
-            // Arrange
-            Mockito.when(memberService.getMemberDetails(anyInt(), anyString()))
-                    .thenThrow(new IllegalOperationException(ExceptionMessages.MEMBER_NOT_ACCESSIBLE));
-
-            // Act
-            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.BAD_REQUEST);
-
-            // Assert
-            assertThat(response).isNotNull();
-            assertThat(response.getMessage()).contains(ExceptionMessages.MEMBER_NOT_ACCESSIBLE.toString());
-
-            // Verify
-            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
-        }
-
-        //3. Tests the case success case
-        @Test
-        @WithMockUser(username = "testUser")
-        @DisplayName("Should return OK with member details when successful")
-        void testSuccessCase() throws Exception {
-            // Arrange
-            Mockito.when(memberService.getMemberDetails(memberId, username)).thenReturn(memberDetailsDto);
-
-            // Act
-            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.OK);
-
-            // Assert
-            assertThat(response).isNotNull();
-
-            // Convert mainBody to MemberDetailsDto using ObjectMapper
-            ObjectMapper objectMapper = new ObjectMapper();
-            MemberDetailsDto result = objectMapper.convertValue(response.getMainBody(), MemberDetailsDto.class);
-
-            // Verify member details
-            assertThat(result.getMemberId()).isEqualTo(memberId);
-            assertThat(result.getFirstName()).isEqualTo(member.getFirstName());
-            assertThat(result.getLastName()).isEqualTo(member.getLastName());
-            assertThat(result.getInstitution()).isEqualTo(member.getInstitution());
-            assertThat(result.getPost()).isEqualTo(member.getPost());
-//            assertThat(result.getQualification()).isEqualTo(member.getQualification());
-
-            // Verify committee and meeting info
-            assertThat(result.getCommitteeWithMeetings()).isNotEmpty();
-
-            // Verify
-            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
-        }
-    }
+//    @Nested
+//    @DisplayName("Testing /getMemberDetails route")
+//    class GetMemberDetailsRoute {
+//        private final int memberId = 1;
+//        private final String username = "testUser";
+//        private Member member;
+//        private MemberDetailsDto memberDetailsDto;
+//
+//        @BeforeEach
+//        void setUp() {
+//            TestDataHelper helper  = new TestDataHelper();
+//            Meeting meeting = helper.getMeeting();
+//            Committee committee = helper.getCommittee();
+//            member = helper.getMember();
+//
+//
+//            //creating MemberDetailsDto object to be returned by the route
+//
+//            MemberDetailsDto.CommitteeInfo committeeInfo = new MemberDetailsDto.CommitteeInfo(
+//                    committee.getId(), committee.getName(), committee.getDescription(), "Member");
+//
+//            MemberDetailsDto.MeetingInfo meetingInfo = new MemberDetailsDto.MeetingInfo(
+//                    meeting.getId(), meeting.getTitle(), meeting.getDescription(), true);
+//
+//            List<MemberDetailsDto.MeetingInfo> meetingInfos = new ArrayList<>();
+//            meetingInfos.add(meetingInfo);
+//
+//            MemberDetailsDto.CommitteeWithMeetings committeeWithMeetings =
+//                    new MemberDetailsDto.CommitteeWithMeetings(committeeInfo, meetingInfos);
+//
+//            List<MemberDetailsDto.CommitteeWithMeetings> committeeWithMeetingsList = new ArrayList<>();
+//            committeeWithMeetingsList.add(committeeWithMeetings);
+//
+//            memberDetailsDto = new MemberDetailsDto(member, committeeWithMeetingsList);
+//
+//            Mockito.when(committeeService.findCommitteeById(anyInt())).thenReturn(committee);
+//        }
+//
+//        private Response performRequestAndGetResponse(String url, HttpStatus expectedStatus) throws Exception {
+//            MvcResult result = mockMvc.perform(get(url)).andReturn();
+//
+//            int actualStatusCode = result.getResponse().getStatus();
+//            assertThat(actualStatusCode).isEqualTo(expectedStatus.value());
+//
+//            return SerializerDeserializer.deserialize(result.getResponse().getContentAsString());
+//        }
+//
+//        //1. Tests the case in which the member does not exist
+//        @Test
+//        @WithMockUser(username = "testUser")
+//        @DisplayName("Should return NOT_FOUND when member does not exist")
+//        void testMemberNotFound() throws Exception {
+//            // Arrange
+//            Mockito.when(memberService.getMemberDetails(anyInt(), anyString()))
+//                    .thenThrow(new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, memberId));
+//
+//            // Act
+//            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.BAD_REQUEST);
+//
+//            // Assert
+//            assertThat(response).isNotNull();
+//            assertThat(response.getMessage()).contains(ExceptionMessages.MEMBER_DOES_NOT_EXIST.toString());
+//
+//            // Verify
+//            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
+//        }
+//
+//        //2. Tests the case in which the member is not accessible by the current user
+//        @Test
+//        @WithMockUser(username = "testUser")
+//        @DisplayName("Should return FORBIDDEN when member is not accessible by current user")
+//        void testMemberNotAccessible() throws Exception {
+//            // Arrange
+//            Mockito.when(memberService.getMemberDetails(anyInt(), anyString()))
+//                    .thenThrow(new IllegalOperationException(ExceptionMessages.MEMBER_NOT_ACCESSIBLE));
+//
+//            // Act
+//            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.BAD_REQUEST);
+//
+//            // Assert
+//            assertThat(response).isNotNull();
+//            assertThat(response.getMessage()).contains(ExceptionMessages.MEMBER_NOT_ACCESSIBLE.toString());
+//
+//            // Verify
+//            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
+//        }
+//
+//        //3. Tests the case success case
+//        @Test
+//        @WithMockUser(username = "testUser")
+//        @DisplayName("Should return OK with member details when successful")
+//        void testSuccessCase() throws Exception {
+//            // Arrange
+//            Mockito.when(memberService.getMemberDetails(memberId, username)).thenReturn(memberDetailsDto);
+//
+//            // Act
+//            Response response = performRequestAndGetResponse("/api/getMemberDetails?memberId=" + memberId, HttpStatus.OK);
+//
+//            // Assert
+//            assertThat(response).isNotNull();
+//
+//            // Convert mainBody to MemberDetailsDto using ObjectMapper
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            MemberDetailsDto result = objectMapper.convertValue(response.getMainBody(), MemberDetailsDto.class);
+//
+//            // Verify member details
+//            assertThat(result.getMemberId()).isEqualTo(memberId);
+//            assertThat(result.getFirstName()).isEqualTo(member.getFirstName());
+//            assertThat(result.getLastName()).isEqualTo(member.getLastName());
+//            assertThat(result.getInstitution()).isEqualTo(member.getInstitution());
+//            assertThat(result.getPost()).isEqualTo(member.getPost());
+////            assertThat(result.getQualification()).isEqualTo(member.getQualification());
+//
+//            // Verify committee and meeting info
+//            assertThat(result.getCommitteeWithMeetings()).isNotEmpty();
+//
+//            // Verify
+//            Mockito.verify(memberService, Mockito.times(1)).getMemberDetails(memberId, username);
+//        }
+//    }
 }

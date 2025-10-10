@@ -96,12 +96,6 @@ public class TestDataHelper {
         LinkedList<Meeting> meetings = new LinkedList<>();
         meetings.add(meeting);
         committee.setMeetings(meetings);
-
-
-        //set attended meetings field in the member object
-        Set<Meeting> attendedMeetings = new HashSet<>();
-        attendedMeetings.add(meeting);
-        member.setAttendedMeetings(attendedMeetings);
     }
 
     public void createMemberships() {
