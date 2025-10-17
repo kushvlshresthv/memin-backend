@@ -18,11 +18,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class MemberController {
     private final MemberService memberService;
-    private final CommitteeService committeeService;
 
-    public MemberController(MemberService memberService, CommitteeService committeeService) {
+    public MemberController(MemberService memberService){
         this.memberService = memberService;
-        this.committeeService = committeeService;
     }
 
     //TODO: Create Tests
@@ -92,4 +90,3 @@ public class MemberController {
        return ResponseEntity.ok(new Response("Found Members: ", allMembers));
     }
 }
-

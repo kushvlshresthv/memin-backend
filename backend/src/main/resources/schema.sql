@@ -11,27 +11,9 @@ CREATE TABLE app_users
     password VARCHAR(100)
 );
 
-CREATE TABLE committees (
-        committee_id INT AUTO_INCREMENT PRIMARY KEY,
-        uuid VARCHAR(36) NOT NULL UNIQUE,
-        committee_name VARCHAR(255) NOT NULL,
-        committee_description TEXT NOT NULL,
-        created_by INT NOT NULL,
-        created_date DATE NOT NULL,
-        modified_by VARCHAR(255) NOT NULL,
-        modified_date DATE NOT NULL,
-        status VARCHAR(255) NOT NULL,
-        minuteLanguage VARCHAR(255) /*NOT NULL*/,
-        openingParagraph TEXT /*NOT NULL*/,
-        max_no_of_meetings INT,
-        FOREIGN KEY (created_by) REFERENCES app_users(uid)
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 
-
-
-
-CREATE TABLE members_new (
+CREATE TABLE members (
                          member_id INT AUTO_INCREMENT PRIMARY KEY,
                          member_uuid VARCHAR(36) NOT NULL UNIQUE,
 
@@ -51,6 +33,24 @@ CREATE TABLE members_new (
                          member_modified_date DATE NOT NULL
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE committees (
+        committee_id INT AUTO_INCREMENT PRIMARY KEY,
+        committee_coordinator_id INT NOT NULL ,
+        committee_uuid VARCHAR(36) NOT NULL UNIQUE,
+        committee_name VARCHAR(255) NOT NULL,
+        committee_description TEXT NOT NULL,
+        committee_created_by INT NOT NULL,
+        committee_created_date DATE NOT NULL,
+        committee_modified_by VARCHAR(255) NOT NULL,
+        committee_modified_date DATE NOT NULL,
+        committee_status VARCHAR(255) NOT NULL,
+        committee_minute_language VARCHAR(255) NOT NULL,
+       committee_max_no_of_meetings INT,
+        FOREIGN KEY (committee_created_by) REFERENCES app_users(uid),
+        FOREIGN KEY (committee_coordinator_id) REFERENCES members(member_id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
 
 
 CREATE TABLE committee_memberships (
@@ -60,7 +60,7 @@ CREATE TABLE committee_memberships (
            role VARCHAR(255) NOT NULL,
            PRIMARY KEY (committee_id, member_id),
            FOREIGN KEY (committee_id) REFERENCES committees(committee_id),
-           FOREIGN KEY (member_id) REFERENCES members_new(member_id)
+           FOREIGN KEY (member_id) REFERENCES members(member_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE meetings (
@@ -87,7 +87,7 @@ CREATE TABLE meeting_attendees (
            meeting_id INT NOT NULL,
 
            PRIMARY KEY (member_id, meeting_id),
-           FOREIGN KEY (member_id) REFERENCES members_new(member_id),
+           FOREIGN KEY (member_id) REFERENCES members(member_id),
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 );
 
@@ -96,7 +96,7 @@ CREATE TABLE meeting_invitees(
            meeting_id INT NOT NULL,
 
            PRIMARY KEY (member_id, meeting_id),
-           FOREIGN KEY (member_id) REFERENCES members_new(member_id),
+           FOREIGN KEY (member_id) REFERENCES members(member_id),
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -118,4 +118,3 @@ CREATE TABLE agendas (
                            agenda TEXT,
                            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-

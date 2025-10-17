@@ -24,6 +24,10 @@ public class CommitteeCreationDto {
 
     Integer maximumNumberOfMeetings;
 
+    //TODO implement a non blank validator for this
+//    @NotBlank(message="minute language is required")
+    private MinuteLanguage minuteLanguage;
+
     //member id and role
     Map<Integer, String> members = new HashMap<>();
 

@@ -32,13 +32,6 @@ public class CommitteeService {
        this.committeeMembershipRepository = committeeMembershipRepository;
     }
 
-    /**
-     *
-     * @param committeeCreationDto committee that is to be persisted
-     * @param username username that creates the committee
-     *
-     */
-    //TODO: Create Tests
     @Transactional
     public Committee saveNewCommittee(CommitteeCreationDto committeeCreationDto, String username) {
         entityValidator.validate(committeeCreationDto);
@@ -47,19 +40,20 @@ public class CommitteeService {
             throw new InvalidMembershipException(ExceptionMessages.MEMBERSHIP_ROLE_MISSING);
         }
 
-        //adding coordinator to members as well
-        committeeCreationDto.getMembers().put(committeeCreationDto.getCoordinatorId(), "Coordinator");
 
         List<Integer> requestedMemberIds = committeeCreationDto.getMembers().keySet().stream().toList();
 
         List<Member> foundMembers = memberRepository.findAccessibleMembersByIds(requestedMemberIds, username);
+
         memberRepository.validateWhetherAllMembersAreFound(requestedMemberIds, foundMembers);
 
         Committee committee = new Committee();
         committee.setCreatedBy(appUserService.loadUserByUsername(username));
+
         committee.setName(committeeCreationDto.getName());
         committee.setDescription(committeeCreationDto.getDescription());
         committee.setStatus(committeeCreationDto.getStatus());
+        committee.setMinuteLanguage(committeeCreationDto.getMinuteLanguage());
 
         if(committeeCreationDto.getMaximumNumberOfMeetings() != null)
             committee.setMaxNoOfMeetings(committeeCreationDto.getMaximumNumberOfMeetings());
@@ -71,9 +65,14 @@ public class CommitteeService {
             committee.addMembership(membership);
         });
 
+        Optional<Member> coordinatorOptional = memberRepository.findMemberByIdNoException(committeeCreationDto.getCoordinatorId());
+
+        if(coordinatorOptional.isEmpty()) {
+            throw new CoordinatorDoesNotExistException(ExceptionMessages.COORDINATOR_DOES_NOT_EXIST);
+        }
+        committee.setCoordinator(coordinatorOptional.get());
         return committeeRepository.save(committee);
     }
-
 
     @Transactional
     @CheckCommitteeAccess
@@ -90,6 +89,7 @@ public class CommitteeService {
         }
         committeeOverview.setDecisionCount(decisionCount);
 
+        //TODO: retrieve coordinator from the Committee table itself, no need to search
         Optional<CommitteeMembership> coordinatorMembership = committee.getMemberships().stream().filter(membership->
            membership.getRole().equalsIgnoreCase("coordinator")
         ).findFirst();
@@ -247,4 +247,3 @@ public class CommitteeService {
         committeeMembershipRepository.delete(membershipToBeDeleted);
     }
 }
-

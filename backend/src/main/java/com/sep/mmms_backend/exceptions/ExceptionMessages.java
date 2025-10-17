@@ -27,6 +27,7 @@ public enum ExceptionMessages {
     MEETING_DOES_NOT_BELONG_TO_COMMITTEE("The specified meeting does not belong to the committee"),
     MEMBERSHIP_DOES_NOT_EXIST("Requested membership does not exist"),
 
+    COORDINATOR_DOES_NOT_EXIST("The specified coordinator profile does not exist"),
     TODO("Implement Exception Handling Properly");
     ;
 

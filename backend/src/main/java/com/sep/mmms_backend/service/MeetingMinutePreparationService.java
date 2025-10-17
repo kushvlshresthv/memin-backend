@@ -9,9 +9,6 @@ import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
-import com.sep.mmms_backend.exceptions.CommitteeDoesNotExistException;
-import com.sep.mmms_backend.exceptions.IllegalOperationException;
-import com.sep.mmms_backend.exceptions.MeetingDoesNotExistException;
 import com.sep.mmms_backend.repository.CommitteeRepository;
 import np.com.bahadur.converter.date.nepali.DateConverter;
 import org.apache.poi.xwpf.usermodel.*;
@@ -31,19 +28,15 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class MeetingMinutePreparationService {
-    private final MeetingService meetingService;
-    private final CommitteeRepository committeeRepository;
-    private final MemberService memberService;
     private final TemplateEngine templateEngine;
 
     public MeetingMinutePreparationService(MeetingService meetingService, CommitteeRepository committeeRepository, MemberService memberService, TemplateEngine templateEngine) {
-        this.meetingService = meetingService;
-        this.memberService = memberService;
-        this.committeeRepository = committeeRepository;
         this.templateEngine = templateEngine;
     }
 
@@ -71,7 +64,7 @@ public class MeetingMinutePreparationService {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
         String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
 
-        minuteData.setMeetingHeldTime(meetingHeldTime);
+        minuteData.setMeetingHeldTime(toNepaliDigits(meetingHeldTime));
 
         minuteData.setMeetingHeldPlace(meeting.getHeldPlace());
 
@@ -86,7 +79,6 @@ public class MeetingMinutePreparationService {
 
         minuteData.setCommitteeMemberships(getMembershipForMinute(committee));
 
-
         return minuteData;
     }
 
@@ -96,12 +88,10 @@ public class MeetingMinutePreparationService {
 
         memberships = committee.getMemberships().stream().map(membership -> {
             Member member = membership.getMember();
-            String fullName = member.getPost() + ". " + member.getFirstName() + " " + member.getLastName();
+            String fullName = member.getPost() + " " + member.getFirstName() + " " + member.getLastName();
             return new CommitteeMembershipDto(fullName, membership.getRole());
         }).toList();
-
         return memberships;
-
     }
 
 
@@ -156,16 +146,12 @@ public class MeetingMinutePreparationService {
     }
 
 
-
-
-
     private String getCoordinatorFullName(List<CommitteeMembership> memberships) {
         //TODO: Optimize (there might be better ways to get coordinator membership
         for(CommitteeMembership membership : memberships) {
             if(membership.getRole().equalsIgnoreCase("Coordinator"))
-                return membership.getMember().getTitle() + ". " + membership.getMember().getFirstName() + " " + membership.getMember().getLastName();
+                return membership.getMember().getPost() + " " + membership.getMember().getFirstName() + " " + membership.getMember().getLastName();
         }
-
         return "[Error: No Coordinator]";
     }
 
@@ -456,5 +442,3 @@ public class MeetingMinutePreparationService {
         }
     }
 }
-
-

@@ -14,7 +14,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="members_new")
+@Table(name="members")
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @Entity

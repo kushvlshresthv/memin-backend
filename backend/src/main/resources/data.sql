@@ -2,7 +2,7 @@ INSERT INTO app_users (username, password, email, firstname, lastname)
 VALUES ('username', '{noop}password', 'username@gmail.com', 'admin', 'admin'),
        ('not_username', '{noop}password', 'username@gmail.com', 'admin', 'admin');
 
-INSERT INTO members_new (
+INSERT INTO members (
     member_username, member_institution, member_post, member_title, member_email,
     member_created_by, member_created_date, member_modified_by, member_modified_date, member_uuid, member_first_name, member_last_name
 )
@@ -31,22 +31,24 @@ VALUES
 INSERT INTO committees (
     committee_name,
     committee_description,
-    created_by,
-    created_date,
-    modified_by,
-    modified_date,
-    uuid,
-    status,
-    max_no_of_meetings
+    committee_created_by,
+    committee_created_date,
+    committee_modified_by,
+    committee_modified_date,
+    committee_uuid,
+    committee_status,
+    committee_max_no_of_meetings,
+    committee_minute_language,
+    committee_coordinator_id
 )
 VALUES
-    ('Academic Committee',                 'Oversee academic policies and curriculum development', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10),
-    ('Events Committee',                   'Plan and organize all institutional events and seminars', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10),
-    ('Research and Development Committee', 'Promote research and innovation', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10),
-    ('Disciplinary Committee',             'Handle student and staff disciplinary issues', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10),
-    ('Student Welfare Committee',          'Addresse student concerns and well-being', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10),
-    ('IT and Infrastructure Committee',    'Manage IT resources and campus infrastructure', 2, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10),
-    ('इ.अ.स. BE/BArch केन्द्रीकृत भर्ना २०८२ अनुगमन',    'त्रि.वि. इ.अ.स. अन्तर्गत आंगिक क्याम्पस तथा सम्बन्धन प्राप्त कलेजहरुमा शैक्षिक वर्ष २०८२/०८३ मा संचालन हुने स्नातक (BE/BArch) तहका विभिन्न कार्यक्रमहरुमा केन्द्रीकृत भर्ना अनुगमन', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10);
+    ('Academic Committee',                 'Oversee academic policies and curriculum development', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+    ('Events Committee',                   'Plan and organize all institutional events and seminars', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10, 'NEPALI', 1),
+    ('Research and Development Committee', 'Promote research and innovation', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+    ('Disciplinary Committee',             'Handle student and staff disciplinary issues', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+    ('Student Welfare Committee',          'Addresse student concerns and well-being', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10, 'NEPALI', 1),
+    ('IT and Infrastructure Committee',    'Manage IT resources and campus infrastructure', 2, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+    ('इ.अ.स. BE/BArch केन्द्रीकृत भर्ना २०८२ अनुगमन',    'त्रि.वि. इ.अ.स. अन्तर्गत आंगिक क्याम्पस तथा सम्बन्धन प्राप्त कलेजहरुमा शैक्षिक वर्ष २०८२/०८३ मा संचालन हुने स्नातक (BE/BArch) तहका विभिन्न कार्यक्रमहरुमा केन्द्रीकृत भर्ना अनुगमन', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1);
 
 -- Insert Meetings
 INSERT INTO meetings (

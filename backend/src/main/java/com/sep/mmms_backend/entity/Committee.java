@@ -13,7 +13,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -31,7 +34,7 @@ public class Committee {
      * A universally unique identifier (UUID) that serves as the business key.
      * This is the field used for equals() and hashCode().
      */
-    @Column(name = "uuid", nullable = false, unique = true, updatable = false)
+    @Column(name = "committee_uuid", nullable = false, unique = true, updatable = false)
     private String uuid;
 
     @Column(name="committee_name", nullable = false)
@@ -40,27 +43,38 @@ public class Committee {
     @Column(name="committee_description", nullable = false)
     private String description;
 
-    @Column(name="max_no_of_meetings")
+    @Column(name="committee_max_no_of_meetings")
     private Integer maxNoOfMeetings;
 
-    @Column(name="status")
+    @Column(name="committee_status")
     @Enumerated(EnumType.STRING)
     private CommitteeStatus status;
 
+
+    @Column(name="committee_minute_language")
+    @Enumerated(EnumType.STRING)
+    private MinuteLanguage minuteLanguage;
+
+    @OneToOne
+    @JoinColumn(name="committee_coordinator_id", referencedColumnName="member_id", nullable=false)
+    private Member coordinator;
+
     @ManyToOne
-    @JoinColumn(name="created_by", referencedColumnName="uid", nullable=false)
+    @JoinColumn(name="committee_created_by", referencedColumnName="uid", nullable=false)
     //@CreatedBy is not used because then Audit will inquire the database
+    //NOTE: here only string is not saved because establishing a relationship with AppUser makes it to retrieve the committees of a particular AppUser
+    //TODO: get rid of this assocation, simply store string, we can get the committes of a particular user, by simple raw sql query.
     private AppUser createdBy;
 
-    @Column(name = "created_date")
+    @Column(name = "committee_created_date")
     @CreatedDate
     private LocalDate createdDate;
 
-    @Column(name = "modified_by")
+    @Column(name = "committee_modified_by")
     @LastModifiedBy
     private String modifiedBy;
 
-    @Column(name = "modified_date")
+    @Column(name = "committee_modified_date")
     @LastModifiedDate
     private LocalDate modifiedDate;
 
