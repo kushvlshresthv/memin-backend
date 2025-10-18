@@ -110,29 +110,29 @@ VALUES
 INSERT INTO committee_memberships (committee_id, member_id, role, uuid)
 VALUES
     -- Committee 1 (8 members)
-    (1, 1, 'Member-Secretary', UUID()),
-    (1, 2, 'Coordinator', UUID()),
-    (1, 3, 'Member', UUID()),
-    (1, 4, 'Member', UUID()),
-    (1, 5, 'Member-Secretary', UUID()),
-    (1, 6, 'Member', UUID()),
+    (1, 1, 'सदस्य सचिव', UUID()),
+    (1, 2, 'सदस्य', UUID()),
+    (1, 3, 'सदस्य', UUID()),
+    (1, 4, 'सदस्य', UUID()),
+    (1, 5, 'सदस्य सचिव', UUID()),
+    (1, 6, 'सदस्य', UUID()),
 
     -- Committee 2 (5 members)
-    (2, 9,  'Coordinator', UUID()),
-    (2, 10, 'Member', UUID()),
-    (2, 11, 'Member-Secretary', UUID()),
-    (2, 12, 'Member', UUID()),
-    (2, 13, 'Member', UUID()),
+    (2, 9,  'सदस्य', UUID()),
+    (2, 10, 'सदस्य', UUID()),
+    (2, 11, 'सदस्य सचिव', UUID()),
+    (2, 12, 'सदस्य', UUID()),
+    (2, 13, 'सदस्य', UUID()),
 
     -- Committee 3 (3 members)
-    (3, 14, 'Coordinator', UUID()),
-    (3, 15, 'Member', UUID()),
-    (3, 16, 'Member', UUID()),
+    (3, 14, 'सदस्य', UUID()),
+    (3, 15, 'सदस्य', UUID()),
+    (3, 16, 'सदस्य', UUID()),
 
     -- Committee 4 (1 member)
-    (4, 17, 'Coordinator', UUID()),
-    (4,  7, 'Member', UUID()),
-     (4, 8, 'Member', UUID());
+    (4, 17, 'सदस्य', UUID()),
+    (4,  7, 'सदस्य', UUID()),
+     (4, 8, 'सदस्य', UUID());
 
 
 

@@ -9,6 +9,7 @@ import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
+import com.sep.mmms_backend.enums.MinuteLanguage;
 import com.sep.mmms_backend.repository.CommitteeRepository;
 import np.com.bahadur.converter.date.nepali.DateConverter;
 import org.apache.poi.xwpf.usermodel.*;
@@ -42,29 +43,24 @@ public class MeetingMinutePreparationService {
 
 
     @CheckCommitteeAccess(shouldValidateMeeting = true)
-    public MinuteDataDto prepareDataForNepaliMinute(Committee committee, Meeting meeting, String username) {
+    public MinuteDataDto prepareDataForMinute(Committee committee, Meeting meeting, String username) {
         MinuteDataDto minuteData = new MinuteDataDto();
+        setDates(minuteData, meeting);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        minuteData.setMinuteLanguage(committee.getMinuteLanguage());
 
-        String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
+        minuteData.setMeetingHeldDay(getMeetingHeldDay(meeting.getHeldDate(), committee.getMinuteLanguage()));
 
-        DateConverter dc = new DateConverter();
-        try {
-            minuteData.setMeetingHeldDateNepali(toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/")));
-        } catch(Exception e) {
-            System.out.println("TODO: Handle Exception");
-        }
-        minuteData.setMeetingHeldDate(meeting.getHeldDate());
-
-        minuteData.setMeetingHeldDay(getMeetingHeldDay(meeting.getHeldDate()));
-
-        minuteData.setPartOfDay(getPartOfDay(meeting.getHeldTime()));
+        minuteData.setPartOfDay(getPartOfDay(meeting.getHeldTime(), committee.getMinuteLanguage()));
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
         String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
 
-        minuteData.setMeetingHeldTime(toNepaliDigits(meetingHeldTime));
+        if(committee.getMinuteLanguage().equals(MinuteLanguage.NEPALI)) {
+            minuteData.setMeetingHeldTime(toNepaliDigits(meetingHeldTime));
+        } else {
+            minuteData.setMeetingHeldTime(meetingHeldTime);
+        }
 
         minuteData.setMeetingHeldPlace(meeting.getHeldPlace());
 
@@ -72,14 +68,28 @@ public class MeetingMinutePreparationService {
 
         minuteData.setCommitteeName(meeting.getCommittee().getName());
 
-        minuteData.setCoordinatorFullName(getCoordinatorFullName(committee.getMemberships()));
+        minuteData.setCoordinatorFullName(getCoordinatorFullName(committee));
 
         minuteData.setDecisions(meeting.getDecisions().stream().map(decision-> new DecisionDto(decision.getDecisionId(), decision.getDecision())).toList());
+
         minuteData.setAgendas(meeting.getAgendas().stream().map(agenda-> new AgendaDto(agenda.getAgendaId(), agenda.getAgenda())).toList());
 
         minuteData.setCommitteeMemberships(getMembershipForMinute(committee));
 
         return minuteData;
+    }
+
+
+    private void setDates(MinuteDataDto minuteDataDto, Meeting meeting) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
+        DateConverter dc = new DateConverter();
+        try {
+            minuteDataDto.setMeetingHeldDateNepali(toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/")));
+        } catch(Exception e) {
+            System.out.println("TODO: Handle Exception");
+        }
+        minuteDataDto.setMeetingHeldDate(meeting.getHeldDate());
     }
 
     //TODO: all roles are being parsed manually, instead fetch it from nepal-profile of the members
@@ -91,15 +101,9 @@ public class MeetingMinutePreparationService {
             String fullName = member.getPost() + " " + member.getFirstName() + " " + member.getLastName();
             return new CommitteeMembershipDto(fullName, membership.getRole());
         }).toList();
+
         return memberships;
     }
-
-
-
-
-
-
-
 
 
     private String toNepaliDigits(String input) {
@@ -116,43 +120,63 @@ public class MeetingMinutePreparationService {
         return result.toString();
     }
 
-    private String getMeetingHeldDay(LocalDate date) {
-        return switch (date.getDayOfWeek()) {
-            case SUNDAY -> "आइतबार";
-            case MONDAY -> "सोमबार";
-            case TUESDAY -> "मंगलबार";
-            case WEDNESDAY -> "बुधबार";
-            case THURSDAY -> "बिहीबार";
-            case FRIDAY -> "शुक्रबार";
-            case SATURDAY -> "शनिबार";
+    private String getMeetingHeldDay(LocalDate date, MinuteLanguage language) {
+        if(MinuteLanguage.NEPALI.equals(language)) {
+            return switch (date.getDayOfWeek()) {
+                case SUNDAY -> "आइतबार";
+                case MONDAY -> "सोमबार";
+                case TUESDAY -> "मंगलबार";
+                case WEDNESDAY -> "बुधबार";
+                case THURSDAY -> "बिहीबार";
+                case FRIDAY -> "शुक्रबार";
+                case SATURDAY -> "शनिबार";
+                default -> "";
+            };
+        }
+
+        return switch(date.getDayOfWeek()) {
+            case SUNDAY -> "Sunday";
+            case MONDAY -> "Monday";
+            case TUESDAY -> "Tuesday";
+            case WEDNESDAY -> "Wednesday";
+            case THURSDAY -> "Thursday";
+            case FRIDAY -> "Friday";
+            case SATURDAY -> "Saturday";
             default -> "";
         };
     }
 
-    private String getPartOfDay(LocalTime time) {
+    private String getPartOfDay(LocalTime time, MinuteLanguage language) {
         int hour = time.getHour();
         String partOfDay;
 
         if (hour >= 5 && hour < 12) {
-            partOfDay = "बिहान";
+            if(language.equals(MinuteLanguage.NEPALI))
+                partOfDay = "बिहान";
+            else
+                partOfDay = "Morning";
         } else if (hour >= 12 && hour < 17) {
-            partOfDay = "दिउँसो";
+            if(language.equals(MinuteLanguage.NEPALI))
+                partOfDay = "दिउँसो";
+            else
+                partOfDay = "Afternoon";
         } else if (hour >= 17 && hour < 21) {
-            partOfDay ="साँझ";
+            if(language.equals(MinuteLanguage.NEPALI))
+                partOfDay ="साँझ";
+            else
+                partOfDay = "Evening";
         } else {
-            partOfDay = "राति";
+            if(language.equals(MinuteLanguage.NEPALI))
+                partOfDay = "राति";
+            else
+                partOfDay = "Night";
         }
         return partOfDay;
     }
 
 
-    private String getCoordinatorFullName(List<CommitteeMembership> memberships) {
-        //TODO: Optimize (there might be better ways to get coordinator membership
-        for(CommitteeMembership membership : memberships) {
-            if(membership.getRole().equalsIgnoreCase("Coordinator"))
-                return membership.getMember().getPost() + " " + membership.getMember().getFirstName() + " " + membership.getMember().getLastName();
-        }
-        return "[Error: No Coordinator]";
+    private String getCoordinatorFullName(Committee committee) {
+        return committee.getCoordinator().getPost() + " " + committee.getCoordinator().getFirstName() + " " + committee.getCoordinator().getLastName();
     }
 
 

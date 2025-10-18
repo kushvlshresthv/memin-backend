@@ -34,12 +34,12 @@ public class MeetingMinuteController {
             this.committeeService = committeeService;
         }
 
-        @GetMapping("api/getDataForNepaliMinute")
+        @GetMapping("api/getDataForMinute")
         public ResponseEntity<Response> getDataForMinute(@RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
             Committee committee = committeeService.findCommitteeById(committeeId);
             Meeting meeting =  meetingService.findMeetingById(meetingId);
 
-            MinuteDataDto minuteData = this.meetingMinutePreparationService.prepareDataForNepaliMinute(committee, meeting, authentication.getName());
+            MinuteDataDto minuteData = this.meetingMinutePreparationService.prepareDataForMinute(committee, meeting, authentication.getName());
 
             return ResponseEntity.ok(new Response("Meeting Minute Data: ", minuteData));
         }

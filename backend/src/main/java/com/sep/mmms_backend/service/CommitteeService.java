@@ -36,6 +36,9 @@ public class CommitteeService {
     public Committee saveNewCommittee(CommitteeCreationDto committeeCreationDto, String username) {
         entityValidator.validate(committeeCreationDto);
 
+        //remove the coordinator id from the member ids
+        committeeCreationDto.getMembers().keySet().removeIf(memberId->memberId.equals(committeeCreationDto.getCoordinatorId()));
+
         if(!committeeCreationDto.getMembers().values().stream().allMatch(Objects::nonNull)) {
             throw new InvalidMembershipException(ExceptionMessages.MEMBERSHIP_ROLE_MISSING);
         }
@@ -100,14 +103,16 @@ public class CommitteeService {
             committeeOverview.setCoordinatorName("No Coordinator");
         }
 
-        List<LocalDate> meetingDates = committee.getMeetings().stream().map(Meeting::getHeldDate).collect(Collectors.toList());
+        if(!committee.getMeetings().isEmpty()) {
+            List<LocalDate> meetingDates = committee.getMeetings().stream().map(Meeting::getHeldDate).collect(Collectors.toList());
 
-        Comparator<LocalDate> comparator = LocalDate::compareTo;
-        meetingDates.sort(comparator);
+            Comparator<LocalDate> comparator = LocalDate::compareTo;
+            meetingDates.sort(comparator);
 
-        committeeOverview.setFirstMeetingDate(meetingDates.getFirst());
-        committeeOverview.setLastMeetingDate(meetingDates.getLast());
-        committeeOverview.setMeetingDates(meetingDates);
+            committeeOverview.setFirstMeetingDate(meetingDates.getFirst());
+            committeeOverview.setLastMeetingDate(meetingDates.getLast());
+            committeeOverview.setMeetingDates(meetingDates);
+        }
         return committeeOverview;
     }
 

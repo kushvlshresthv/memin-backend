@@ -3,6 +3,7 @@ package com.sep.mmms_backend.dto;
 import com.sep.mmms_backend.entity.Agenda;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Decision;
+import com.sep.mmms_backend.enums.MinuteLanguage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MinuteDataDto {
+    MinuteLanguage minuteLanguage;
     String meetingHeldDateNepali;
     LocalDate meetingHeldDate;
     String meetingHeldDay;
