@@ -103,6 +103,13 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     );
 
 
+    @Query("SELECT m FROM Member m WHERE m.createdBy = :username")
+    List<Member> findAccessibleMembers(
+            @Param("username") String username
+    );
+
+
+
     /**
      * Checks if all requiredMemberIds in foundMembers
      * If no, throws MemberDoesNotExistException
@@ -118,13 +125,4 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
             throw new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, missingIds);
         }
     }
-
-    /**
-     * returns all members with the provided memberIds if they are accessible by the 'username' by checking the 'createdBy' field
-     */
-    @Query("SELECT m FROM Member m WHERE m.username = :memberUsername AND m.createdBy = :authUsername")
-    Optional<Member> findAccessibleMemberByUsername(
-            @Param("memberUsername") String memberUsername,
-            @Param("authUsername") String authUsername
-    );
 }

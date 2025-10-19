@@ -56,11 +56,7 @@ public class MeetingMinutePreparationService {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm");
         String meetingHeldTime = meeting.getHeldTime().format(timeFormatter);
 
-        if(committee.getMinuteLanguage().equals(MinuteLanguage.NEPALI)) {
-            minuteData.setMeetingHeldTime(toNepaliDigits(meetingHeldTime));
-        } else {
-            minuteData.setMeetingHeldTime(meetingHeldTime);
-        }
+        minuteData.setMeetingHeldTime(meetingHeldTime);
 
         minuteData.setMeetingHeldPlace(meeting.getHeldPlace());
 
@@ -85,7 +81,7 @@ public class MeetingMinutePreparationService {
         String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
         DateConverter dc = new DateConverter();
         try {
-            minuteDataDto.setMeetingHeldDateNepali(toNepaliDigits(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/")));
+            minuteDataDto.setMeetingHeldDateNepali(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/"));
         } catch(Exception e) {
             System.out.println("TODO: Handle Exception");
         }
@@ -105,20 +101,6 @@ public class MeetingMinutePreparationService {
         return memberships;
     }
 
-
-    private String toNepaliDigits(String input) {
-        char[] nepaliDigits = {'०','१','२','३','४','५','६','७','८','९'};
-        StringBuilder result = new StringBuilder();
-
-        for (char ch : input.toCharArray()) {
-            if (Character.isDigit(ch)) {
-                result.append(nepaliDigits[ch - '0']);
-            } else {
-                result.append(ch); // keep dashes, colons, etc.
-            }
-        }
-        return result.toString();
-    }
 
     private String getMeetingHeldDay(LocalDate date, MinuteLanguage language) {
         if(MinuteLanguage.NEPALI.equals(language)) {

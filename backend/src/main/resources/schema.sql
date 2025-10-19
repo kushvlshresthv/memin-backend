@@ -20,8 +20,6 @@ CREATE TABLE members (
                          member_first_name VARCHAR(255) NOT NULL,
                          member_last_name VARCHAR(255) NOT NULL,
 
-                         member_username VARCHAR(255) NOT NULL UNIQUE,
-
                          member_institution VARCHAR(255),
                          member_post VARCHAR(255),
                          member_title VARCHAR(255) NOT NULL,

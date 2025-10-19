@@ -31,39 +31,33 @@ public class MemberService {
         this.entityValidator = entityValidator;
     }
 
-    /**
-     * Searches members based on a keyword.
-     * - If the keyword is one word, it searches both first and last names.
-     * - If the keyword is two or more words, it uses the first two words to search
-     * for a match in the first and last name fields.
-     */
-    //TODO: Create Tests
-    //TODO: Optimization This fetches all data of members, but only memberId, firstName, lastName, and post is required
-    public List<Member> searchMemberByName(String keyword) {
-        if (!StringUtils.hasText(keyword)) {
-            return Collections.emptyList();
-        }
-
-        String[] parts = keyword.trim().split("\\s+");
-
-        if (parts.length == 1) {
-            return memberRepository.findByFirstNameOrLastName(parts[0]);
-        } else {
-            return memberRepository.findByFullName(parts[0], parts[1]);
-        }
-    }
-
-    /**
-     *
-     * @param memberDto member data to be persisted
-     * @param committee committee to which the member is assocated with
-     * @param username username that created committee
-     * NOTE: This method only establishes a single membership for the new Member ie with the committeeId provided as the second argument.
-     * Even if there are other memberships in the Member parameter, they are discarded
-     */
+//    @Deprecated
+//    /**
+//     * Searches members based on a keyword.
+//     * - If the keyword is one word, it searches both first and last names.
+//     * - If the keyword is two or more words, it uses the first two words to search
+//     * for a match in the first and last name fields.
+//     */
+//    //TODO: Create Tests
+//    //TODO: Optimization This fetches all data of members, but only memberId, firstName, lastName, and post is required
+//    public List<Member> searchMemberByName(String keyword) {
+//        if (!StringUtils.hasText(keyword)) {
+//            return Collections.emptyList();
+//        }
+//
+//        String[] parts = keyword.trim().split("\\s+");
+//
+//        if (parts.length == 1) {
+//            return memberRepository.findByFirstNameOrLastName(parts[0]);
+//        } else {
+//            return memberRepository.findByFullName(parts[0], parts[1]);
+//        }
+//    }
 
 
 
+
+    //NEW IMPLEMENTATION
     @Transactional
     public Member saveNewMember(MemberCreationDto memberDto, String username) {
 
@@ -72,7 +66,6 @@ public class MemberService {
         Member member = new Member();
         member.setFirstName(memberDto.getFirstName());
         member.setLastName(memberDto.getLastName());
-        member.setUsername(memberDto.getUsername());
         if(memberDto.getInstitution() != null && !memberDto.getInstitution().isEmpty()) {
             member.setInstitution(memberDto.getInstitution());
         }
@@ -80,8 +73,23 @@ public class MemberService {
         member.setTitle(memberDto.getTitle());
         member.setEmail(memberDto.getEmail());
 
-        //persists the membershp as well
         return memberRepository.save(member);
+    }
+
+    //NEW IMPLEMENTATION
+    @Transactional
+    @CheckCommitteeAccess
+    public List<MemberSearchResultDto> getPossibleInvitees(Committee committee, String username) {
+        List<Member> committeeMembers = committee.getMemberships().stream().map(CommitteeMembership::getMember).toList();
+
+        List<Member> allAccessibleMembers = memberRepository.findAccessibleMembers(username);
+
+        allAccessibleMembers.removeAll(committeeMembers);
+        allAccessibleMembers.remove(committee.getCoordinator());
+
+        List<MemberSearchResultDto> possibleInvitees = allAccessibleMembers.stream().map(MemberSearchResultDto::new).toList();
+
+        return possibleInvitees;
     }
 
 
@@ -224,10 +232,5 @@ public class MemberService {
 
     public Member findMemberById(int memberId) {
         return memberRepository.findMemberById(memberId);
-    }
-
-    public Member findAccessibleMemberByUsername(String username) {
-        Optional<Member> member = memberRepository.findAccessibleMemberByUsername(username, SecurityContextHolder.getContext().getAuthentication().getName());
-        return member.orElse(null);
     }
 }

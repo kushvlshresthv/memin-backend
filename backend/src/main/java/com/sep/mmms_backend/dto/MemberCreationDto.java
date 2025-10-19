@@ -1,7 +1,5 @@
 package com.sep.mmms_backend.dto;
 
-import com.sep.mmms_backend.validators.annotations.CheckUsernameAvailability;
-import com.sep.mmms_backend.validators.annotations.UsernameFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -15,11 +13,6 @@ public class MemberCreationDto {
 
     @NotBlank(message = "member's last name can't be blank")
     private String lastName;
-
-    @UsernameFormat
-    @CheckUsernameAvailability
-    @NotBlank(message="member's username can't be blank")
-    private String username;
 
     private String institution;  //example: Pulchowk Campus, IOE
 

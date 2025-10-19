@@ -1,5 +1,6 @@
 package com.sep.mmms_backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sep.mmms_backend.entity.Agenda;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Decision;
@@ -15,6 +16,9 @@ import java.util.List;
 public class MinuteDataDto {
     MinuteLanguage minuteLanguage;
     String meetingHeldDateNepali;
+
+    //frontend needs this format so that <input type="date"/> can use it
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     LocalDate meetingHeldDate;
     String meetingHeldDay;
     String partOfDay;

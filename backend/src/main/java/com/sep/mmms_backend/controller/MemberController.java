@@ -3,6 +3,7 @@ package com.sep.mmms_backend.controller;
 import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.Member;
+import com.sep.mmms_backend.repository.CommitteeRepository;
 import com.sep.mmms_backend.response.Response;
 import com.sep.mmms_backend.response.ResponseMessages;
 import com.sep.mmms_backend.service.CommitteeService;
@@ -18,20 +19,22 @@ import java.util.List;
 @RequestMapping("/api")
 public class MemberController {
     private final MemberService memberService;
+    private final CommitteeService committeeService;
 
-    public MemberController(MemberService memberService){
+    public MemberController(MemberService memberService, CommitteeService committeeService){
         this.memberService = memberService;
+        this.committeeService = committeeService;
     }
 
-    //TODO: Create Tests
-    @GetMapping("/searchMembersByName")
-    public ResponseEntity<Response> getMembersByName(@RequestParam(required=true) String name) {
-        List<Member> fetchedMembers = memberService.searchMemberByName(name);
-        List<MemberSearchResultDto> memberSearchResultDtos = new ArrayList<>();
-        fetchedMembers.forEach(member-> memberSearchResultDtos.add(new MemberSearchResultDto(member)));
-        return ResponseEntity.ok(new Response("Results: ", memberSearchResultDtos));
-    }
-
+//    @Deprecated
+//    //TODO: Create Tests
+//    @GetMapping("/searchMembersByName")
+//    public ResponseEntity<Response> getMembersByName(@RequestParam(required=true) String name) {
+//        List<Member> fetchedMembers = memberService.searchMemberByName(name);
+//        List<MemberSearchResultDto> memberSearchResultDtos = new ArrayList<>();
+//        fetchedMembers.forEach(member-> memberSearchResultDtos.add(new MemberSearchResultDto(member)));
+//        return ResponseEntity.ok(new Response("Results: ", memberSearchResultDtos));
+//    }
 
 
 
@@ -39,6 +42,15 @@ public class MemberController {
     public ResponseEntity<Response> createNewMember(@RequestBody(required=true) MemberCreationDto memberDto , Authentication authentication ) {
        Member member = memberService.saveNewMember(memberDto, authentication.getName());
        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, member));
+    }
+
+    @GetMapping("/getPossibleInvitees")
+    public ResponseEntity<Response> getPossibleInvitees(@RequestParam(required=true) int committeeId, Authentication authentication) {
+
+        Committee committee = committeeService.findCommitteeById(committeeId);
+        List<MemberSearchResultDto> possibleInvitees = memberService.getPossibleInvitees(committee, authentication.getName());
+
+        return ResponseEntity.ok(new Response("Possible Invitees: ", possibleInvitees));
     }
 
 

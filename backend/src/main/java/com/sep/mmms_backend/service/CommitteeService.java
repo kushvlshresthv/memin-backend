@@ -92,16 +92,7 @@ public class CommitteeService {
         }
         committeeOverview.setDecisionCount(decisionCount);
 
-        //TODO: retrieve coordinator from the Committee table itself, no need to search
-        Optional<CommitteeMembership> coordinatorMembership = committee.getMemberships().stream().filter(membership->
-           membership.getRole().equalsIgnoreCase("coordinator")
-        ).findFirst();
-
-        if(coordinatorMembership.isPresent()) {
-            committeeOverview.setCoordinatorName(coordinatorMembership.get().getMember().getFirstName() + " " + coordinatorMembership.get().getMember().getLastName());
-        } else {
-            committeeOverview.setCoordinatorName("No Coordinator");
-        }
+        committeeOverview.setCoordinatorName(committee.getCoordinator().getFirstName() + " " + committee.getCoordinator().getLastName());
 
         if(!committee.getMeetings().isEmpty()) {
             List<LocalDate> meetingDates = committee.getMeetings().stream().map(Meeting::getHeldDate).collect(Collectors.toList());

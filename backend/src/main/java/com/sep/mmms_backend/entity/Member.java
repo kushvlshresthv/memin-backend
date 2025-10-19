@@ -36,9 +36,6 @@ public class Member {
     @Column(name="member_last_name", nullable=false)
     private String lastName;
 
-    @Column(name="member_username", nullable = false)
-    private String username;
-
     @Column(name="member_institution")
     private String institution;  //example: Pulchowk Campus, IOE
 
