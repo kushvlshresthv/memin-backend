@@ -37,21 +37,24 @@ public class MeetingService {
 
         meeting.setCommittee(committee);
         meeting.setTitle(meetingCreationDto.getTitle());
-        if(meetingCreationDto.getDescription() != null)
-            meeting.setDescription(meetingCreationDto.getDescription());
         meeting.setHeldDate(meetingCreationDto.getHeldDate());
         meeting.setHeldTime(meetingCreationDto.getHeldTime());
         meeting.setHeldPlace(meetingCreationDto.getHeldPlace());
         meetingCreationDto.getDecisions().forEach(decisionString -> {
-            Decision decision = new Decision();
-            decision.setDecision(decisionString);
-            meeting.addDecision(decision);
+            //check if decision string is blank, if yes, don't save it
+            if(decisionString != null && !decisionString.isBlank()) {
+                Decision decision = new Decision();
+                decision.setDecision(decisionString);
+                meeting.addDecision(decision);
+            }
         });
 
         meetingCreationDto.getAgendas().forEach(agendaString -> {
-            Agenda agenda = new Agenda();
-            agenda.setAgenda(agendaString);
-            meeting.addAgenda(agenda);
+            if(agendaString != null && !agendaString.isBlank()) {
+                Agenda agenda = new Agenda();
+                agenda.setAgenda(agendaString);
+                meeting.addAgenda(agenda);
+            }
         });
 
         //populating the invittees

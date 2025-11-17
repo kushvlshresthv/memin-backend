@@ -86,6 +86,7 @@ public class CommitteeService {
         committeeOverview.setCreatedDate(committee.getCreatedDate());
         committeeOverview.setMemberCount(committee.getMemberships().size());
         committeeOverview.setMeetingCount(committee.getMeetings().size());
+        committeeOverview.setLanguage(committee.getMinuteLanguage());
         int decisionCount = 0;
         for(Meeting meeting : committee.getMeetings()) {
             decisionCount =+ meeting.getDecisions().size();

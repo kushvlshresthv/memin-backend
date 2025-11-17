@@ -1,5 +1,6 @@
 package com.sep.mmms_backend.dto;
 
+import com.sep.mmms_backend.enums.MinuteLanguage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,5 @@ public class CommitteeOverviewDto {
     private LocalDate firstMeetingDate;
     private LocalDate lastMeetingDate;
     private List<LocalDate> meetingDates;
+    private MinuteLanguage language;
 }

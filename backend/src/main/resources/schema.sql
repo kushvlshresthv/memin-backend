@@ -30,16 +30,16 @@ CREATE TABLE members (
 CREATE TABLE committees (
         committee_id INT AUTO_INCREMENT PRIMARY KEY,
         committee_coordinator_id INT NOT NULL ,
+        committee_description TEXT,
         committee_uuid VARCHAR(36) NOT NULL UNIQUE,
         committee_name VARCHAR(255) NOT NULL,
-        committee_description TEXT NOT NULL,
         committee_created_by INT NOT NULL,
         committee_created_date DATE NOT NULL,
         committee_modified_by VARCHAR(255) NOT NULL,
         committee_modified_date DATE NOT NULL,
         committee_status VARCHAR(255) NOT NULL,
         committee_minute_language VARCHAR(255) NOT NULL,
-       committee_max_no_of_meetings INT,
+        committee_max_no_of_meetings INT,
         FOREIGN KEY (committee_created_by) REFERENCES app_users(uid),
         FOREIGN KEY (committee_coordinator_id) REFERENCES members(member_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
