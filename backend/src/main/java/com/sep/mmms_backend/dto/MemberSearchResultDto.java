@@ -9,12 +9,10 @@ public class MemberSearchResultDto {
     private final String firstName;
     private final String lastName;
     private final String post;
-    private final String institution;
     public MemberSearchResultDto(Member member) {
         this.memberId = member.getId();
         this.firstName = member.getFirstName();
         this.lastName = member.getLastName();
         this.post = member.getPost();
-        this.institution = member.getInstitution();
    }
 }

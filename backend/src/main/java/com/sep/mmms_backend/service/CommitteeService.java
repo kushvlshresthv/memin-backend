@@ -36,13 +36,13 @@ public class CommitteeService {
     public Committee saveNewCommittee(CommitteeCreationDto committeeCreationDto, String username) {
         entityValidator.validate(committeeCreationDto);
 
-        //remove the coordinator id from the member ids
+        //remove the coordinator id from the member ids if present
         committeeCreationDto.getMembers().keySet().removeIf(memberId->memberId.equals(committeeCreationDto.getCoordinatorId()));
 
+        //check if all the members have role
         if(!committeeCreationDto.getMembers().values().stream().allMatch(Objects::nonNull)) {
             throw new InvalidMembershipException(ExceptionMessages.MEMBERSHIP_ROLE_MISSING);
         }
-
 
         List<Integer> requestedMemberIds = committeeCreationDto.getMembers().keySet().stream().toList();
 

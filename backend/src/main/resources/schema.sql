@@ -11,8 +11,6 @@ CREATE TABLE app_users
     password VARCHAR(100)
 );
 
-
-
 CREATE TABLE members (
                          member_id INT AUTO_INCREMENT PRIMARY KEY,
                          member_uuid VARCHAR(36) NOT NULL UNIQUE,
@@ -20,10 +18,8 @@ CREATE TABLE members (
                          member_first_name VARCHAR(255) NOT NULL,
                          member_last_name VARCHAR(255) NOT NULL,
 
-                         member_institution VARCHAR(255),
                          member_post VARCHAR(255),
                          member_title VARCHAR(255) NOT NULL,
-                         member_email VARCHAR(255) NOT NULL,
 
                          member_created_by VARCHAR(255) NOT NULL,
                          member_created_date DATE NOT NULL,

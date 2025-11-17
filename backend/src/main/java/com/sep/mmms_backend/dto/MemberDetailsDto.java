@@ -69,10 +69,8 @@ public class MemberDetailsDto {
     private final String lastName;
 //    private final String firstNameNepali;
 //    private final String lastNameNepali;
-    private final String institution;
     private final String post;
 //    private final String qualification;
-    private final String email;
     private final List<CommitteeWithMeetings> committeeWithMeetings;
 
 
@@ -91,9 +89,7 @@ public class MemberDetailsDto {
         this.lastName = member.getLastName();
 //        this.firstNameNepali = member.getFirstNameNepali();
 //        this.lastNameNepali = member.getLastNameNepali();
-        this.institution = member.getInstitution();
         this.post = member.getPost();
-        this.email = member.getEmail();
 //        this.qualification = member.getQualification();
         this.committeeWithMeetings = List.copyOf(committeeWithMeetings);
     }
@@ -119,9 +115,7 @@ public class MemberDetailsDto {
         this.memberId = memberId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.institution = institution;
         this.post = post;
-        this.email = email;
 //        this.qualification = qualification;
         this.committeeWithMeetings = committeeWithMeetings;
 //        this.firstNameNepali = firstNameNepali;

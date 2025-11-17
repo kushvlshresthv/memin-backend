@@ -19,7 +19,6 @@ import java.util.*;
 @Builder
 @Entity
 
-//TODO: since validations are handled by CreationDto objects, consider removing teh validations from here later after confirming no entities are validated in our code.
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +35,11 @@ public class Member {
     @Column(name="member_last_name", nullable=false)
     private String lastName;
 
-    @Column(name="member_institution")
-    private String institution;  //example: Pulchowk Campus, IOE
-
     @Column(name="member_post")
     private String post; //example: professor
 
     @Column(name="member_title", nullable = false)
     private String title;
-
-    @Column(name="member_email", nullable = false)
-    private String email;
 
     @Column(name = "member_created_by", updatable = false, nullable = false)
     @CreatedBy

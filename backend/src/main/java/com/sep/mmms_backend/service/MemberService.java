@@ -66,13 +66,9 @@ public class MemberService {
         Member member = new Member();
         member.setFirstName(memberDto.getFirstName());
         member.setLastName(memberDto.getLastName());
-        if(memberDto.getInstitution() != null && !memberDto.getInstitution().isEmpty()) {
-            member.setInstitution(memberDto.getInstitution());
-        }
-        member.setPost(memberDto.getPost());
         member.setTitle(memberDto.getTitle());
-        member.setEmail(memberDto.getEmail());
-
+        if(member.getPost() != null)
+            member.setPost(memberDto.getPost());
         return memberRepository.save(member);
     }
 
@@ -91,7 +87,6 @@ public class MemberService {
 
         return possibleInvitees;
     }
-
 
 //    //similar to saveNewMember, but just does not save the membership with the committee
 //    @Deprecated
