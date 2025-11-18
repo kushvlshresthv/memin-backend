@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -36,6 +37,15 @@ public class CommitteeController {
         Committee savedCommittee = committeeService.saveNewCommittee(committeeCreationDto, authentication.getName());
         CommitteeSummaryDto committeeSummaryDto = new CommitteeSummaryDto(savedCommittee);
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_CREATION_SUCCESS, committeeSummaryDto));
+    }
+
+    @GetMapping("/getMyCommittees")
+    public ResponseEntity<Response> getMyCommittes(Authentication authentication) {
+        List<Committee> allCommittees = committeeService.getAllCommittees(authentication.getName());
+
+        List<CommitteeIdAndNameDto> committeeIdsAndNames = new ArrayList<>();
+        allCommittees.forEach(committee -> committeeIdsAndNames.add(new CommitteeIdAndNameDto(committee.getId(), committee.getName())));
+        return ResponseEntity.ok(new Response(committeeIdsAndNames));
     }
 
 
@@ -66,6 +76,7 @@ public class CommitteeController {
 
 
     //TODO: Create Tests
+    @Deprecated
     @PostMapping("/deleteCommittee")
     public ResponseEntity<Response> deleteCommittee(@RequestParam(required = true) int  committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
@@ -104,6 +115,7 @@ public class CommitteeController {
 
 
 
+    @Deprecated
     @PostMapping("/addMembersToCommittee")
     //NOTE: LinkedHashSet is made LinkedHashSet to preserve order and avoid duplicate memberIds
     //TODO: Fix (this route should not add more coordinator to the committee)

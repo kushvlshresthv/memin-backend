@@ -109,6 +109,12 @@ public class CommitteeService {
     }
 
 
+    public List<Committee> getAllCommittees(String username) {
+        AppUser currentUser = appUserService.loadUserByUsername(username);
+        return committeeRepository.getAllCommittees(currentUser);
+    }
+
+
     @Transactional
     @CheckCommitteeAccess
     public List<MemberOfCommitteeDto> getMembersOfCommittee(Committee committee, String username) {
@@ -122,6 +128,7 @@ public class CommitteeService {
     }
 
     //TODO: Create Tests
+    @Deprecated
     @Transactional
     @CheckCommitteeAccess
     public Committee updateExistingCommittee(CommitteeUpdationDto newCommitteeData, Committee existingCommittee, String username) {
@@ -139,6 +146,7 @@ public class CommitteeService {
 
     @Transactional
     @CheckCommitteeAccess
+    @Deprecated
     public void deleteCommittee(Committee committeeToBeDeleted, String username) {
         committeeRepository.delete(committeeToBeDeleted);
     }
@@ -195,6 +203,7 @@ public class CommitteeService {
     //TODO: Create Tests
     @CheckCommitteeAccess
     @Transactional
+    @Deprecated
     public void addMembershipsToCommittee(Committee committee, LinkedHashSet<NewMembershipRequest> newMembershipRequests, String username) {
         List<Integer> newMemberIds = newMembershipRequests.stream().map(NewMembershipRequest::memberId).collect(Collectors.toList());
 
@@ -229,6 +238,7 @@ public class CommitteeService {
 
     //TODO: Check this implementation properly as this is not checked carefully
     @CheckCommitteeAccess
+    @Deprecated
     public void removeCommitteeMembership(Committee committee, Member member, String username) {
         if(!member.getCreatedBy().equals(username)) {
             throw new IllegalOperationException("Membership not accessible");

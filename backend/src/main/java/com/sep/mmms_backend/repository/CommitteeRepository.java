@@ -1,11 +1,15 @@
 package com.sep.mmms_backend.repository;
 
+import com.sep.mmms_backend.entity.AppUser;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.exceptions.CommitteeDoesNotExistException;
 import com.sep.mmms_backend.exceptions.ExceptionMessages;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +21,7 @@ public interface CommitteeRepository extends JpaRepository<Committee,Integer> {
     default Optional<Committee> findByIdNoException(int committeeId) {
         return this.findById(committeeId);
     }
+
 
     /**
      *
@@ -30,4 +35,7 @@ public interface CommitteeRepository extends JpaRepository<Committee,Integer> {
 
         return committee.get();
     }
+
+    @Query("Select c FROM Committee c where c.createdBy= :username")
+    List<Committee> getAllCommittees(@Param("username") AppUser currentUser);
 }
