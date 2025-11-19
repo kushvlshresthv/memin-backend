@@ -1,5 +1,8 @@
 package com.sep.mmms_backend.dto;
 
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.KeyDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.sep.mmms_backend.entity.AppUser;
 import com.sep.mmms_backend.enums.CommitteeStatus;
 import com.sep.mmms_backend.enums.MinuteLanguage;
@@ -29,8 +32,17 @@ public class CommitteeCreationDto {
     private MinuteLanguage minuteLanguage;
 
     //member id and role
+    //this annotation causes the json's 'key' to be used as the 'key' of the map
+    @JsonDeserialize(keyUsing = IntegerKeyDeserializer.class)
     Map<Integer, String> members = new HashMap<>();
 
     @NotNull(message="committee coordinator is missing")
     Integer coordinatorId;
+
+    private static class IntegerKeyDeserializer extends KeyDeserializer {
+        @Override
+        public Integer deserializeKey(String key, DeserializationContext ctxt) {
+            return Integer.valueOf(key);
+        }
+    }
 }
