@@ -156,6 +156,15 @@ public class CommitteeService {
         return committeeRepository.findById(committeeId);
     }
 
+    public Committee getCommitteeIfAccessible(int committeeId, String username) {
+        Committee committee = this.findCommitteeByIdNoException(committeeId).orElseThrow(()-> new CommitteeDoesNotExistException(ExceptionMessages.COMMITTEE_DOES_NOT_EXIST, committeeId));
+        if(!committee.getCreatedBy().getUsername().equals(username)) {
+            //TODO: handle error properly
+            throw new IllegalOperationException("Committee not accessible");
+        }
+        return committee;
+    }
+
     /**
      * returns all the members belonging to the committee
      */

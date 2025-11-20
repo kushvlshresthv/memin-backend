@@ -12,5 +12,4 @@ public class CommitteeMembershipDto {
         this.fullName = fullName;
         this.role = role;
     }
-
 }

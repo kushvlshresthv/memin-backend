@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
+//TODO: instead of checking the access for committee like this, maybe we can only retrieve the committee only if it is accessible for the user. This way, the controller class does not have fetch the Committee to pass to service layer. See getCommitteeIfAccessible() in CommitteeService
 public class CheckCommitteeAccessAspect {
     @Autowired
     private CommitteeService committeeService;

@@ -48,6 +48,15 @@ public class CommitteeController {
         return ResponseEntity.ok(new Response(committeeIdsAndNames));
     }
 
+    @GetMapping("/getCommitteeDetailsForEditPage")
+    public ResponseEntity<Response> getCommitteeDetailsForEditPage(@RequestParam int committeeId, Authentication authentication) {
+        Committee committee = this.committeeService.getCommitteeIfAccessible(committeeId, authentication.getName());
+
+        CommitteeDetailsForEditDto committeeDetailsForEditDto = new CommitteeDetailsForEditDto(committee);
+
+        return ResponseEntity.ok(new Response(committeeDetailsForEditDto));
+    }
+
 
 
     //TODO: Create Tests
