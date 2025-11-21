@@ -7,20 +7,19 @@ import com.sep.mmms_backend.response.Response;
 import com.sep.mmms_backend.service.CommitteeService;
 import com.sep.mmms_backend.service.MeetingMinutePreparationService;
 import com.sep.mmms_backend.service.MeetingService;
-import com.sep.mmms_backend.utils.NumberUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @Controller
 public class MeetingMinuteController {
@@ -44,5 +43,21 @@ public class MeetingMinuteController {
             return ResponseEntity.ok(new Response("Meeting Minute Data: ", minuteData));
         }
 
+        @PostMapping("api/getWordFileForMinute")
+    public ResponseEntity<?> getWordFileForMinute(@RequestBody String htmlContent, Authentication authentication) {
+            byte[] docxBytes;
+            try {
+                docxBytes = meetingMinutePreparationService.createWordDocumentFromHtml(htmlContent);
+            } catch (Exception e) {
+                return ResponseEntity.internalServerError().body(e.getMessage());
+            }
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+            String filename = "MeetingMinutes_" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + ".docx";
+            headers.setContentDispositionFormData("attachment", filename);
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return new ResponseEntity<>(docxBytes, headers, HttpStatus.OK);
+    }
 }
