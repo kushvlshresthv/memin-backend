@@ -1,9 +1,7 @@
 package com.sep.mmms_backend.service;
 
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
-import com.sep.mmms_backend.dto.MeetingCreationDto;
-import com.sep.mmms_backend.dto.MeetingSummaryDto;
-import com.sep.mmms_backend.dto.MeetingUpdationDto;
+import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.*;
 import com.sep.mmms_backend.exceptions.*;
 import com.sep.mmms_backend.repository.MeetingRepository;
@@ -30,7 +28,7 @@ public class MeetingService {
 
     //TODO: Create Tests
     @CheckCommitteeAccess
-    public Meeting saveNewMeeting(MeetingCreationDto meetingCreationDto, Committee committee , String username) {
+    public Meeting saveNewMeeting(MeetingCreationDto meetingCreationDto, Committee committee, String username) {
         entityValidator.validate(meetingCreationDto);
 
         Meeting meeting = new Meeting();
@@ -42,7 +40,7 @@ public class MeetingService {
         meeting.setHeldPlace(meetingCreationDto.getHeldPlace());
         meetingCreationDto.getDecisions().forEach(decisionString -> {
             //check if decision string is blank, if yes, don't save it
-            if(decisionString != null && !decisionString.isBlank()) {
+            if (decisionString != null && !decisionString.isBlank()) {
                 Decision decision = new Decision();
                 decision.setDecision(decisionString);
                 meeting.addDecision(decision);
@@ -50,7 +48,7 @@ public class MeetingService {
         });
 
         meetingCreationDto.getAgendas().forEach(agendaString -> {
-            if(agendaString != null && !agendaString.isBlank()) {
+            if (agendaString != null && !agendaString.isBlank()) {
                 Agenda agenda = new Agenda();
                 agenda.setAgenda(agendaString);
                 meeting.addAgenda(agenda);
@@ -61,12 +59,92 @@ public class MeetingService {
         //TODO: Fix (this route does not check whether the requested Invittee is already part of the commitee, it relies on the frontend to do so)
         //If the invittee is already part of the committee, it will be rendered twice in the minute
         List<Integer> requestedInvitees = meetingCreationDto.getInviteeIds().stream().toList();
-        if(!requestedInvitees.isEmpty()) {
+        if (!requestedInvitees.isEmpty()) {
             List<Member> foundMembers = memberRepository.findAccessibleMembersByIds(requestedInvitees, username);
             memberRepository.validateWhetherAllMembersAreFound(requestedInvitees, foundMembers);
             meeting.setInvitees(foundMembers);
         }
         return meetingRepository.save(meeting);
+    }
+
+
+    @Transactional
+    public void updateExistingMeetingMinute(MinuteUpdationDto minuteUpdationDto, int meetingId, int committeeId, String username) {
+        Meeting existingMeeting = meetingRepository.findMeetingById(meetingId);
+        if (!existingMeeting.getCreatedBy().equals(username)) {
+            //TODO: throw exception
+        }
+
+        if (existingMeeting.getCommittee().getId() != committeeId) {
+            //TODO: throw exception
+        }
+
+        Committee existingCommittee = existingMeeting.getCommittee();
+
+        if (!existingCommittee.getCreatedBy().getUsername().equals(username)) {
+            //TODO: throw exception
+        }
+
+        existingCommittee.setName(minuteUpdationDto.getCommitteeName());
+        existingCommittee.setDescription(minuteUpdationDto.getCommitteeDescription());
+
+        existingMeeting.setHeldDate(minuteUpdationDto.getMeetingHeldDate());
+        existingMeeting.setHeldTime(minuteUpdationDto.getMeetingHeldTime());
+        existingMeeting.setHeldPlace(minuteUpdationDto.getMeetingHeldPlace());
+
+
+        //save the committee
+
+        //remove decisions that are NOT in the new list
+        existingMeeting.getDecisions().removeIf(existingDecision -> minuteUpdationDto.getDecisions().stream().noneMatch(newDecision -> newDecision.getDecisionId() == existingDecision.getDecisionId()
+                )
+        );
+
+        //add new ones OR Update existing ones
+
+        for (DecisionDto newDecision : minuteUpdationDto.getDecisions()) {
+
+            //check if the decision already exists
+            Decision existingDecision = existingMeeting.getDecisions().stream().filter(existingDecision1 -> existingDecision1.getDecisionId() == newDecision.getDecisionId()).findFirst().orElse(null);
+
+            if (existingDecision == null) {
+                if (!newDecision.getDecision().isBlank()) {
+                    //its a new decision -> add it
+                    Decision newDecisionObj = new Decision();
+                    newDecisionObj.setDecision(newDecision.getDecision());
+                    existingMeeting.addDecision(newDecisionObj);
+                }
+            } else {
+                //its an existing decision -> update it
+                existingDecision.setDecision(newDecision.getDecision());
+            }
+        }
+
+
+        //remove agendas that are NOT in the new list
+        existingMeeting.getAgendas().removeIf(existingAgenda -> minuteUpdationDto.getAgendas().stream().noneMatch(newagenda -> newagenda.getAgendaId() == existingAgenda.getAgendaId()
+                )
+        );
+
+        //add new ones OR Update existing ones
+
+        for (AgendaDto newAgenda : minuteUpdationDto.getAgendas()) {
+            //check if the agenda already exists
+            Agenda existingagenda = existingMeeting.getAgendas().stream().filter(existingagenda1 -> existingagenda1.getAgendaId() == newAgenda.getAgendaId()).findFirst().orElse(null);
+
+            if (existingagenda == null) {
+                //it is a new agenda -> add it
+                if (!newAgenda.getAgenda().isBlank()) {
+                    Agenda newagendaObj = new Agenda();
+                    newagendaObj.setAgenda(newAgenda.getAgenda());
+                    existingMeeting.addAgenda(newagendaObj);
+                }
+            } else {
+                //it is an existing agenda -> update it
+                existingagenda.setAgenda(newAgenda.getAgenda());
+            }
+        }
+        meetingRepository.save(existingMeeting);
     }
 
 
@@ -85,42 +163,41 @@ public class MeetingService {
      * Same is the case for decisions
      */
     @Transactional
+    @Deprecated
     public Meeting updateExistingMeetingDetails(MeetingUpdationDto newMeetingData, String username) {
 
-        if(newMeetingData.getMeetingId() == null) {
+        if (newMeetingData.getMeetingId() == null) {
             throw new IllegalOperationException("TODO: Exception (handle this exception)");
         }
 
         Meeting existingMeeting = meetingRepository.findMeetingById(newMeetingData.getMeetingId());
 
-        if(!existingMeeting.getCreatedBy().equals(username)) {
+        if (!existingMeeting.getCreatedBy().equals(username)) {
             throw new MeetingNotAccessibleException(ExceptionMessages.MEETING_NOT_ACCESSIBLE, existingMeeting.getTitle());
         }
 
-        if(newMeetingData.getTitle() != null && !newMeetingData.getTitle().isBlank())
+        if (newMeetingData.getTitle() != null && !newMeetingData.getTitle().isBlank())
             existingMeeting.setTitle(newMeetingData.getTitle());
-        if(newMeetingData.getDescription() != null && !newMeetingData.getDescription().isBlank())
+        if (newMeetingData.getDescription() != null && !newMeetingData.getDescription().isBlank())
             existingMeeting.setDescription(newMeetingData.getDescription());
-        if(newMeetingData.getHeldDate() != null)
-            existingMeeting.setHeldDate(newMeetingData.getHeldDate());
-        if(newMeetingData.getHeldTime() != null)
-            existingMeeting.setHeldTime(newMeetingData.getHeldTime());
-        if(newMeetingData.getHeldPlace() != null && !newMeetingData.getHeldPlace().isBlank())
+        if (newMeetingData.getHeldDate() != null) existingMeeting.setHeldDate(newMeetingData.getHeldDate());
+        if (newMeetingData.getHeldTime() != null) existingMeeting.setHeldTime(newMeetingData.getHeldTime());
+        if (newMeetingData.getHeldPlace() != null && !newMeetingData.getHeldPlace().isBlank())
             existingMeeting.setHeldPlace(newMeetingData.getHeldPlace());
 
 
-        Map<Integer, Agenda> existingAgendas = existingMeeting.getAgendas().stream().collect(Collectors.toMap(Agenda::getAgendaId, agenda->agenda));
+        Map<Integer, Agenda> existingAgendas = existingMeeting.getAgendas().stream().collect(Collectors.toMap(Agenda::getAgendaId, agenda -> agenda));
 
         List<Agenda> updatedAgendas = new ArrayList<>();
-        if(!newMeetingData.getAgendas().isEmpty()) {
+        if (!newMeetingData.getAgendas().isEmpty()) {
             newMeetingData.getAgendas().forEach(newAgendaDto -> {
-                if(newAgendaDto.getAgendaId() != null && existingAgendas.containsKey(newAgendaDto.getAgendaId())) {
-                    if(newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
+                if (newAgendaDto.getAgendaId() != null && existingAgendas.containsKey(newAgendaDto.getAgendaId())) {
+                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
                         existingAgendas.get(newAgendaDto.getAgendaId()).setAgenda(newAgendaDto.getAgenda());
                         updatedAgendas.add(existingAgendas.get(newAgendaDto.getAgendaId()));
                     }
                 } else {
-                    if(newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
+                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
                         Agenda newAgenda = new Agenda();
                         newAgenda.setAgenda(newAgendaDto.getAgenda());
                         updatedAgendas.add(newAgenda);
@@ -131,18 +208,18 @@ public class MeetingService {
         existingMeeting.getAgendas().clear();
         existingMeeting.addAllAgendas(updatedAgendas);
 
-        Map<Integer, Decision> existingDecisions = existingMeeting.getDecisions().stream().collect(Collectors.toMap(Decision::getDecisionId, decision->decision));
+        Map<Integer, Decision> existingDecisions = existingMeeting.getDecisions().stream().collect(Collectors.toMap(Decision::getDecisionId, decision -> decision));
 
         List<Decision> updatedDecisions = new ArrayList<>();
-        if(!newMeetingData.getDecisions().isEmpty()) {
+        if (!newMeetingData.getDecisions().isEmpty()) {
             newMeetingData.getDecisions().forEach(newDecisionDto -> {
-                if(newDecisionDto.getDecisionId() != null && existingDecisions.containsKey(newDecisionDto.getDecisionId())) {
-                    if( newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
+                if (newDecisionDto.getDecisionId() != null && existingDecisions.containsKey(newDecisionDto.getDecisionId())) {
+                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
                         existingDecisions.get(newDecisionDto.getDecisionId()).setDecision(newDecisionDto.getDecision());
                         updatedDecisions.add(existingDecisions.get(newDecisionDto.getDecisionId()));
                     }
                 } else {
-                    if(newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
+                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
                         Decision newDecision = new Decision();
                         newDecision.setDecision(newDecisionDto.getDecision());
                         updatedDecisions.add(newDecision);
@@ -157,19 +234,16 @@ public class MeetingService {
     }
 
 
-
-
-
     /**
      *
      * @param newInvitteeIds the list of ids(of new attendees)
-     * @param committee the committee to which the meeting belongs to
-     * @param meeting the meeting of the meeting
-     * @param username the name of the current user
-     * NOTE: if the newAttendees list has some members which are already attendees, they are not re-added
+     * @param committee      the committee to which the meeting belongs to
+     * @param meeting        the meeting of the meeting
+     * @param username       the name of the current user
+     *                       NOTE: if the newAttendees list has some members which are already attendees, they are not re-added
      */
 
-    @CheckCommitteeAccess(shouldValidateMeeting=true)
+    @CheckCommitteeAccess(shouldValidateMeeting = true)
     @Transactional
     //TODO: Create Tests
     public void addInviteesToMeeting(Set<Integer> newInvitteeIds, Committee committee, Meeting meeting, String username) {
@@ -186,9 +260,7 @@ public class MeetingService {
 
         memberRepository.validateWhetherAllMembersAreFound(newInvitteeIds.stream().toList(), validNewInvitees);
 
-        List<Member> inviteesToAdd = validNewInvitees.stream()
-                .filter(member -> !existingInviteeIds.contains(member.getId()))
-                .toList();
+        List<Member> inviteesToAdd = validNewInvitees.stream().filter(member -> !existingInviteeIds.contains(member.getId())).toList();
 
         if (inviteesToAdd.isEmpty()) {
             throw new IllegalOperationException("Member already an invitee to the meeting");
@@ -200,9 +272,7 @@ public class MeetingService {
     }
 
 
-
-
-    @CheckCommitteeAccess(shouldValidateMeeting=true)
+    @CheckCommitteeAccess(shouldValidateMeeting = true)
     @Transactional
     //TODO: Create Tests
     //TODO: Properly check this route, as i have not checked it properly
@@ -217,7 +287,7 @@ public class MeetingService {
         Set<Integer> existingInviteeIds = meeting.getInvitees().stream().map(Member::getId).collect(Collectors.toSet());
 
         Member inviteeToBeRemoved = null;
-        if(existingInviteeIds.contains(inviteeIdToBeRemoved)) {
+        if (existingInviteeIds.contains(inviteeIdToBeRemoved)) {
             inviteeToBeRemoved = memberRepository.findMemberById(inviteeIdToBeRemoved);
         } else {
             throw new IllegalOperationException("Invitee does not exist");
@@ -237,7 +307,7 @@ public class MeetingService {
     }
 
     //TODO: Create Tests
-    @CheckCommitteeAccess(shouldValidateMeeting=true)
+    @CheckCommitteeAccess(shouldValidateMeeting = true)
     public Meeting getMeetingDetails(Committee committee, Meeting meeting, String username) {
         return meeting;
     }

@@ -1,8 +1,5 @@
 package com.sep.mmms_backend.dto;
 
-import com.sep.mmms_backend.entity.Agenda;
-import com.sep.mmms_backend.entity.Decision;
-import com.sep.mmms_backend.global_constants.ValidationErrorMessages;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Deprecated
 public class MeetingUpdationDto {
     private Integer meetingId;
 

@@ -1,9 +1,6 @@
 package com.sep.mmms_backend.controller;
 
-import com.sep.mmms_backend.dto.MeetingCreationDto;
-import com.sep.mmms_backend.dto.MeetingDetailsDto;
-import com.sep.mmms_backend.dto.MeetingSummaryDto;
-import com.sep.mmms_backend.dto.MeetingUpdationDto;
+import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.response.Response;
@@ -20,13 +17,13 @@ import java.util.List;
 @RestController
 @RequestMapping("api")
 public class MeetingController {
-   private final MeetingService meetingService;
-   private final CommitteeService committeeService;
+    private final MeetingService meetingService;
+    private final CommitteeService committeeService;
 
-   MeetingController(MeetingService meetingService, CommitteeService committeeService) {
+    MeetingController(MeetingService meetingService, CommitteeService committeeService) {
         this.meetingService = meetingService;
         this.committeeService = committeeService;
-   }
+    }
 
 
     //TODO: Create Tests
@@ -35,13 +32,21 @@ public class MeetingController {
             @RequestBody(required = true) MeetingCreationDto meetingCreationDto,
             Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(meetingCreationDto.getCommitteeId());
-        Meeting savedMeeting =  meetingService.saveNewMeeting(meetingCreationDto, committee, authentication.getName());
+        Meeting savedMeeting = meetingService.saveNewMeeting(meetingCreationDto, committee, authentication.getName());
         MeetingSummaryDto savedMeetingSummary = new MeetingSummaryDto(savedMeeting);
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_CREATION_SUCCESSFUL, savedMeetingSummary));
     }
 
+
+    @PostMapping("/updateMinute")
+    public ResponseEntity<Response> createMeeting(@RequestBody MinuteUpdationDto meetingUpdationDto, @RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
+        meetingService.updateExistingMeetingMinute(meetingUpdationDto, committeeId, meetingId, authentication.getName());
+
+        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS));
+    }
+
     @GetMapping("/getMeetingsOfCommittee")
-    public ResponseEntity<Response> getMeetingsOfCommittee(@RequestParam(required=true) int committeeId, Authentication authentication) {
+    public ResponseEntity<Response> getMeetingsOfCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
 
         List<MeetingSummaryDto> meetings = meetingService.getMeetingOfCommittee(committee, authentication.getName());
@@ -56,12 +61,11 @@ public class MeetingController {
             @RequestBody(required = true) MeetingUpdationDto meetingUpdationDto,
             Authentication authentication) {
 
-        Meeting savedMeeting =  meetingService.updateExistingMeetingDetails(meetingUpdationDto, authentication.getName());
+        Meeting savedMeeting = meetingService.updateExistingMeetingDetails(meetingUpdationDto, authentication.getName());
 
         MeetingDetailsDto meetingDetailsDto = new MeetingDetailsDto(savedMeeting);
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS, meetingDetailsDto));
     }
-
 
 
     //TODO: Create Tests
@@ -74,7 +78,6 @@ public class MeetingController {
 
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_INVITEES_ADDITION_SUCCESS));
     }
-
 
 
     //TODO: Create Tests

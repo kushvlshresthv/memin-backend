@@ -1,13 +1,7 @@
 package com.sep.mmms_backend.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sep.mmms_backend.global_constants.ValidationErrorMessages;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,9 +11,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
-@Entity(name="meetings")
+@Entity(name = "meetings")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,76 +26,76 @@ import java.util.*;
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="meeting_id")
+    @Column(name = "meeting_id")
     private Integer id;
 
     @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     private String uuid;
 
-    @Column(name="meeting_title")
+    @Column(name = "meeting_title")
     private String title;
 
-    @Column(name="meeting_description")
+    @Column(name = "meeting_description")
     private String description;
 
-    @Column(name="meeting_held_date")
+    @Column(name = "meeting_held_date")
     private LocalDate heldDate;
 
-    @Column(name="meeting_held_time")
+    @Column(name = "meeting_held_time")
     private LocalTime heldTime;
 
-    @Column(name="meeting_held_place")
+    @Column(name = "meeting_held_place")
     private String heldPlace;
 
     @CreatedBy
-    @Column(name="created_by", updatable = false, nullable = false)
+    @Column(name = "created_by", updatable = false, nullable = false)
     private String createdBy;
 
     @LastModifiedBy
-    @Column(name="updated_by", nullable = false)
+    @Column(name = "updated_by", nullable = false)
     private String updatedBy;
 
     @CreatedDate
-    @Column(name="created_date", updatable=false, nullable = false)
+    @Column(name = "created_date", updatable = false, nullable = false)
     private LocalDate createdDate;
 
     @LastModifiedDate
-    @Column(name="updated_date", nullable = false)
+    @Column(name = "updated_date", nullable = false)
     private LocalDate updatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "committee_id", referencedColumnName="committee_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "committee_id", referencedColumnName = "committee_id")
     Committee committee;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="meeting_attendees",
+    @JoinTable(name = "meeting_attendees",
             inverseJoinColumns = {
-                    @JoinColumn(name="member_id", referencedColumnName = "member_id"),
+                    @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
             },
 
             joinColumns = {
-                    @JoinColumn(name="meeting_id", referencedColumnName = "meeting_id"),
+                    @JoinColumn(name = "meeting_id", referencedColumnName = "meeting_id"),
             }
     )
     public List<Member> attendees = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="meeting_invitees",
+    @JoinTable(name = "meeting_invitees",
             inverseJoinColumns = {
-                    @JoinColumn(name="member_id", referencedColumnName = "member_id"),
+                    @JoinColumn(name = "member_id", referencedColumnName = "member_id"),
             },
 
             joinColumns = {
-                    @JoinColumn(name="meeting_id", referencedColumnName = "meeting_id"),
+                    @JoinColumn(name = "meeting_id", referencedColumnName = "meeting_id"),
             }
     )
     public List<Member> invitees = new ArrayList<>();
 
-    @OneToMany(mappedBy="meeting", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "meeting", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Decision> decisions = new ArrayList<>();
 
-    @OneToMany(mappedBy="meeting", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "meeting", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Agenda> agendas = new ArrayList<>();
 
     public void addDecision(Decision decision) {
@@ -108,7 +105,7 @@ public class Meeting {
 
 
     public void addAllDecisions(List<Decision> decisions) {
-        decisions.forEach(decision->decision.setMeeting(this));
+        decisions.forEach(decision -> decision.setMeeting(this));
         this.decisions.addAll(decisions);
     }
 
@@ -119,7 +116,7 @@ public class Meeting {
 
 
     public void addAllAgendas(List<Agenda> agendas) {
-        agendas.forEach(agenda->agenda.setMeeting(this));
+        agendas.forEach(agenda -> agenda.setMeeting(this));
         this.agendas.addAll(agendas);
     }
 
