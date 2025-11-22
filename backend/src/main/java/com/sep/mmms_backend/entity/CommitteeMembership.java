@@ -29,7 +29,7 @@ import java.util.UUID;
 
 public class CommitteeMembership implements Persistable<CommitteeMembershipId> {
     /**
-     * EmbeddedId has been used in order to have a composite primary key for this entity
+     * EmbeddedId has been used to have a composite primary key for this entity
      */
     @EmbeddedId
     private CommitteeMembershipId id = new CommitteeMembershipId();

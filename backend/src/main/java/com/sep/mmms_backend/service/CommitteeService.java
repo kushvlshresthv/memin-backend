@@ -32,8 +32,8 @@ public class CommitteeService {
        this.committeeMembershipRepository = committeeMembershipRepository;
     }
 
-    @Transactional
-    public Committee saveNewCommittee(CommitteeCreationDto committeeCreationDto, String username) {
+
+    private Committee prepareCommitteeFromCommitteeCreationDto(CommitteeCreationDto committeeCreationDto, String username) {
         entityValidator.validate(committeeCreationDto);
 
         //remove the coordinator id from the member ids if present
@@ -74,7 +74,66 @@ public class CommitteeService {
             throw new CoordinatorDoesNotExistException(ExceptionMessages.COORDINATOR_DOES_NOT_EXIST);
         }
         committee.setCoordinator(coordinatorOptional.get());
+        return committee;
+    }
+
+
+    @Transactional
+    public Committee saveNewCommittee(CommitteeCreationDto committeeCreationDto, String username) {
+        Committee committee = prepareCommitteeFromCommitteeCreationDto(committeeCreationDto, username);
         return committeeRepository.save(committee);
+    }
+
+
+    //TODO: Create Tests
+    @Transactional
+    public Committee updateExistingCommittee(CommitteeCreationDto committeeCreationDto, int committeeId, String username) {
+        Committee existingCommittee = this.findCommitteeById(committeeId);
+
+        if(!existingCommittee.getCreatedBy().getUsername().equals(username)) {
+            throw new CommitteeNotAccessibleException(ExceptionMessages.COMMITTEE_NOT_ACCESSIBLE);
+        }
+
+        Committee committee = prepareCommitteeFromCommitteeCreationDto(committeeCreationDto, username);
+
+        existingCommittee.setName(committee.getName());
+        existingCommittee.setDescription(committee.getDescription());
+        existingCommittee.setStatus(committee.getStatus());
+        existingCommittee.setMinuteLanguage(committee.getMinuteLanguage());
+        existingCommittee.setMaxNoOfMeetings(committee.getMaxNoOfMeetings());
+        existingCommittee.setCoordinator(committee.getCoordinator());
+
+        List<CommitteeMembership> newMemberships = committee.getMemberships();
+
+        List<CommitteeMembership> currentMemberships = existingCommittee.getMemberships();
+
+        // Remove memberships that are NOT in the new list
+        currentMemberships.removeIf(existing ->
+                newMemberships.stream().noneMatch(newMem ->
+                        newMem.getMember().getId() == existing.getMember().getId()
+                )
+        );
+
+        // Add new ones OR Update existing ones
+        for (CommitteeMembership newMem : newMemberships) {
+
+            // Check if this member is already in the current list
+            CommitteeMembership existingMem = currentMemberships.stream()
+                    .filter(e -> e.getMember().getId() == newMem.getMember().getId())
+                    .findFirst()
+                    .orElse(null);
+
+            if (existingMem == null) {
+                // CASE: It's a new member -> Add it
+                existingCommittee.addMembership(newMem);
+            } else {
+                // CASE: Member exists -> Update metadata (e.g., Role)
+                // Do NOT replace the object, just update the fields
+                existingMem.setRole(newMem.getRole());
+            }
+        }
+
+        return committeeRepository.save(existingCommittee);
     }
 
     @Transactional
@@ -127,22 +186,6 @@ public class CommitteeService {
         return membersOfCommittee;
     }
 
-    //TODO: Create Tests
-    @Deprecated
-    @Transactional
-    @CheckCommitteeAccess
-    public Committee updateExistingCommittee(CommitteeUpdationDto newCommitteeData, Committee existingCommittee, String username) {
-        if(newCommitteeData.getName() != null && !newCommitteeData.getName().isBlank())
-            existingCommittee.setName(newCommitteeData.getName());
-        if(newCommitteeData.getDescription() != null && !newCommitteeData.getDescription().isBlank())
-            existingCommittee.setDescription(newCommitteeData.getDescription());
-        if(newCommitteeData.getStatus() != null)
-            existingCommittee.setStatus(newCommitteeData.getStatus());
-        if(newCommitteeData.getMaximumNumberOfMeetings() != null)
-            existingCommittee.setMaxNoOfMeetings(newCommitteeData.getMaximumNumberOfMeetings());
-
-        return committeeRepository.save(existingCommittee);
-    }
 
     @Transactional
     @CheckCommitteeAccess

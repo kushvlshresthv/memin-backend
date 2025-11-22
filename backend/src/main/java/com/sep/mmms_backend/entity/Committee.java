@@ -82,7 +82,7 @@ public class Committee {
     @OneToMany(mappedBy="committee", cascade = CascadeType.REMOVE)
     private List<Meeting> meetings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "committee", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "committee", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<CommitteeMembership> memberships = new ArrayList<>();
 
     /**

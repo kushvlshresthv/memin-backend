@@ -61,15 +61,9 @@ public class CommitteeController {
 
     //TODO: Create Tests
     @PostMapping("/updateCommitteeDetails")
-    public ResponseEntity<Response> updateExistingCommittee(@RequestBody CommitteeUpdationDto committeeUpdationDto, Authentication authentication) {
-        if(committeeUpdationDto.getId() == null) {
-            throw new IllegalOperationException("TODO: Handle this");
-            //TODO: Exception (handle this)
-        }
-        Committee committee = committeeService.findCommitteeById(committeeUpdationDto.getId());
-        Committee updatedCommittee = committeeService.updateExistingCommittee(committeeUpdationDto,committee, authentication.getName());
-        CommitteeSummaryDto committeeSummaryDto = new CommitteeSummaryDto(updatedCommittee);
-        return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_UPDATION_SUCCESS, committeeSummaryDto));
+    public ResponseEntity<Response> updateExistingCommittee(@RequestBody CommitteeCreationDto committeeCreationDto, @RequestParam Integer committeeId, Authentication authentication) {
+        committeeService.updateExistingCommittee(committeeCreationDto,committeeId, authentication.getName());
+        return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_UPDATION_SUCCESS));
     }
 
     //TODO: Create Tests
@@ -137,6 +131,7 @@ public class CommitteeController {
 
 
 
+    @Deprecated
     @DeleteMapping("/removeCommitteeMembership")
     //TODO: Create Tests
     public ResponseEntity<Response> removeCommitteeMembership(@RequestParam int committeeId, @RequestParam int memberId, Authentication authentication) {
