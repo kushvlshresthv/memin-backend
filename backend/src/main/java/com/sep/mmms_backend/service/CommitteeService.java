@@ -24,31 +24,46 @@ public class CommitteeService {
     private final MemberRepository memberRepository;
     private final CommitteeMembershipRepository committeeMembershipRepository;
 
-    public CommitteeService(CommitteeRepository committeeRepository,  AppUserService appUserService, EntityValidator entityValidator, MemberRepository memberRepository, CommitteeMembershipRepository committeeMembershipRepository )  {
-       this.committeeRepository = committeeRepository;
-       this.appUserService = appUserService;
-       this.entityValidator = entityValidator;
-       this.memberRepository = memberRepository;
-       this.committeeMembershipRepository = committeeMembershipRepository;
+    public CommitteeService(CommitteeRepository committeeRepository, AppUserService appUserService, EntityValidator entityValidator, MemberRepository memberRepository, CommitteeMembershipRepository committeeMembershipRepository) {
+        this.committeeRepository = committeeRepository;
+        this.appUserService = appUserService;
+        this.entityValidator = entityValidator;
+        this.memberRepository = memberRepository;
+        this.committeeMembershipRepository = committeeMembershipRepository;
     }
 
 
     private Committee prepareCommitteeFromCommitteeCreationDto(CommitteeCreationDto committeeCreationDto, String username) {
         entityValidator.validate(committeeCreationDto);
 
+        // Convert to LinkedHashMap to preserve order of memberIds
+        Map<Integer, String> memberIdAndRoleMap = committeeCreationDto.getMembers().stream()
+                .collect(Collectors.toMap(
+                        MemberIdWithRoleDto::getMemberId, // key mapper
+                        MemberIdWithRoleDto::getRole,     // value mapper
+                        (oldValue, newValue) -> oldValue, // merge function (if duplicate keys)
+                        LinkedHashMap::new                 // supplier: use LinkedHashMap
+                ));
+
+
         //remove the coordinator id from the member ids if present
-        committeeCreationDto.getMembers().keySet().removeIf(memberId->memberId.equals(committeeCreationDto.getCoordinatorId()));
+        memberIdAndRoleMap.keySet().removeIf(memberId -> memberId.equals(committeeCreationDto.getCoordinatorId()));
 
         //check if all the members have role
-        if(!committeeCreationDto.getMembers().values().stream().allMatch(Objects::nonNull)) {
+        if (!memberIdAndRoleMap.values().stream().allMatch(Objects::nonNull)) {
             throw new InvalidMembershipException(ExceptionMessages.MEMBERSHIP_ROLE_MISSING);
         }
 
-        List<Integer> requestedMemberIds = committeeCreationDto.getMembers().keySet().stream().toList();
+        List<Integer> requestedMemberIds = memberIdAndRoleMap.keySet().stream().toList();
 
         List<Member> foundMembers = memberRepository.findAccessibleMembersByIds(requestedMemberIds, username);
 
+
         memberRepository.validateWhetherAllMembersAreFound(requestedMemberIds, foundMembers);
+
+        //sorting the foundMembers in the same order as the requestedMemberIds
+        foundMembers.sort(Comparator.comparingInt(member -> requestedMemberIds.indexOf(member.getId())));
+
 
         Committee committee = new Committee();
         committee.setCreatedBy(appUserService.loadUserByUsername(username));
@@ -58,19 +73,21 @@ public class CommitteeService {
         committee.setStatus(committeeCreationDto.getStatus());
         committee.setMinuteLanguage(committeeCreationDto.getMinuteLanguage());
 
-        if(committeeCreationDto.getMaximumNumberOfMeetings() != null)
+        if (committeeCreationDto.getMaximumNumberOfMeetings() != null)
             committee.setMaxNoOfMeetings(committeeCreationDto.getMaximumNumberOfMeetings());
 
-        foundMembers.forEach(member-> {
+        //we also set the order for the members in the same sequence as the orderedFoundMembers
+        foundMembers.forEach(member -> {
             CommitteeMembership membership = new CommitteeMembership();
             membership.setMember(member);
-            membership.setRole(committeeCreationDto.getMembers().get(member.getId()));
+            membership.setRole(memberIdAndRoleMap.get(member.getId()));
+            membership.setOrder(committee.getMemberships().size());
             committee.addMembership(membership);
         });
 
         Optional<Member> coordinatorOptional = memberRepository.findMemberByIdNoException(committeeCreationDto.getCoordinatorId());
 
-        if(coordinatorOptional.isEmpty()) {
+        if (coordinatorOptional.isEmpty()) {
             throw new CoordinatorDoesNotExistException(ExceptionMessages.COORDINATOR_DOES_NOT_EXIST);
         }
         committee.setCoordinator(coordinatorOptional.get());
@@ -90,7 +107,7 @@ public class CommitteeService {
     public Committee updateExistingCommittee(CommitteeCreationDto committeeCreationDto, int committeeId, String username) {
         Committee existingCommittee = this.findCommitteeById(committeeId);
 
-        if(!existingCommittee.getCreatedBy().getUsername().equals(username)) {
+        if (!existingCommittee.getCreatedBy().getUsername().equals(username)) {
             throw new CommitteeNotAccessibleException(ExceptionMessages.COMMITTEE_NOT_ACCESSIBLE);
         }
 
@@ -114,6 +131,10 @@ public class CommitteeService {
                 )
         );
 
+        //the newMemberships are already sorted, so assign the order for the membership in the same sequence as the newMemberships
+
+        int order = 1;
+
         // Add new ones OR Update existing ones
         for (CommitteeMembership newMem : newMemberships) {
 
@@ -126,10 +147,13 @@ public class CommitteeService {
             if (existingMem == null) {
                 // CASE: It's a new member -> Add it
                 existingCommittee.addMembership(newMem);
+                newMem.setOrder(order++);
+
             } else {
                 // CASE: Member exists -> Update metadata (e.g., Role)
                 // Do NOT replace the object, just update the fields
                 existingMem.setRole(newMem.getRole());
+                existingMem.setOrder(order++);
             }
         }
 
@@ -147,14 +171,14 @@ public class CommitteeService {
         committeeOverview.setMeetingCount(committee.getMeetings().size());
         committeeOverview.setLanguage(committee.getMinuteLanguage());
         int decisionCount = 0;
-        for(Meeting meeting : committee.getMeetings()) {
-            decisionCount =+ meeting.getDecisions().size();
+        for (Meeting meeting : committee.getMeetings()) {
+            decisionCount = +meeting.getDecisions().size();
         }
         committeeOverview.setDecisionCount(decisionCount);
 
         committeeOverview.setCoordinatorName(committee.getCoordinator().getFirstName() + " " + committee.getCoordinator().getLastName());
 
-        if(!committee.getMeetings().isEmpty()) {
+        if (!committee.getMeetings().isEmpty()) {
             List<LocalDate> meetingDates = committee.getMeetings().stream().map(Meeting::getHeldDate).collect(Collectors.toList());
 
             Comparator<LocalDate> comparator = LocalDate::compareTo;
@@ -177,7 +201,8 @@ public class CommitteeService {
     @Transactional
     @CheckCommitteeAccess
     public List<MemberOfCommitteeDto> getMembersOfCommittee(Committee committee, String username) {
-        List<MemberOfCommitteeDto> membersOfCommittee = committee.getMemberships().stream().map(membership-> {
+
+        List<MemberOfCommitteeDto> membersOfCommittee = committee.getSortedMemberships().stream().map(membership -> {
             Member member = membership.getMember();
             String memberFullName = member.getFirstName() + " " + member.getLastName();
             return new MemberOfCommitteeDto(member.getId(), memberFullName, membership.getRole());
@@ -200,8 +225,8 @@ public class CommitteeService {
     }
 
     public Committee getCommitteeIfAccessible(int committeeId, String username) {
-        Committee committee = this.findCommitteeByIdNoException(committeeId).orElseThrow(()-> new CommitteeDoesNotExistException(ExceptionMessages.COMMITTEE_DOES_NOT_EXIST, committeeId));
-        if(!committee.getCreatedBy().getUsername().equals(username)) {
+        Committee committee = this.findCommitteeByIdNoException(committeeId).orElseThrow(() -> new CommitteeDoesNotExistException(ExceptionMessages.COMMITTEE_DOES_NOT_EXIST, committeeId));
+        if (!committee.getCreatedBy().getUsername().equals(username)) {
             //TODO: handle error properly
             throw new IllegalOperationException("Committee not accessible");
         }
@@ -214,15 +239,14 @@ public class CommitteeService {
 
     public List<MemberSummaryDto> getMembersOfCommittee(Committee committee) {
         List<Integer> memberIds = committee.getMemberships().stream()
-                .map(membership->membership.getMember().getId())
+                .map(membership -> membership.getMember().getId())
                 .collect(Collectors.toList());
 
         List<Member> members = memberRepository.findAllById(memberIds);
 
-        return members.stream().map(member-> new MemberSummaryDto(member, committee.getId()))
+        return members.stream().map(member -> new MemberSummaryDto(member, committee.getId()))
                 .collect(Collectors.toList());
     }
-
 
 
     /**
@@ -246,11 +270,11 @@ public class CommitteeService {
 
 
     /**
-        BUG FIX: This method won't work IF we try to populate the 'committee' with the new 'memberships' because  when trying to save memberships from cascading, JPA will decide whether the membership is either new or not by checking whether membership's primary key value is null or not(which it isn't.
-        <br><br>
-        Since, not null, JPA will try to merge(), but since the row is not present in the database, it will throw EntityNotExistException.
-         <br><br>
-        Here, since we are using CommitteeMembershipRepository, JPA will decide whether the membership is either new or not by calling isNew() method since CommmiteeMembership implements Presistable interface
+     * BUG FIX: This method won't work IF we try to populate the 'committee' with the new 'memberships' because  when trying to save memberships from cascading, JPA will decide whether the membership is either new or not by checking whether membership's primary key value is null or not(which it isn't.
+     * <br><br>
+     * Since, not null, JPA will try to merge(), but since the row is not present in the database, it will throw EntityNotExistException.
+     * <br><br>
+     * Here, since we are using CommitteeMembershipRepository, JPA will decide whether the membership is either new or not by calling isNew() method since CommmiteeMembership implements Presistable interface
      */
     //TODO: Create Tests
     @CheckCommitteeAccess
@@ -264,8 +288,8 @@ public class CommitteeService {
 
         //check if the membership for the member and committee already exists
         List<CommitteeMembership> alreadyExistingMemberships = committeeMembershipRepository.findExistingMemberships(newMemberIds, committee.getId());
-        if(!alreadyExistingMemberships.isEmpty()) {
-            Map<Integer, String> memberIdAndRole = alreadyExistingMemberships.stream().collect(Collectors.toMap(membership->membership.getMember().getId(), CommitteeMembership::getRole));
+        if (!alreadyExistingMemberships.isEmpty()) {
+            Map<Integer, String> memberIdAndRole = alreadyExistingMemberships.stream().collect(Collectors.toMap(membership -> membership.getMember().getId(), CommitteeMembership::getRole));
             throw new MembershipAlreadyExistsException(ExceptionMessages.MEMBERSHIP_ALREADY_EXISTS, memberIdAndRole);
         }
 
@@ -273,7 +297,7 @@ public class CommitteeService {
         Map<Integer, String> rolesMap = newMembershipRequests.stream().collect(Collectors.toMap(NewMembershipRequest::memberId, NewMembershipRequest::role));
         List<CommitteeMembership> newMemberships = new ArrayList<>();
 
-        for(Member member: validNewMembers) {
+        for (Member member : validNewMembers) {
             CommitteeMembership newMembership = new CommitteeMembership();
             newMembership.setCommittee(committee);
             newMembership.setMember(member);
@@ -292,14 +316,14 @@ public class CommitteeService {
     @CheckCommitteeAccess
     @Deprecated
     public void removeCommitteeMembership(Committee committee, Member member, String username) {
-        if(!member.getCreatedBy().equals(username)) {
+        if (!member.getCreatedBy().equals(username)) {
             throw new IllegalOperationException("Membership not accessible");
             //TODO: Error (handle this properly by creating a custom exception)
         }
 
-       CommitteeMembership membershipToBeDeleted =  committeeMembershipRepository.findMembershipBetweenCommitteeAndMember(committee.getId(), member.getId()).orElseThrow(()-> new MembershipDoesNotExistException(ExceptionMessages.MEMBERSHIP_DOES_NOT_EXIST));
+        CommitteeMembership membershipToBeDeleted = committeeMembershipRepository.findMembershipBetweenCommitteeAndMember(committee.getId(), member.getId()).orElseThrow(() -> new MembershipDoesNotExistException(ExceptionMessages.MEMBERSHIP_DOES_NOT_EXIST));
 
-        if(membershipToBeDeleted.getRole().equalsIgnoreCase("coordinator"))
+        if (membershipToBeDeleted.getRole().equalsIgnoreCase("coordinator"))
             throw new IllegalOperationException("Coordinator can't be removed from the committee");
         //TODO: Error (handle this properly)
 

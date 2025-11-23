@@ -6,7 +6,6 @@ import com.sep.mmms_backend.dto.CommitteeMembershipDto;
 import com.sep.mmms_backend.dto.DecisionDto;
 import com.sep.mmms_backend.dto.MinuteDataDto;
 import com.sep.mmms_backend.entity.Committee;
-import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.enums.MinuteLanguage;
@@ -66,9 +65,9 @@ public class MeetingMinutePreparationService {
 
         minuteData.setCoordinatorFullName(getCoordinatorFullName(committee));
 
-        minuteData.setDecisions(meeting.getDecisions().stream().map(decision-> new DecisionDto(decision.getDecisionId(), decision.getDecision())).toList());
+        minuteData.setDecisions(meeting.getDecisions().stream().map(decision -> new DecisionDto(decision.getDecisionId(), decision.getDecision())).toList());
 
-        minuteData.setAgendas(meeting.getAgendas().stream().map(agenda-> new AgendaDto(agenda.getAgendaId(), agenda.getAgenda())).toList());
+        minuteData.setAgendas(meeting.getAgendas().stream().map(agenda -> new AgendaDto(agenda.getAgendaId(), agenda.getAgenda())).toList());
 
         minuteData.setCommitteeMemberships(getMembershipForMinute(committee));
 
@@ -82,7 +81,7 @@ public class MeetingMinutePreparationService {
         DateConverter dc = new DateConverter();
         try {
             minuteDataDto.setMeetingHeldDateNepali(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/"));
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("TODO: Handle Exception");
         }
         minuteDataDto.setMeetingHeldDate(meeting.getHeldDate());
@@ -92,7 +91,7 @@ public class MeetingMinutePreparationService {
     private List<CommitteeMembershipDto> getMembershipForMinute(Committee committee) {
         List<CommitteeMembershipDto> memberships;
 
-        memberships = committee.getMemberships().stream().map(membership -> {
+        memberships = committee.getSortedMemberships().stream().map(membership -> {
             Member member = membership.getMember();
             String fullName = member.getPost() + " " + member.getFirstName() + " " + member.getLastName();
             return new CommitteeMembershipDto(fullName, membership.getRole());
@@ -103,7 +102,7 @@ public class MeetingMinutePreparationService {
 
 
     private String getMeetingHeldDay(LocalDate date, MinuteLanguage language) {
-        if(MinuteLanguage.NEPALI.equals(language)) {
+        if (MinuteLanguage.NEPALI.equals(language)) {
             return switch (date.getDayOfWeek()) {
                 case SUNDAY -> "आइतबार";
                 case MONDAY -> "सोमबार";
@@ -116,7 +115,7 @@ public class MeetingMinutePreparationService {
             };
         }
 
-        return switch(date.getDayOfWeek()) {
+        return switch (date.getDayOfWeek()) {
             case SUNDAY -> "Sunday";
             case MONDAY -> "Monday";
             case TUESDAY -> "Tuesday";
@@ -133,22 +132,22 @@ public class MeetingMinutePreparationService {
         String partOfDay;
 
         if (hour >= 5 && hour < 12) {
-            if(language.equals(MinuteLanguage.NEPALI))
+            if (language.equals(MinuteLanguage.NEPALI))
                 partOfDay = "बिहान";
             else
                 partOfDay = "Morning";
         } else if (hour >= 12 && hour < 17) {
-            if(language.equals(MinuteLanguage.NEPALI))
+            if (language.equals(MinuteLanguage.NEPALI))
                 partOfDay = "दिउँसो";
             else
                 partOfDay = "Afternoon";
         } else if (hour >= 17 && hour < 21) {
-            if(language.equals(MinuteLanguage.NEPALI))
-                partOfDay ="साँझ";
+            if (language.equals(MinuteLanguage.NEPALI))
+                partOfDay = "साँझ";
             else
                 partOfDay = "Evening";
         } else {
-            if(language.equals(MinuteLanguage.NEPALI))
+            if (language.equals(MinuteLanguage.NEPALI))
                 partOfDay = "राति";
             else
                 partOfDay = "Night";
@@ -160,11 +159,6 @@ public class MeetingMinutePreparationService {
     private String getCoordinatorFullName(Committee committee) {
         return committee.getCoordinator().getPost() + " " + committee.getCoordinator().getFirstName() + " " + committee.getCoordinator().getLastName();
     }
-
-
-
-
-
 
 
     //----------------------------------------------------------------------------------
@@ -211,65 +205,59 @@ public class MeetingMinutePreparationService {
             XWPFParagraph paragraph = null;
             XWPFRun run = null;
             Element a4_box = html.getElementById("a4-box");
-            if(a4_box == null) {
+            if (a4_box == null) {
                 throw new Exception();
             }
 
 
-
-            for(Element element: a4_box.children()) {
-                if(element.className().contains("introduction")) {
+            for (Element element : a4_box.children()) {
+                if (element.className().contains("introduction")) {
 
                     //rest of the classes(which are used for styling)
                     List<String> stylings = Arrays.asList(element.className().split("\\s+"));
 
                     Elements children = element.children();
-                    for(Element child: children) {
-                        if(child.className().equals("introduction-body")) {
+                    for (Element child : children) {
+                        if (child.className().equals("introduction-body")) {
                             paragraph = document.createParagraph();
                             paragraph.setSpacingAfter(100);
                             run = paragraph.createRun();
                             run.setText(element.text());
 
-                            if(stylings.contains("justify-text")) {
+                            if (stylings.contains("justify-text")) {
                                 styleJustifyText(paragraph);
                             }
                         }
                     }
-                }
-
-                else if (element.className().contains("memberships")) {
+                } else if (element.className().contains("memberships")) {
                     Elements children = element.children();
 
                     //attendee has two children, a heading, and the table
-                    for(Element child: children) {
+                    for (Element child : children) {
 
-                        if(child.className().contains("heading")) {
+                        if (child.className().contains("heading")) {
                             paragraph = document.createParagraph();
                             paragraph.setSpacingBefore(100);
                             paragraph.setSpacingAfter(200);
                             styleHeading(paragraph.createRun(), child);
                         }
 
-                        if(child.nodeName().equals("table")) {
+                        if (child.nodeName().equals("table")) {
                             XWPFTable newTable = document.createTable();
                             final int PADDING_LEFT = 100;
                             final int PADDING_TOP = 100;
-                            newTable.setCellMargins(PADDING_TOP, PADDING_LEFT, 0,0 );
+                            newTable.setCellMargins(PADDING_TOP, PADDING_LEFT, 0, 0);
                             newTable.setWidth(XWPFTable.DEFAULT_PERCENTAGE_WIDTH);
 
                             copyTable(newTable, child);
                         }
                     }
-                }
-
-
-                else if(element.className().contains("agendas")) {
+                } else if (element.className().contains("agendas")) {
                     Elements children = element.children();
 
                     //deicisions has two children, a heading, and a list
-                    for(Element child: children) {
-                        if(child.className().contains("heading")) {
+                    for (Element child : children) {
+                        if (child.className().contains("heading")) {
                             paragraph = document.createParagraph();
                             paragraph.setSpacingBefore(200);
                             paragraph.setSpacingAfter(200);
@@ -277,7 +265,7 @@ public class MeetingMinutePreparationService {
                             styleHeading(run, child);
                         }
 
-                        if(child.nodeName().equals("ol")) {
+                        if (child.nodeName().equals("ol")) {
                             Elements agendas = child.children();
                             int count = 1;
                             final int DECISION_SPACING = 17;
@@ -316,14 +304,12 @@ public class MeetingMinutePreparationService {
                             }
                         }
                     }
-                }
-
-                else if(element.className().contains("decisions")) {
+                } else if (element.className().contains("decisions")) {
                     Elements children = element.children();
 
                     //deicisions has two children, a heading, and a list
-                    for(Element child: children) {
-                        if(child.className().contains("heading")) {
+                    for (Element child : children) {
+                        if (child.className().contains("heading")) {
                             paragraph = document.createParagraph();
                             paragraph.setSpacingBefore(200);
                             paragraph.setSpacingAfter(200);
@@ -331,7 +317,7 @@ public class MeetingMinutePreparationService {
                             styleHeading(run, child);
                         }
 
-                        if(child.nodeName().equals("ol")) {
+                        if (child.nodeName().equals("ol")) {
                             Elements decisions = child.children();
                             int count = 1;
                             final int DECISION_SPACING = 17;
@@ -376,7 +362,7 @@ public class MeetingMinutePreparationService {
             document.write(out);
             byte[] bytes = out.toByteArray();
             return bytes;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw e;
         }
     }
@@ -393,21 +379,20 @@ public class MeetingMinutePreparationService {
     }
 
 
-
     //copies html table to msword table
     public void copyTable(XWPFTable newTable, Element oldTable) {
         //getting all the rows
         Elements oldRows = oldTable.select("tr");
 
         //iterate through the rows
-        for(int i = 0; i<oldRows.size(); i++) {
+        for (int i = 0; i < oldRows.size(); i++) {
             Element oldRow = oldRows.get(i);
 
             //getting the individual cells
             Elements oldCells = oldRow.select("th, td");
 
             //create new row(skip first because Apache POI creates one by default)
-            XWPFTableRow newTableRow = (i==0) ? newTable.getRow(0): newTable.createRow();
+            XWPFTableRow newTableRow = (i == 0) ? newTable.getRow(0) : newTable.createRow();
 
 
             //set the min-height of the table row
@@ -416,16 +401,16 @@ public class MeetingMinutePreparationService {
             newTableRow.setHeightRule(TableRowHeightRule.AT_LEAST);
 
             //get the data from each cell and populate the XWPFTableRow
-            for(int j = 0; j<oldCells.size(); j++) {
+            for (int j = 0; j < oldCells.size(); j++) {
                 String oldCellText = oldCells.get(j).text();
                 //remove the first cell in the first row which is pre-built by the framework
-                if(i==0 && j==0) {
+                if (i == 0 && j == 0) {
                     newTableRow.removeCell(0);
                 }
 
                 XWPFTableCell cell = null;
                 //only create new cells, if jth cell does not exist
-                if(newTableRow.getTableCells().size()< j+1) {
+                if (newTableRow.getTableCells().size() < j + 1) {
                     cell = newTableRow.createCell();
                 } else {
                     cell = newTableRow.getCell(j);
@@ -437,11 +422,11 @@ public class MeetingMinutePreparationService {
                 XWPFRun run = para.createRun();
                 run.setText(oldCellText);
 
-                if(j==0) {
+                if (j == 0) {
                     newTableRow.getCell(j).setWidth("5%");
-                } else if(j==1 || j==2) {
+                } else if (j == 1 || j == 2) {
                     newTableRow.getCell(j).setWidth("30%");
-                } else if(j==3) {
+                } else if (j == 3) {
                     newTableRow.getCell(j).setWidth("35%");
                 }
             }

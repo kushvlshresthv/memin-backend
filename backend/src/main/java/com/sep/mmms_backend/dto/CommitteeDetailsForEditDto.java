@@ -3,6 +3,7 @@ package com.sep.mmms_backend.dto;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.enums.CommitteeStatus;
 import com.sep.mmms_backend.enums.MinuteLanguage;
+
 import java.util.List;
 
 public class CommitteeDetailsForEditDto {
@@ -24,7 +25,7 @@ public class CommitteeDetailsForEditDto {
         this.minuteLanguage = committee.getMinuteLanguage();
         this.coordinator = new MemberSearchResultDto(committee.getCoordinator());
 
-        this.membersWithRoles = committee.getMemberships().stream().map(membership -> new MemberSearchResultWithRoleDto(new MemberSearchResultDto(membership.getMember()), membership.getRole())).toList();
+        this.membersWithRoles = committee.getSortedMemberships().stream().map(membership -> new MemberSearchResultWithRoleDto(new MemberSearchResultDto(membership.getMember()), membership.getRole())).toList();
     }
 
     public static class MemberSearchResultWithRoleDto {

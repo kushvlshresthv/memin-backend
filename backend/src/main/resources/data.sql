@@ -2,70 +2,77 @@ INSERT INTO app_users (username, password, email, firstname, lastname)
 VALUES ('username', '{noop}password', 'username@gmail.com', 'admin', 'admin'),
        ('not_username', '{noop}password', 'username@gmail.com', 'admin', 'admin');
 
-INSERT INTO members (
-    member_post, member_title,
-    member_created_by, member_created_date, member_modified_by, member_modified_date, member_uuid, member_first_name, member_last_name
-)
-VALUES
-    ('प्रा.','Campus Cheif','username', '2025-07-04', 'username', '2025-07-04', UUID(), 'हरि', 'बहादुर'),
-    ('डा.','IOM Delegate','username', '2025-07-05', 'username', '2025-07-05', UUID(), 'गिता', 'ओली'),
-    ('डा.','IMO Chief','username', '2025-07-06', 'username', '2025-07-06', UUID(), 'विकाश', 'लामा'),
-    ('प्रा.','MSc Environmental Science','username', '2025-07-07', 'username', '2025-07-07', UUID(), 'सुनिता', 'महार्जन'),
-    ('डा.','PhD Civil Engineering','username', '2025-07-12', 'username', '2025-07-12', UUID(), 'कमल', 'पाण्डे'),
-    ('प्रा.','MBS','username', '2025-07-13', 'username', '2025-07-13', UUID(), 'दीपा', 'गुरुङ'),
-    ('प्रा.','MSc Computer Science','username', '2025-07-14', 'username', '2025-07-14', UUID(), 'नविन', 'तामाङ'),
-    ('डा.','MA Sociology','username', '2025-07-15', 'username', '2025-07-15', UUID(), 'अनिता', 'श्रेष्ठ'),
-    ('Dr.','BSc CSIT','username', '2025-07-16', 'username', '2025-07-16', UUID(), 'Ramesh', 'Karki'),
-    ('Dr.','PhD Biotechnology','username', '2025-07-17', 'username', '2025-07-17', UUID(), 'Sita', 'Basnet'),
-    ('Dr.','M.Ed','username', '2025-07-18', 'username', '2025-07-18', UUID(), 'Prakash', 'Rana'),
-    ('Dr.','MA Economics','username', '2025-07-19', 'username', '2025-07-19', UUID(), 'Mina', 'Thapa'),
-    ('Prof.','MSc IT','username', '2025-07-20', 'username', '2025-07-20', UUID(), 'Dipesh', 'K.C'),
-    ('प्रा.','PhD Management','username', '2025-07-21', 'username', '2025-07-21', UUID(), 'सरिता', 'ढकाल'),
-    ('प्रा.','EEC Chief','username', '2025-07-22', 'username', '2025-07-22', UUID(), 'विजय', 'गुरुङ'),
-    ('प्रा.','MSc CSIT', 'username', '2025-07-23', 'username', '2025-07-23', UUID(), 'रोजिना', 'महार्जन'),
-    ('डा.','PhD Information Systems','username', '2025-07-24', 'username', '2025-07-24', UUID(), 'सुमन', 'बिष्ट');
-
+INSERT INTO members (member_post, member_title,
+                     member_created_by, member_created_date, member_modified_by, member_modified_date, member_uuid,
+                     member_first_name, member_last_name)
+VALUES ('प्रा.', 'Campus Cheif', 'username', '2025-07-04', 'username', '2025-07-04', UUID(), 'हरि', 'बहादुर'),
+       ('डा.', 'IOM Delegate', 'username', '2025-07-05', 'username', '2025-07-05', UUID(), 'गिता', 'ओली'),
+       ('डा.', 'IMO Chief', 'username', '2025-07-06', 'username', '2025-07-06', UUID(), 'विकाश', 'लामा'),
+       ('प्रा.', 'MSc Environmental Science', 'username', '2025-07-07', 'username', '2025-07-07', UUID(), 'सुनिता',
+        'महार्जन'),
+       ('डा.', 'PhD Civil Engineering', 'username', '2025-07-12', 'username', '2025-07-12', UUID(), 'कमल', 'पाण्डे'),
+       ('प्रा.', 'MBS', 'username', '2025-07-13', 'username', '2025-07-13', UUID(), 'दीपा', 'गुरुङ'),
+       ('प्रा.', 'MSc Computer Science', 'username', '2025-07-14', 'username', '2025-07-14', UUID(), 'नविन', 'तामाङ'),
+       ('डा.', 'MA Sociology', 'username', '2025-07-15', 'username', '2025-07-15', UUID(), 'अनिता', 'श्रेष्ठ'),
+       ('Dr.', 'BSc CSIT', 'username', '2025-07-16', 'username', '2025-07-16', UUID(), 'Ramesh', 'Karki'),
+       ('Dr.', 'PhD Biotechnology', 'username', '2025-07-17', 'username', '2025-07-17', UUID(), 'Sita', 'Basnet'),
+       ('Dr.', 'M.Ed', 'username', '2025-07-18', 'username', '2025-07-18', UUID(), 'Prakash', 'Rana'),
+       ('Dr.', 'MA Economics', 'username', '2025-07-19', 'username', '2025-07-19', UUID(), 'Mina', 'Thapa'),
+       ('Prof.', 'MSc IT', 'username', '2025-07-20', 'username', '2025-07-20', UUID(), 'Dipesh', 'K.C'),
+       ('प्रा.', 'PhD Management', 'username', '2025-07-21', 'username', '2025-07-21', UUID(), 'सरिता', 'ढकाल'),
+       ('प्रा.', 'EEC Chief', 'username', '2025-07-22', 'username', '2025-07-22', UUID(), 'विजय', 'गुरुङ'),
+       ('प्रा.', 'MSc CSIT', 'username', '2025-07-23', 'username', '2025-07-23', UUID(), 'रोजिना', 'महार्जन'),
+       ('डा.', 'PhD Information Systems', 'username', '2025-07-24', 'username', '2025-07-24', UUID(), 'सुमन', 'बिष्ट');
 
 
 -- Insert Committees
-INSERT INTO committees (
-    committee_name,
-    committee_description,
-    committee_created_by,
-    committee_created_date,
-    committee_modified_by,
-    committee_modified_date,
-    committee_uuid,
-    committee_status,
-    committee_max_no_of_meetings,
-    committee_minute_language,
-    committee_coordinator_id
-)
-VALUES
-    ('Academic Committee',                 'Oversee academic policies and curriculum development', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
-    ('Events Committee',                   'Plan and organize all institutional events and seminars', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10, 'ENGLISH', 1),
-    ('Research and Development Committee', 'Promote research and innovation', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
-    ('Disciplinary Committee',             'Handle student and staff disciplinary issues', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
-    ('Student Welfare Committee',          'Addresse student concerns and well-being', 1, CURDATE(), 'username', CURDATE(), UUID(),'ACTIVE', 10, 'NEPALI', 1),
-    ('IT and Infrastructure Committee',    'Manage IT resources and campus infrastructure', 2, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
-    ('इ.अ.स. BE/BArch केन्द्रीकृत भर्ना २०८२ अनुगमन',    'त्रि.वि. इ.अ.स. अन्तर्गत आंगिक क्याम्पस तथा सम्बन्धन प्राप्त कलेजहरुमा शैक्षिक वर्ष २०८२/०८३ मा संचालन हुने स्नातक (BE/BArch) तहका विभिन्न कार्यक्रमहरुमा केन्द्रीकृत भर्ना अनुगमन', 1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 1, 'NEPALI', 1);
+INSERT INTO committees (committee_name,
+                        committee_description,
+                        committee_created_by,
+                        committee_created_date,
+                        committee_modified_by,
+                        committee_modified_date,
+                        committee_uuid,
+                        committee_status,
+                        committee_max_no_of_meetings,
+                        committee_minute_language,
+                        committee_coordinator_id)
+VALUES ('Academic Committee', 'Oversee academic policies and curriculum development', 1, CURDATE(), 'username',
+        CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+       ('Events Committee', 'Plan and organize all institutional events and seminars', 1, CURDATE(), 'username',
+        CURDATE(), UUID(), 'ACTIVE', 10, 'ENGLISH', 1),
+       ('Research and Development Committee', 'Promote research and innovation', 1, CURDATE(), 'username', CURDATE(),
+        UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+       ('Disciplinary Committee', 'Handle student and staff disciplinary issues', 1, CURDATE(), 'username', CURDATE(),
+        UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+       ('Student Welfare Committee', 'Addresse student concerns and well-being', 1, CURDATE(), 'username', CURDATE(),
+        UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+       ('IT and Infrastructure Committee', 'Manage IT resources and campus infrastructure', 2, CURDATE(), 'username',
+        CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+       ('इ.अ.स. BE/BArch केन्द्रीकृत भर्ना २०८२ अनुगमन',
+        'त्रि.वि. इ.अ.स. अन्तर्गत आंगिक क्याम्पस तथा सम्बन्धन प्राप्त कलेजहरुमा शैक्षिक वर्ष २०८२/०८३ मा संचालन हुने स्नातक (BE/BArch) तहका विभिन्न कार्यक्रमहरुमा केन्द्रीकृत भर्ना अनुगमन',
+        1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 1, 'NEPALI', 1);
 
 -- Insert Meetings
-INSERT INTO meetings (
-    committee_id, meeting_title,
-    meeting_held_date, meeting_held_place, meeting_held_time,
-    created_by, updated_by, created_date, updated_date, uuid
-)
+INSERT INTO meetings (committee_id, meeting_title,
+                      meeting_held_date, meeting_held_place, meeting_held_time,
+                      created_by, updated_by, created_date, updated_date, uuid)
 VALUES
     -- meetings for committee 1
-    (1, 'Syllabus Update Discussion','2025-07-18', 'Pulchowk Campus',       '14:30:00', 'username', 'username', '2025-07-13', '2025-07-13',  UUID()),
-    (1, 'Annual Seminar Planning','2025-07-22', 'Auditorium',     '11:00:00', 'username', 'username', '2025-07-14', '2025-07-14', UUID()),
-    (1, 'Research Grant Proposals Review','2025-07-25', 'Innovation Hub', '13:00:00', 'username', 'username', '2025-07-21', '2025-07-21', UUID()),
-    (1, 'Review of Recent Incidents','2025-07-28', 'Admin Office 1', '10:00:00', 'username', 'username', '2025-07-22', '2025-07-22', UUID()),
+    (1, 'Syllabus Update Discussion', '2025-07-18', 'Pulchowk Campus', '14:30:00', 'username', 'username', '2025-07-13',
+     '2025-07-13', UUID()),
+    (1, 'Annual Seminar Planning', '2025-07-22', 'Auditorium', '11:00:00', 'username', 'username', '2025-07-14',
+     '2025-07-14', UUID()),
+    (1, 'Research Grant Proposals Review', '2025-07-25', 'Innovation Hub', '13:00:00', 'username', 'username',
+     '2025-07-21', '2025-07-21', UUID()),
+    (1, 'Review of Recent Incidents', '2025-07-28', 'Admin Office 1', '10:00:00', 'username', 'username', '2025-07-22',
+     '2025-07-22', UUID()),
 
     -- meetings for committee 2
-    (2, 'Canteen and Hostel Feedback Session','2025-07-29', 'Student Lounge', '15:00:00', 'username', 'username', '2025-07-23', '2025-07-23', UUID()),
-    (2, 'Campus Wi-Fi Upgrade Plan','2025-08-01', 'IT Department',  '11:00:00', 'username', 'username', '2025-07-25', '2025-07-25', UUID());
+    (2, 'Canteen and Hostel Feedback Session', '2025-07-29', 'Student Lounge', '15:00:00', 'username', 'username',
+     '2025-07-23', '2025-07-23', UUID()),
+    (2, 'Campus Wi-Fi Upgrade Plan', '2025-08-01', 'IT Department', '11:00:00', 'username', 'username', '2025-07-25',
+     '2025-07-25', UUID());
 
 -- Insert Decisions
 INSERT INTO decisions (meeting_id, decision, uuid)
@@ -94,10 +101,13 @@ VALUES
     (4, 'कृत्रिम बुद्धिमत्ता अनुसन्धानमा काठमाडौँ विश्वविद्यालयसँग सहकार्य सुरु गरिनेछ।', UUID()),
 
     -- decisions for meeting 5
-    (5, 'The student involved in fraudulent work will be given a formal warning and will be required to resubmit the work.', UUID()),
+    (5,
+     'The student involved in fraudulent work will be given a formal warning and will be required to resubmit the work.',
+     UUID()),
     (5, 'The examination code of conduct will be updated and sent to all students.', UUID()),
     (5, 'A workshop on academic integrity will be made mandatory for all first-year students.', UUID()),
-    (5, 'The decision regarding the hostel rule violation has been postponed until further evidence is available.', UUID()),
+    (5, 'The decision regarding the hostel rule violation has been postponed until further evidence is available.',
+     UUID()),
 
     -- decisions for meeting 6
     (6, 'हालको क्यान्टिन सेवाप्रदायकसँगको सम्झौता नकारात्मक प्रतिक्रियाका आधारमा पुनरावलोकन गरिनेछ।', UUID()),
@@ -106,32 +116,31 @@ VALUES
     (6, 'नयाँ खेलकुद सुविधाको माग मूल्याङ्कन गर्न सर्वेक्षण गरिनेछ।', UUID());
 
 -- Insert Committee Memberships
-INSERT INTO committee_memberships (committee_id, member_id, role, uuid)
+INSERT INTO committee_memberships (committee_id, member_id, role, uuid, display_order)
 VALUES
     -- Committee 1 (8 members)
-    (1, 2, 'सदस्य', UUID()),
-    (1, 3, 'सदस्य', UUID()),
-    (1, 4, 'सदस्य', UUID()),
-    (1, 5, 'सदस्य', UUID()),
-    (1, 6, 'सदस्य', UUID()),
+    (1, 2, 'सदस्य', UUID(), 1),
+    (1, 3, 'सदस्य', UUID(), 2),
+    (1, 4, 'सदस्य', UUID(), 3),
+    (1, 5, 'सदस्य', UUID(), 4),
+    (1, 6, 'सदस्य', UUID(), 5),
 
     -- Committee 2 (5 members)
-    (2, 9,  'Member', UUID()),
-    (2, 10, 'Member', UUID()),
-    (2, 11, 'Member-Secreatary', UUID()),
-    (2, 12, 'Member', UUID()),
-    (2, 13, 'Member', UUID()),
+    (2, 9, 'Member', UUID(), 1),
+    (2, 10, 'Member', UUID(), 2),
+    (2, 11, 'Member-Secreatary', UUID(), 3),
+    (2, 12, 'Member', UUID(), 4),
+    (2, 13, 'Member', UUID(), 5),
 
     -- Committee 3 (3 members)
-    (3, 14, 'सदस्य', UUID()),
-    (3, 15, 'सदस्य', UUID()),
-    (3, 16, 'सदस्य', UUID()),
+    (3, 14, 'सदस्य', UUID(), 1),
+    (3, 15, 'सदस्य', UUID(), 2),
+    (3, 16, 'सदस्य', UUID(), 3),
 
     -- Committee 4 (1 member)
-    (4, 17, 'सदस्य', UUID()),
-    (4,  7, 'सदस्य', UUID()),
-     (4, 8, 'सदस्य', UUID());
-
+    (4, 17, 'सदस्य', UUID(), 1),
+    (4, 7, 'सदस्य', UUID(), 2),
+    (4, 8, 'सदस्य', UUID(), 3);
 
 
 
@@ -189,4 +198,5 @@ VALUES
     (5, 'Discussion and decision on issue regarding the student involved in fraudulent work.', UUID()),
     (5, 'Review and update of the examination code of conduct for all students.', UUID()),
     (5, 'Making the academic integrity workshop mandatory for all first-year students.', UUID()),
-    (5, 'Postponement of the decision on issue concerning hostel rule violation until further evidence is obtained.', UUID());
+    (5, 'Postponement of the decision on issue concerning hostel rule violation until further evidence is obtained.',
+     UUID());

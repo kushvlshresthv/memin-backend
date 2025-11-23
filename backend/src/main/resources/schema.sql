@@ -52,6 +52,7 @@ CREATE TABLE committee_memberships (
            uuid VARCHAR(36) NOT NULL UNIQUE,
            member_id INT NOT NULL,
            role VARCHAR(255) NOT NULL,
+           display_order INT NOT NULL,
            PRIMARY KEY (committee_id, member_id),
            FOREIGN KEY (committee_id) REFERENCES committees(committee_id),
            FOREIGN KEY (member_id) REFERENCES members(member_id)

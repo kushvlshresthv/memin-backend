@@ -2,7 +2,6 @@ package com.sep.mmms_backend.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @AllArgsConstructor
-@Table(name="committee_memberships")
+@Table(name = "committee_memberships")
 /*This class implements Persistable because it uses 'composite primary key' which is always populated before the entity is saved, and hence JPA considers it 'Not New'
 
  Due to this, JPA tries to fetch the entity from the database with the poulated composite primary key value and fails.
@@ -39,14 +38,14 @@ public class CommitteeMembership implements Persistable<CommitteeMembershipId> {
      */
 
     //NOTE: here the primary key column (from the above @EmbeddedId) is also the foreign key column
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("committeeId")  //it maps a relationship field to a part of the embedded primary key
-    @JoinColumn(name="committee_id", referencedColumnName="committee_id")
+    @JoinColumn(name = "committee_id", referencedColumnName = "committee_id")
     private Committee committee;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("memberId")
-    @JoinColumn(name="member_id", referencedColumnName="member_id")
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id")
     private Member member;
 
 
@@ -60,9 +59,11 @@ public class CommitteeMembership implements Persistable<CommitteeMembershipId> {
      */
     private String uuid;
 
-    @Column(name="role", nullable=false)
-    @NotBlank(message = "Role must be defined when adding the users to a committee")
+    @Column(name = "role", nullable = false)
     private String role;
+
+    @Column(name = "display_order", nullable = false)
+    private Integer order;
 
     public CommitteeMembership() {
         this.uuid = UUID.randomUUID().toString();
