@@ -1,7 +1,6 @@
 package com.sep.mmms_backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sep.mmms_backend.validators.annotations.FieldsValueMatch;
 import com.sep.mmms_backend.validators.annotations.UsernameFormat;
 import jakarta.persistence.*;
@@ -18,7 +17,7 @@ import static com.sep.mmms_backend.global_constants.ValidationErrorMessages.*;
 @Getter
 @Setter
 @Entity
-@Table(name="app_users")
+@Table(name = "app_users")
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
@@ -28,32 +27,32 @@ import static com.sep.mmms_backend.global_constants.ValidationErrorMessages.*;
 })
 public class AppUser {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer uid;
 
 
     @NotBlank(message = FIELD_CANNOT_BE_EMPTY)
-    @Column(name="firstname")
+    @Column(name = "firstname")
     String firstName;
 
     @NotBlank(message = FIELD_CANNOT_BE_EMPTY)
-    @Column(name="lastname")
+    @Column(name = "lastname")
     String lastName;
 
-    @Column(name="username")
+    @Column(name = "username")
     @NotBlank(message = FIELD_CANNOT_BE_EMPTY)
     @UsernameFormat
     String username;
 
     @NotBlank(message = FIELD_CANNOT_BE_EMPTY)
-    @Email(message= VALID_EMAIL_REQUIRED)
-    @Column(name="email")
+    @Email(message = VALID_EMAIL_REQUIRED)
+    @Column(name = "email")
     String email;
 
     @NotBlank(message = FIELD_CANNOT_BE_EMPTY)
-    @Column(name="password")
+    @Column(name = "password")
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Size(min=5, message= CHOOSE_STRONGER_PASSWORD)
+    @Size(min = 5, message = CHOOSE_STRONGER_PASSWORD)
     String password;
 
     @NotEmpty(message = FIELD_CANNOT_BE_EMPTY)
@@ -61,7 +60,7 @@ public class AppUser {
     String confirmPassword;
 
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Committee> myCommittees;
 }

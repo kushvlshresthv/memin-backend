@@ -46,9 +46,9 @@ VALUES ('Academic Committee', 'Oversee academic policies and curriculum developm
        ('Disciplinary Committee', 'Handle student and staff disciplinary issues', 1, CURDATE(), 'username', CURDATE(),
         UUID(), 'ACTIVE', 10, 'NEPALI', 1),
        ('Student Welfare Committee', 'Addresse student concerns and well-being', 1, CURDATE(), 'username', CURDATE(),
-        UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+        UUID(), 'INACTIVE', 10, 'NEPALI', 1),
        ('IT and Infrastructure Committee', 'Manage IT resources and campus infrastructure', 2, CURDATE(), 'username',
-        CURDATE(), UUID(), 'ACTIVE', 10, 'NEPALI', 1),
+        CURDATE(), UUID(), 'INACTIVE', 10, 'NEPALI', 1),
        ('इ.अ.स. BE/BArch केन्द्रीकृत भर्ना २०८२ अनुगमन',
         'त्रि.वि. इ.अ.स. अन्तर्गत आंगिक क्याम्पस तथा सम्बन्धन प्राप्त कलेजहरुमा शैक्षिक वर्ष २०८२/०८३ मा संचालन हुने स्नातक (BE/BArch) तहका विभिन्न कार्यक्रमहरुमा केन्द्रीकृत भर्ना अनुगमन',
         1, CURDATE(), 'username', CURDATE(), UUID(), 'ACTIVE', 1, 'NEPALI', 1);

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommitteeRepository extends JpaRepository<Committee,Integer> {
+public interface CommitteeRepository extends JpaRepository<Committee, Integer> {
 
     /**
      * if the committee is not found, the caller is responsible to check it and handle it
@@ -28,14 +28,17 @@ public interface CommitteeRepository extends JpaRepository<Committee,Integer> {
      * @param committeeId the id of the committee to be loaded from the database
      */
     default Committee findCommitteeById(int committeeId) {
-        Optional<Committee> committee =  this.findById(committeeId);
-        if(committee.isEmpty()){
+        Optional<Committee> committee = this.findById(committeeId);
+        if (committee.isEmpty()) {
             throw new CommitteeDoesNotExistException(ExceptionMessages.COMMITTEE_DOES_NOT_EXIST, committeeId);
         }
 
         return committee.get();
     }
 
-    @Query("Select c FROM Committee c where c.createdBy= :username")
-    List<Committee> getAllCommittees(@Param("username") AppUser currentUser);
+    @Query("Select c from Committee c where c.createdBy= :createdBy AND c.status= 'ACTIVE'")
+    List<Committee> getAllActiveCommittees(@Param("createdBy") AppUser currentUser);
+
+    @Query("Select c FROM Committee c where c.createdBy= :createdBy")
+    List<Committee> getAllCommittees(@Param("createdBy") AppUser currentUser);
 }

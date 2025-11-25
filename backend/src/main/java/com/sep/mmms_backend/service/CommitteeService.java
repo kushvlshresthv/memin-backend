@@ -192,8 +192,9 @@ public class CommitteeService {
     }
 
 
-    public List<Committee> getAllCommittees(String username) {
+    public List<Committee> getAllActiveCommittees(String username) {
         AppUser currentUser = appUserService.loadUserByUsername(username);
+        List<Committee> activeCommittees = committeeRepository.getAllActiveCommittees(currentUser);
         return committeeRepository.getAllCommittees(currentUser);
     }
 
