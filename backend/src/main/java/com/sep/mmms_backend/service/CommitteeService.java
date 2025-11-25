@@ -2,7 +2,10 @@ package com.sep.mmms_backend.service;
 
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
 import com.sep.mmms_backend.dto.*;
-import com.sep.mmms_backend.entity.*;
+import com.sep.mmms_backend.entity.Committee;
+import com.sep.mmms_backend.entity.CommitteeMembership;
+import com.sep.mmms_backend.entity.Meeting;
+import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.exceptions.*;
 import com.sep.mmms_backend.repository.CommitteeMembershipRepository;
 import com.sep.mmms_backend.repository.CommitteeRepository;
@@ -197,6 +200,11 @@ public class CommitteeService {
         return activeCommittees;
     }
 
+    public List<Committee> getAllInactiveCommittees(String username) {
+        List<Committee> activeCommittees = committeeRepository.getAllInActiveCommittees(username);
+        return activeCommittees;
+    }
+
 
     @Transactional
     @CheckCommitteeAccess
@@ -212,12 +220,12 @@ public class CommitteeService {
     }
 
 
-    @Transactional
-    @CheckCommitteeAccess
-    @Deprecated
-    public void deleteCommittee(Committee committeeToBeDeleted, String username) {
-        committeeRepository.delete(committeeToBeDeleted);
-    }
+//    @Transactional
+//    @CheckCommitteeAccess
+//    @Deprecated
+//    public void deleteCommittee(Committee committeeToBeDeleted, String username) {
+//        committeeRepository.delete(committeeToBeDeleted);
+//    }
 
 
     public Optional<Committee> findCommitteeByIdNoException(int committeeId) {
@@ -268,57 +276,56 @@ public class CommitteeService {
      * <br><br>
      * Here, since we are using CommitteeMembershipRepository, JPA will decide whether the membership is either new or not by calling isNew() method since CommmiteeMembership implements Presistable interface
      */
-    //TODO: Create Tests
-    @CheckCommitteeAccess
-    @Transactional
-    @Deprecated
-    public void addMembershipsToCommittee(Committee committee, LinkedHashSet<NewMembershipRequest> newMembershipRequests, String username) {
-        List<Integer> newMemberIds = newMembershipRequests.stream().map(NewMembershipRequest::memberId).collect(Collectors.toList());
-
-        List<Member> validNewMembers = memberRepository.findAccessibleMembersByIds(newMemberIds, username);
-        memberRepository.validateWhetherAllMembersAreFound(newMemberIds, validNewMembers);
-
-        //check if the membership for the member and committee already exists
-        List<CommitteeMembership> alreadyExistingMemberships = committeeMembershipRepository.findExistingMemberships(newMemberIds, committee.getId());
-        if (!alreadyExistingMemberships.isEmpty()) {
-            Map<Integer, String> memberIdAndRole = alreadyExistingMemberships.stream().collect(Collectors.toMap(membership -> membership.getMember().getId(), CommitteeMembership::getRole));
-            throw new MembershipAlreadyExistsException(ExceptionMessages.MEMBERSHIP_ALREADY_EXISTS, memberIdAndRole);
-        }
-
-
-        Map<Integer, String> rolesMap = newMembershipRequests.stream().collect(Collectors.toMap(NewMembershipRequest::memberId, NewMembershipRequest::role));
-        List<CommitteeMembership> newMemberships = new ArrayList<>();
-
-        for (Member member : validNewMembers) {
-            CommitteeMembership newMembership = new CommitteeMembership();
-            newMembership.setCommittee(committee);
-            newMembership.setMember(member);
-            newMembership.setRole(rolesMap.get(member.getId()));
-            newMemberships.add(newMembership);
-        }
-
-        committeeMembershipRepository.saveAll(newMemberships);
-    }
-
+//    //TODO: Create Tests
+//    @CheckCommitteeAccess
+//    @Transactional
+//    @Deprecated
+//    public void addMembershipsToCommittee(Committee committee, LinkedHashSet<NewMembershipRequest> newMembershipRequests, String username) {
+//        List<Integer> newMemberIds = newMembershipRequests.stream().map(NewMembershipRequest::memberId).collect(Collectors.toList());
+//
+//        List<Member> validNewMembers = memberRepository.findAccessibleMembersByIds(newMemberIds, username);
+//        memberRepository.validateWhetherAllMembersAreFound(newMemberIds, validNewMembers);
+//
+//        //check if the membership for the member and committee already exists
+//        List<CommitteeMembership> alreadyExistingMemberships = committeeMembershipRepository.findExistingMemberships(newMemberIds, committee.getId());
+//        if (!alreadyExistingMemberships.isEmpty()) {
+//            Map<Integer, String> memberIdAndRole = alreadyExistingMemberships.stream().collect(Collectors.toMap(membership -> membership.getMember().getId(), CommitteeMembership::getRole));
+//            throw new MembershipAlreadyExistsException(ExceptionMessages.MEMBERSHIP_ALREADY_EXISTS, memberIdAndRole);
+//        }
+//
+//
+//        Map<Integer, String> rolesMap = newMembershipRequests.stream().collect(Collectors.toMap(NewMembershipRequest::memberId, NewMembershipRequest::role));
+//        List<CommitteeMembership> newMemberships = new ArrayList<>();
+//
+//        for (Member member : validNewMembers) {
+//            CommitteeMembership newMembership = new CommitteeMembership();
+//            newMembership.setCommittee(committee);
+//            newMembership.setMember(member);
+//            newMembership.setRole(rolesMap.get(member.getId()));
+//            newMemberships.add(newMembership);
+//        }
+//
+//        committeeMembershipRepository.saveAll(newMemberships);
+//    }
     public Committee findCommitteeById(int committeeId) {
         return committeeRepository.findCommitteeById(committeeId);
     }
 
-    //TODO: Check this implementation properly as this is not checked carefully
-    @CheckCommitteeAccess
-    @Deprecated
-    public void removeCommitteeMembership(Committee committee, Member member, String username) {
-        if (!member.getCreatedBy().equals(username)) {
-            throw new IllegalOperationException("Membership not accessible");
-            //TODO: Error (handle this properly by creating a custom exception)
-        }
-
-        CommitteeMembership membershipToBeDeleted = committeeMembershipRepository.findMembershipBetweenCommitteeAndMember(committee.getId(), member.getId()).orElseThrow(() -> new MembershipDoesNotExistException(ExceptionMessages.MEMBERSHIP_DOES_NOT_EXIST));
-
-        if (membershipToBeDeleted.getRole().equalsIgnoreCase("coordinator"))
-            throw new IllegalOperationException("Coordinator can't be removed from the committee");
-        //TODO: Error (handle this properly)
-
-        committeeMembershipRepository.delete(membershipToBeDeleted);
-    }
+//    //TODO: Check this implementation properly as this is not checked carefully
+//    @CheckCommitteeAccess
+//    @Deprecated
+//    public void removeCommitteeMembership(Committee committee, Member member, String username) {
+//        if (!member.getCreatedBy().equals(username)) {
+//            throw new IllegalOperationException("Membership not accessible");
+//            //TODO: Error (handle this properly by creating a custom exception)
+//        }
+//
+//        CommitteeMembership membershipToBeDeleted = committeeMembershipRepository.findMembershipBetweenCommitteeAndMember(committee.getId(), member.getId()).orElseThrow(() -> new MembershipDoesNotExistException(ExceptionMessages.MEMBERSHIP_DOES_NOT_EXIST));
+//
+//        if (membershipToBeDeleted.getRole().equalsIgnoreCase("coordinator"))
+//            throw new IllegalOperationException("Coordinator can't be removed from the committee");
+//        //TODO: Error (handle this properly)
+//
+//        committeeMembershipRepository.delete(membershipToBeDeleted);
+//    }
 }

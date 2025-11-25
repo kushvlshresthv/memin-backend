@@ -2,8 +2,6 @@ package com.sep.mmms_backend.controller;
 
 import com.sep.mmms_backend.dto.*;
 import com.sep.mmms_backend.entity.Committee;
-import com.sep.mmms_backend.entity.Member;
-import com.sep.mmms_backend.enums.CommitteeStatus;
 import com.sep.mmms_backend.response.Response;
 import com.sep.mmms_backend.response.ResponseMessages;
 import com.sep.mmms_backend.service.CommitteeService;
@@ -13,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 @RestController
@@ -38,20 +35,6 @@ public class CommitteeController {
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_CREATION_SUCCESS, committeeSummaryDto));
     }
 
-    @GetMapping("/getMyActiveCommitteeNamesAndIds")
-    //returns the name and id of 'ACTIVE' all committes for create meeting page
-    public ResponseEntity<Response> getMyCommitteeNamesAndIds(Authentication authentication) {
-        List<Committee> allCommittees = committeeService.getAllActiveCommittees(authentication.getName());
-
-        List<CommitteeIdAndNameDto> committeeIdsAndNames = new ArrayList<>();
-        allCommittees.forEach(committee -> {
-            if (committee.getStatus() == CommitteeStatus.ACTIVE)
-                committeeIdsAndNames.add(new CommitteeIdAndNameDto(committee.getId(), committee.getName()));
-        });
-
-
-        return ResponseEntity.ok(new Response(committeeIdsAndNames));
-    }
 
     @GetMapping("/getCommitteeDetailsForEditPage")
     public ResponseEntity<Response> getCommitteeDetailsForEditPage(@RequestParam int committeeId, Authentication authentication) {
@@ -70,6 +53,21 @@ public class CommitteeController {
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_UPDATION_SUCCESS));
     }
 
+
+    @GetMapping("/getMyActiveCommitteeNamesAndIds")
+    //returns the name and id of 'ACTIVE' all committes for create meeting page
+    public ResponseEntity<Response> getMyCommitteeNamesAndIds(Authentication authentication) {
+        List<Committee> allCommittees = committeeService.getAllActiveCommittees(authentication.getName());
+
+        List<CommitteeIdAndNameDto> committeeIdsAndNames = new ArrayList<>();
+        allCommittees.forEach(committee -> {
+            committeeIdsAndNames.add(new CommitteeIdAndNameDto(committee.getId(), committee.getName()));
+        });
+
+
+        return ResponseEntity.ok(new Response(committeeIdsAndNames));
+    }
+
     //TODO: Create Tests
     @GetMapping("/getMyActiveCommittees")
     //returns all the ACTIVE committees for the user
@@ -77,9 +75,20 @@ public class CommitteeController {
         List<Committee> committees = committeeService.getAllActiveCommittees(authentication.getName());
         List<CommitteeSummaryDto> committeeSummaryDtos = new ArrayList<>();
         committees.forEach(committee -> {
-            if (committee.getStatus() == CommitteeStatus.ACTIVE) {
-                committeeSummaryDtos.add(new CommitteeSummaryDto(committee));
-            }
+            committeeSummaryDtos.add(new CommitteeSummaryDto(committee));
+        });
+
+        return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEES_RETRIEVED_SUCCESSFULLY, committeeSummaryDtos));
+    }
+
+
+    @GetMapping("/getMyInactiveCommittees")
+    //returns all the ACTIVE committees for the user
+    public ResponseEntity<Response> getMyInactiveCommittees(Authentication authentication) {
+        List<Committee> committees = committeeService.getAllInactiveCommittees(authentication.getName());
+        List<CommitteeSummaryDto> committeeSummaryDtos = new ArrayList<>();
+        committees.forEach(committee -> {
+            committeeSummaryDtos.add(new CommitteeSummaryDto(committee));
         });
 
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEES_RETRIEVED_SUCCESSFULLY, committeeSummaryDtos));
@@ -87,13 +96,13 @@ public class CommitteeController {
 
 
     //TODO: Create Tests
-    @Deprecated
-    @PostMapping("/deleteCommittee")
-    public ResponseEntity<Response> deleteCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        committeeService.deleteCommittee(committee, authentication.getName());
-        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_DELETED_SUCCESSFULLY));
-    }
+//    @Deprecated
+//    @PostMapping("/deleteCommittee")
+//    public ResponseEntity<Response> deleteCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
+//        Committee committee = committeeService.findCommitteeById(committeeId);
+//        committeeService.deleteCommittee(committee, authentication.getName());
+//        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_DELETED_SUCCESSFULLY));
+//    }
 
 
     /**
@@ -121,25 +130,25 @@ public class CommitteeController {
     }
 
 
-    @Deprecated
-    @PostMapping("/addMembersToCommittee")
-    //NOTE: LinkedHashSet is made LinkedHashSet to preserve order and avoid duplicate memberIds
-    //TODO: Fix (this route should not add more coordinator to the committee)
-    //TODO: Create Tests
-    public ResponseEntity<Response> addMembershipsToCommittee(@RequestParam int committeeId, @RequestBody LinkedHashSet<NewMembershipRequest> newMemberships, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        committeeService.addMembershipsToCommittee(committee, newMemberships, authentication.getName());
-        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBER_ADDITION_SUCCESS));
-    }
+//    @Deprecated
+//    @PostMapping("/addMembersToCommittee")
+//    //NOTE: LinkedHashSet is made LinkedHashSet to preserve order and avoid duplicate memberIds
+//    //TODO: Fix (this route should not add more coordinator to the committee)
+//    //TODO: Create Tests
+//    public ResponseEntity<Response> addMembershipsToCommittee(@RequestParam int committeeId, @RequestBody LinkedHashSet<NewMembershipRequest> newMemberships, Authentication authentication) {
+//        Committee committee = committeeService.findCommitteeById(committeeId);
+//        committeeService.addMembershipsToCommittee(committee, newMemberships, authentication.getName());
+//        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBER_ADDITION_SUCCESS));
+//    }
 
 
-    @Deprecated
-    @DeleteMapping("/removeCommitteeMembership")
-    //TODO: Create Tests
-    public ResponseEntity<Response> removeCommitteeMembership(@RequestParam int committeeId, @RequestParam int memberId, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        Member member = memberService.findMemberById(memberId);
-        committeeService.removeCommitteeMembership(committee, member, authentication.getName());
-        return ResponseEntity.ok(new Response(ResponseMessages.MEMBERSHIP_REMOVED_SUCCESSFULLY));
-    }
+//    @Deprecated
+//    @DeleteMapping("/removeCommitteeMembership")
+//    //TODO: Create Tests
+//    public ResponseEntity<Response> removeCommitteeMembership(@RequestParam int committeeId, @RequestParam int memberId, Authentication authentication) {
+//        Committee committee = committeeService.findCommitteeById(committeeId);
+//        Member member = memberService.findMemberById(memberId);
+//        committeeService.removeCommitteeMembership(committee, member, authentication.getName());
+//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBERSHIP_REMOVED_SUCCESSFULLY));
+//    }
 }

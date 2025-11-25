@@ -38,6 +38,10 @@ public interface CommitteeRepository extends JpaRepository<Committee, Integer> {
     @Query("Select c from Committee c where c.createdBy= :createdBy AND c.status= 'ACTIVE'")
     List<Committee> getAllActiveCommittees(@Param("createdBy") String username);
 
+
+    @Query("Select c from Committee c where c.createdBy= :createdBy AND c.status= 'INACTIVE'")
+    List<Committee> getAllInActiveCommittees(@Param("createdBy") String username);
+
     @Query("Select c FROM Committee c where c.createdBy= :createdBy")
     List<Committee> getAllCommittees(@Param("createdBy") String username);
 }
