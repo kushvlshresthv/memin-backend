@@ -3,7 +3,10 @@ package com.sep.mmms_backend.aop.implementations;
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.Meeting;
-import com.sep.mmms_backend.exceptions.*;
+import com.sep.mmms_backend.exceptions.CommitteeNotAccessibleException;
+import com.sep.mmms_backend.exceptions.ExceptionMessages;
+import com.sep.mmms_backend.exceptions.IllegalOperationException;
+import com.sep.mmms_backend.exceptions.MeetingNotAccessibleException;
 import com.sep.mmms_backend.service.CommitteeService;
 import com.sep.mmms_backend.service.MeetingService;
 import lombok.extern.slf4j.Slf4j;
@@ -54,13 +57,13 @@ public class CheckCommitteeAccessAspect {
         }
 
         //checking access for the committee
-        if (!committee.getCreatedBy().getUsername().equals(username)) {
+        if (!committee.getCreatedBy().equals(username)) {
             throw new CommitteeNotAccessibleException(ExceptionMessages.COMMITTEE_NOT_ACCESSIBLE, committee.getName());
         }
 
 
         if (checkCommitteeAccess.shouldValidateMeeting()) {
-            if(!meeting.getCreatedBy().equals(username)) {
+            if (!meeting.getCreatedBy().equals(username)) {
                 throw new MeetingNotAccessibleException(ExceptionMessages.MEETING_NOT_ACCESSIBLE, meeting.getTitle());
             }
         }

@@ -66,7 +66,7 @@ public class CommitteeService {
 
 
         Committee committee = new Committee();
-        committee.setCreatedBy(appUserService.loadUserByUsername(username));
+        committee.setCreatedBy(username);
 
         committee.setName(committeeCreationDto.getName());
         committee.setDescription(committeeCreationDto.getDescription());
@@ -107,7 +107,7 @@ public class CommitteeService {
     public Committee updateExistingCommittee(CommitteeCreationDto committeeCreationDto, int committeeId, String username) {
         Committee existingCommittee = this.findCommitteeById(committeeId);
 
-        if (!existingCommittee.getCreatedBy().getUsername().equals(username)) {
+        if (!existingCommittee.getCreatedBy().equals(username)) {
             throw new CommitteeNotAccessibleException(ExceptionMessages.COMMITTEE_NOT_ACCESSIBLE);
         }
 
@@ -193,9 +193,8 @@ public class CommitteeService {
 
 
     public List<Committee> getAllActiveCommittees(String username) {
-        AppUser currentUser = appUserService.loadUserByUsername(username);
-        List<Committee> activeCommittees = committeeRepository.getAllActiveCommittees(currentUser);
-        return committeeRepository.getAllCommittees(currentUser);
+        List<Committee> activeCommittees = committeeRepository.getAllActiveCommittees(username);
+        return activeCommittees;
     }
 
 
@@ -227,7 +226,7 @@ public class CommitteeService {
 
     public Committee getCommitteeIfAccessible(int committeeId, String username) {
         Committee committee = this.findCommitteeByIdNoException(committeeId).orElseThrow(() -> new CommitteeDoesNotExistException(ExceptionMessages.COMMITTEE_DOES_NOT_EXIST, committeeId));
-        if (!committee.getCreatedBy().getUsername().equals(username)) {
+        if (!committee.getCreatedBy().equals(username)) {
             //TODO: handle error properly
             throw new IllegalOperationException("Committee not accessible");
         }
@@ -255,14 +254,6 @@ public class CommitteeService {
      * <br>
      * NOTE: membership is populated in the Members object, not in the committee object
      */
-
-
-    //TODO: This method also loads all the meetings associated with a committee which isn't required(probably lazy loaded though) or maybe write a custom query
-    //TODO: Create Tests
-    public List<Committee> getCommittees(String username) {
-        AppUser currentUser = appUserService.loadUserByUsername(username);
-        return currentUser.getMyCommittees();
-    }
 
 
     public boolean existsById(int committeeId) {

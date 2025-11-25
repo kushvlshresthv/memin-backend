@@ -1,6 +1,5 @@
 package com.sep.mmms_backend.repository;
 
-import com.sep.mmms_backend.entity.AppUser;
 import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.exceptions.CommitteeDoesNotExistException;
 import com.sep.mmms_backend.exceptions.ExceptionMessages;
@@ -37,8 +36,8 @@ public interface CommitteeRepository extends JpaRepository<Committee, Integer> {
     }
 
     @Query("Select c from Committee c where c.createdBy= :createdBy AND c.status= 'ACTIVE'")
-    List<Committee> getAllActiveCommittees(@Param("createdBy") AppUser currentUser);
+    List<Committee> getAllActiveCommittees(@Param("createdBy") String username);
 
     @Query("Select c FROM Committee c where c.createdBy= :createdBy")
-    List<Committee> getAllCommittees(@Param("createdBy") AppUser currentUser);
+    List<Committee> getAllCommittees(@Param("createdBy") String username);
 }

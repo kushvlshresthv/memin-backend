@@ -1,6 +1,5 @@
 package com.sep.mmms_backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sep.mmms_backend.validators.annotations.FieldsValueMatch;
 import com.sep.mmms_backend.validators.annotations.UsernameFormat;
 import jakarta.persistence.*;
@@ -9,8 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.List;
 
 import static com.sep.mmms_backend.global_constants.ValidationErrorMessages.*;
 
@@ -58,11 +55,6 @@ public class AppUser {
     @NotEmpty(message = FIELD_CANNOT_BE_EMPTY)
     @Transient
     String confirmPassword;
-
-
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Committee> myCommittees;
 }
 
 /*

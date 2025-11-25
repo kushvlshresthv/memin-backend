@@ -81,7 +81,7 @@ public class MeetingService {
 
         Committee existingCommittee = existingMeeting.getCommittee();
 
-        if (!existingCommittee.getCreatedBy().getUsername().equals(username)) {
+        if (!existingCommittee.getCreatedBy().equals(username)) {
             //TODO: throw exception
         }
 

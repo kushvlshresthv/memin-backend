@@ -57,12 +57,8 @@ public class Committee {
     @JoinColumn(name = "committee_coordinator_id", referencedColumnName = "member_id", nullable = false)
     private Member coordinator;
 
-    @ManyToOne
-    @JoinColumn(name = "committee_created_by", referencedColumnName = "uid", nullable = false)
-    //@CreatedBy is not used because then Audit will inquire the database
-    //NOTE: here only string is not saved because establishing a relationship with AppUser makes it easier to retrieve the committees of a particular AppUser
-    //TODO: get rid of this assocation, simply store string, we can get the committes of a particular user, by simple raw sql query.
-    private AppUser createdBy;
+    @Column(name = "committee_created_by", updatable = false, nullable = false)
+    private String createdBy;
 
     @Column(name = "committee_created_date")
     @CreatedDate
