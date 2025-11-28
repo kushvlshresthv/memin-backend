@@ -6,6 +6,7 @@ import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.entity.CommitteeMembership;
 import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
+import com.sep.mmms_backend.enums.CommitteeStatus;
 import com.sep.mmms_backend.exceptions.*;
 import com.sep.mmms_backend.repository.CommitteeMembershipRepository;
 import com.sep.mmms_backend.repository.CommitteeRepository;
@@ -194,6 +195,19 @@ public class CommitteeService {
         return committeeOverview;
     }
 
+    public boolean toggleCommitteeStatus(Integer committeeId, String username) {
+        Committee committee = getCommitteeIfAccessible(committeeId, username);
+        boolean result;
+        if (committee.getStatus() == CommitteeStatus.ACTIVE) {
+            committee.setStatus(CommitteeStatus.INACTIVE);
+            result = true;
+        } else {
+            committee.setStatus(CommitteeStatus.ACTIVE);
+            result = false;
+        }
+        committeeRepository.save(committee);
+        return result;
+    }
 
     public List<Committee> getAllActiveCommittees(String username) {
         List<Committee> activeCommittees = committeeRepository.getAllActiveCommittees(username);

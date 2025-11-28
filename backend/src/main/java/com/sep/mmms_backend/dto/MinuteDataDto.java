@@ -1,9 +1,6 @@
 package com.sep.mmms_backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sep.mmms_backend.entity.Agenda;
-import com.sep.mmms_backend.entity.CommitteeMembership;
-import com.sep.mmms_backend.entity.Decision;
 import com.sep.mmms_backend.enums.MinuteLanguage;
 import lombok.Getter;
 import lombok.Setter;

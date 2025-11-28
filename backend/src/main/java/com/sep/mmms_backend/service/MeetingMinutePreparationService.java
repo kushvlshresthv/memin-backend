@@ -10,7 +10,6 @@ import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.enums.MinuteLanguage;
 import com.sep.mmms_backend.repository.CommitteeRepository;
-import np.com.bahadur.converter.date.nepali.DateConverter;
 import org.apache.poi.xwpf.usermodel.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -77,13 +76,6 @@ public class MeetingMinutePreparationService {
 
     private void setDates(MinuteDataDto minuteDataDto, Meeting meeting) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDateForBSConversion = meeting.getHeldDate().format(formatter);
-        DateConverter dc = new DateConverter();
-        try {
-            minuteDataDto.setMeetingHeldDateNepali(dc.convertAdToBs(formattedDateForBSConversion).replace("-", "/"));
-        } catch (Exception e) {
-            System.out.println("TODO: Handle Exception");
-        }
         minuteDataDto.setMeetingHeldDate(meeting.getHeldDate());
     }
 

@@ -95,6 +95,18 @@ public class CommitteeController {
     }
 
 
+    @PatchMapping("/toggleCommitteeStatus")
+    public ResponseEntity<Response> toggleCommitteeStatus(@RequestParam int committeeId, Authentication authentication) {
+        boolean result = committeeService.toggleCommitteeStatus(committeeId, authentication.getName());
+
+        if (result) {
+            return ResponseEntity.ok(new Response("Committee status changed to Inactive"));
+        } else {
+            return ResponseEntity.ok().body(new Response("Committee status changed to Active"));
+        }
+    }
+
+
     //TODO: Create Tests
 //    @Deprecated
 //    @PostMapping("/deleteCommittee")
