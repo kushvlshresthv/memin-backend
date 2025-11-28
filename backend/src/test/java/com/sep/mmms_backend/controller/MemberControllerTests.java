@@ -104,21 +104,15 @@ public class MemberControllerTests {
             memberCreationDto.setFirstName( "John");
             memberCreationDto.setLastName( "Doe");
 
-            memberCreationDto.setUsername("john_doe");
 
-            memberCreationDto.setInstitution("institution");
             memberCreationDto.setPost("Test Post");
 
-            memberCreationDto.setEmail("john.doe@example.com");
 
             // Create Member that will be returned by the service
             createdMember = helper.getMember();
             createdMember.setFirstName("John");
             createdMember.setLastName("Doe");
-            createdMember.setUsername("john_doe");
-            createdMember.setInstitution("Test Institution");
             createdMember.setPost("Test Post");
-            createdMember.setEmail("john.doe@example.com");
             createdMember.setId(1);
 
             Mockito.when(committeeService.findCommitteeById(anyInt())).thenReturn(committee);
@@ -213,7 +207,6 @@ public class MemberControllerTests {
             assertThat(result.getMemberId()).isEqualTo(createdMember.getId());
             assertThat(result.getFirstName()).isEqualTo(createdMember.getFirstName());
             assertThat(result.getLastName()).isEqualTo(createdMember.getLastName());
-            assertThat(result.getInstitution()).isEqualTo(createdMember.getInstitution());
             assertThat(result.getPost()).isEqualTo(createdMember.getPost());
 
             // Verify

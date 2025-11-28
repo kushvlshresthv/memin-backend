@@ -89,7 +89,7 @@ public class CheckCommitteeAccessTests {
             // Arrange
             AppUser differentUser = new AppUser();
             differentUser.setUsername("differentUser");
-            committee.setCreatedBy(differentUser);
+            committee.setCreatedBy(differentUser.getUsername());
 
             // Act & Assert
             assertThatThrownBy(() -> aspect.checkCommitteeAccess(joinPoint, checkCommitteeAccess))

@@ -90,10 +90,7 @@ public class MemberServiceTests {
             memberCreationDto = new MemberCreationDto();
             memberCreationDto.setFirstName("John");
             memberCreationDto.setLastName("Doe");
-            memberCreationDto.setUsername(username);
-            memberCreationDto.setInstitution("Test Institution");
             memberCreationDto.setPost("Test Post");
-            memberCreationDto.setEmail("john.doe@example.com");
 
             // Create a Member that will be returned by the repository
             savedMember = new Member();
@@ -102,9 +99,7 @@ public class MemberServiceTests {
             savedMember.setLastName("Doe");
 //            savedMember.setFirstNameNepali("जोन");
 //            savedMember.setLastNameNepali("डो");
-            savedMember.setInstitution("Test Institution");
             savedMember.setPost("Test Post");
-            savedMember.setEmail("john.doe@example.com");
         }
 
         // 1. Test when firstName is blank
@@ -150,7 +145,6 @@ public class MemberServiceTests {
         @DisplayName("should throw ValidationFailureException when email format is incorrect")
         void testEmailFormatIncorrect() {
             // Arrange
-            memberCreationDto.setEmail("invalid-email");
             doThrow(new ValidationFailureException(ExceptionMessages.VALIDATION_FAILED, Mockito.mock(BindingResult.class)))
                 .when(entityValidator).validate(memberCreationDto);
 

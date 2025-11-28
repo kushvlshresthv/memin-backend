@@ -66,7 +66,6 @@ public class AppUserBuilder {
         appUser.setEmail(this.email);
         appUser.setPassword(this.password);
         appUser.setConfirmPassword(this.confirmPassword);
-        appUser.setMyCommittees(this.myCommittees);
         return appUser;
     }
 }

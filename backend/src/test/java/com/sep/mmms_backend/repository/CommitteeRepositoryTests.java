@@ -123,7 +123,7 @@ public class CommitteeRepositoryTests {
 
             Assertions.assertThat(foundCommittee.getName()).isEqualTo(committeeName);
             Assertions.assertThat(foundCommittee.getDescription()).isEqualTo(committeeDescription);
-            Assertions.assertThat(foundCommittee.getCreatedBy().getUsername()).isEqualTo(testUser.getUsername());
+            Assertions.assertThat(foundCommittee.getCreatedBy()).isEqualTo(testUser.getUsername());
         }
 
         @Test

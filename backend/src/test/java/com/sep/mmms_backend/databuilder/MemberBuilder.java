@@ -78,9 +78,7 @@ public class MemberBuilder {
         Member member = new Member();
         member.setFirstName(this.firstName);
         member.setLastName(this.lastName);
-        member.setInstitution(this.institution);
         member.setPost(this.post);
-        member.setEmail(this.email);
         if(memberships != null && !memberships.isEmpty()) {
             for(CommitteeMembership membership: memberships) {
                 membership.setMember(member);

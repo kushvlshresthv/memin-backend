@@ -54,7 +54,6 @@ public class TestDataHelper {
         //setting the committees in app user
         List<Committee> myCommittees = new ArrayList<>();
         myCommittees.add(committee);
-        appUser.setMyCommittees(myCommittees);
     }
 
     public void createValidMember() {
@@ -104,4 +103,3 @@ public class TestDataHelper {
         memberships.add(membership);
     }
 }
-

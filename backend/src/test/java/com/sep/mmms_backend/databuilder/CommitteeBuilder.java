@@ -68,7 +68,7 @@ public class CommitteeBuilder {
         }
         committee.setMemberships(this.memberships);
         committee.setMeetings(this.meetings);
-        committee.setCreatedBy(this.createdBy);
+        committee.setCreatedBy(this.createdBy.getUsername());
         committee.setStatus(this.status);
         return committee;
     }
