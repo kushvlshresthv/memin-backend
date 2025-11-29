@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -33,6 +36,24 @@ public class Decision {
     @Column(name =  "decision")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String decision;
+
+
+    @Column(name = "decision_created_by", updatable = false, nullable = false)
+    @CreatedBy
+    private String createdBy;
+
+    @Column(name = "decision_created_date", updatable = false, nullable = false)
+    @CreatedDate
+    private LocalDate createdDate;
+
+    @Column(name = "decision_modified_by",  nullable = false)
+    @CreatedBy
+    private String modifiedBy;
+
+    @Column(name = "decision_modified_date", nullable = false)
+    @CreatedDate
+    private LocalDate modifiedDate;
+
 
     @PrePersist
     public void prePersist() {

@@ -100,6 +100,12 @@ CREATE TABLE decisions (
 
            meeting_id INT NOT NULL,
            decision TEXT,
+
+           decision_created_by VARCHAR(255) NOT NULL,
+           decision_created_date DATE NOT NULL,
+           decision_modified_by VARCHAR(255) NOT NULL,
+           decision_modified_date DATE NOT NULL,
+
            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -110,5 +116,11 @@ CREATE TABLE agendas (
 
                            meeting_id INT NOT NULL,
                            agenda TEXT,
+
+                           agenda_created_by VARCHAR(255) NOT NULL,
+                           agenda_created_date DATE NOT NULL,
+                           agenda_modified_by VARCHAR(255) NOT NULL,
+                           agenda_modified_date DATE NOT NULL,
+
                            FOREIGN KEY (meeting_id) REFERENCES meetings(meeting_id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

@@ -80,45 +80,45 @@ VALUES
      '2025-07-25', UUID());
 
 -- Insert Decisions
-INSERT INTO decisions (meeting_id, decision, uuid)
+INSERT INTO decisions (meeting_id, decision, uuid, decision_created_by, decision_created_date, decision_modified_by, decision_modified_date)
 VALUES
     -- decisions for meeting 1
-    (1, 'हालको डाटा स्ट्रक्चर पाठ्यक्रमलाई नयाँ सामग्रीहरूसँग अद्यावधिक गरिनेछ।', UUID()),
-    (1, 'आधुनिक इन्जिनियरिङ प्रवृत्तिहरूमा अतिथि व्याख्यान शृङ्खला आयोजना गरिनेछ।', UUID()),
-    (1, 'अन्तिम वर्षको परियोजनाका लागि अन्तर-विभागीय प्रस्ताव स्वीकृत गरिएको छ।', UUID()),
-    (1, 'सेमिनारको शीर्षक "प्रविधिमा नवीनता" रहनेछ।', UUID()),
+    (1, 'हालको डाटा स्ट्रक्चर पाठ्यक्रमलाई नयाँ सामग्रीहरूसँग अद्यावधिक गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (1, 'आधुनिक इन्जिनियरिङ प्रवृत्तिहरूमा अतिथि व्याख्यान शृङ्खला आयोजना गरिनेछ।', UUID(), 'username','2025-07-04', 'username', '2025-07-04' ),
+    (1, 'अन्तिम वर्षको परियोजनाका लागि अन्तर-विभागीय प्रस्ताव स्वीकृत गरिएको छ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (1, 'सेमिनारको शीर्षक "प्रविधिमा नवीनता" रहनेछ।', UUID(),'username','2025-07-04', 'username','2025-07-04' ),
 
     -- decisions for meeting 2
-    (2, 'क्याम्पसभरि Wi-Fi 6 मा स्तरोन्नति गर्ने प्रस्ताव स्वीकृत गरिएको छ।', UUID()),
-    (2, 'दुई हप्ताभित्र तीन फरक विक्रेताबाट दरभाउपत्रहरू सङ्कलन गरिनेछ।', UUID()),
-    (2, 'पुस्तकालयका कम्प्युटरहरू नयाँ SSD र थप RAM सहित स्तरोन्नति गरिनेछ।', UUID()),
-    (2, 'सञ्जाल सुरक्षालाई सुदृढ गर्न नयाँ फायरवाल कार्यान्वयन गरिनेछ।', UUID()),
+    (2, 'क्याम्पसभरि Wi-Fi 6 मा स्तरोन्नति गर्ने प्रस्ताव स्वीकृत गरिएको छ।', UUID(),'username','2025-07-04', 'username','2025-07-04'  ),
+    (2, 'दुई हप्ताभित्र तीन फरक विक्रेताबाट दरभाउपत्रहरू सङ्कलन गरिनेछ।', UUID(),'username','2025-07-04', 'username','2025-07-04' ),
+    (2, 'पुस्तकालयका कम्प्युटरहरू नयाँ SSD र थप RAM सहित स्तरोन्नति गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (2, 'सञ्जाल सुरक्षालाई सुदृढ गर्न नयाँ फायरवाल कार्यान्वयन गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
 
     -- decisions for meeting 3
-    (3, 'मुख्य वक्ताहरूको छनोट अर्को सातासम्ममा अन्तिम गरिनेछ।', UUID()),
-    (3, 'कार्यक्रमको बजेट रू. ३,००,००० मा अन्तिम गरिएको छ।', UUID()),
-    (3, 'लजिस्टिक व्यवस्थापनका लागि विद्यार्थी स्वयंसेवक समिति गठन गरिनेछ।', UUID()),
+    (3, 'मुख्य वक्ताहरूको छनोट अर्को सातासम्ममा अन्तिम गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (3, 'कार्यक्रमको बजेट रू. ३,००,००० मा अन्तिम गरिएको छ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (3, 'लजिस्टिक व्यवस्थापनका लागि विद्यार्थी स्वयंसेवक समिति गठन गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
 
     -- decisions for meeting 4
-    (4, 'क्वान्टम कम्प्युटिङ अनुसन्धानका लागि भौतिकशास्त्र विभागको अनुदान प्रस्ताव स्वीकृत गरिएको छ।', UUID()),
-    (4, 'विद्यार्थी परियोजनाका लागि बौद्धिक सम्पत्ति अधिकारसम्बन्धी नयाँ नीति प्रारूप तयार गरिनेछ।', UUID()),
-    (4, 'नयाँ 3D प्रिन्टिङ प्रयोगशालाका लागि बजेट सैद्धान्तिक रूपमा स्वीकृत गरिएको छ; अन्तिम दरभाउ आवश्यक।', UUID()),
-    (4, 'कृत्रिम बुद्धिमत्ता अनुसन्धानमा काठमाडौँ विश्वविद्यालयसँग सहकार्य सुरु गरिनेछ।', UUID()),
+    (4, 'क्वान्टम कम्प्युटिङ अनुसन्धानका लागि भौतिकशास्त्र विभागको अनुदान प्रस्ताव स्वीकृत गरिएको छ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (4, 'विद्यार्थी परियोजनाका लागि बौद्धिक सम्पत्ति अधिकारसम्बन्धी नयाँ नीति प्रारूप तयार गरिनेछ।', UUID(),'username','2025-07-04', 'username','2025-07-04'  ),
+    (4, 'नयाँ 3D प्रिन्टिङ प्रयोगशालाका लागि बजेट सैद्धान्तिक रूपमा स्वीकृत गरिएको छ; अन्तिम दरभाउ आवश्यक।', UUID(),'username','2025-07-04', 'username','2025-07-04' ),
+    (4, 'कृत्रिम बुद्धिमत्ता अनुसन्धानमा काठमाडौँ विश्वविद्यालयसँग सहकार्य सुरु गरिनेछ।', UUID(),'username','2025-07-04', 'username','2025-07-04' ),
 
     -- decisions for meeting 5
     (5,
      'The student involved in fraudulent work will be given a formal warning and will be required to resubmit the work.',
-     UUID()),
-    (5, 'The examination code of conduct will be updated and sent to all students.', UUID()),
-    (5, 'A workshop on academic integrity will be made mandatory for all first-year students.', UUID()),
+     UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (5, 'The examination code of conduct will be updated and sent to all students.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (5, 'A workshop on academic integrity will be made mandatory for all first-year students.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
     (5, 'The decision regarding the hostel rule violation has been postponed until further evidence is available.',
-     UUID()),
+     UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
 
     -- decisions for meeting 6
-    (6, 'हालको क्यान्टिन सेवाप्रदायकसँगको सम्झौता नकारात्मक प्रतिक्रियाका आधारमा पुनरावलोकन गरिनेछ।', UUID()),
-    (6, 'छात्रावास ब्लक B मा नयाँ पानी शुद्धीकरण प्रणाली जडान गरिनेछ।', UUID()),
-    (6, 'परीक्षा अवधिमा मानसिक स्वास्थ्य परामर्श सेवा सप्ताहन्तमा पनि विस्तार गरिनेछ।', UUID()),
-    (6, 'नयाँ खेलकुद सुविधाको माग मूल्याङ्कन गर्न सर्वेक्षण गरिनेछ।', UUID());
+    (6, 'हालको क्यान्टिन सेवाप्रदायकसँगको सम्झौता नकारात्मक प्रतिक्रियाका आधारमा पुनरावलोकन गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (6, 'छात्रावास ब्लक B मा नयाँ पानी शुद्धीकरण प्रणाली जडान गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (6, 'परीक्षा अवधिमा मानसिक स्वास्थ्य परामर्श सेवा सप्ताहन्तमा पनि विस्तार गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (6, 'नयाँ खेलकुद सुविधाको माग मूल्याङ्कन गर्न सर्वेक्षण गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' );
 
 -- Insert Committee Memberships
 INSERT INTO committee_memberships (committee_id, member_id, role, uuid, display_order)
@@ -191,17 +191,17 @@ VALUES
     (11, 6);
 
 
-INSERT INTO agendas (meeting_id, agenda, uuid)
+INSERT INTO agendas (meeting_id, agenda, uuid, agenda_created_by, agenda_created_date, agenda_modified_by, agenda_modified_date)
 VALUES
     --agenda for meeting 1
-    (1, 'क्याम्पसभरि Wi-Fi 6 मा स्तरोन्नति गर्ने प्रस्ताव स्वीकृत गरिएको छ।', UUID()),
-    (1, 'दुई हप्ताभित्र तीन फरक विक्रेताबाट दरभाउपत्रहरू सङ्कलन गरिनेछ।', UUID()),
-    (1, 'पुस्तकालयका कम्प्युटरहरू नयाँ SSD र थप RAM सहित स्तरोन्नति गरिनेछ।', UUID()),
-    (1, 'सञ्जाल सुरक्षालाई सुदृढ गर्न नयाँ फायरवाल कार्यान्वयन गरिनेछ।', UUID()),
+    (1, 'क्याम्पसभरि Wi-Fi 6 मा स्तरोन्नति गर्ने प्रस्ताव स्वीकृत गरिएको छ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (1, 'दुई हप्ताभित्र तीन फरक विक्रेताबाट दरभाउपत्रहरू सङ्कलन गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (1, 'पुस्तकालयका कम्प्युटरहरू नयाँ SSD र थप RAM सहित स्तरोन्नति गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (1, 'सञ्जाल सुरक्षालाई सुदृढ गर्न नयाँ फायरवाल कार्यान्वयन गरिनेछ।', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
 
     --agenda for meeting 5
-    (5, 'Discussion and decision on issue regarding the student involved in fraudulent work.', UUID()),
-    (5, 'Review and update of the examination code of conduct for all students.', UUID()),
-    (5, 'Making the academic integrity workshop mandatory for all first-year students.', UUID()),
+    (5, 'Discussion and decision on issue regarding the student involved in fraudulent work.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (5, 'Review and update of the examination code of conduct for all students.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
+    (5, 'Making the academic integrity workshop mandatory for all first-year students.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
     (5, 'Postponement of the decision on issue concerning hostel rule violation until further evidence is obtained.',
-     UUID());
+     UUID(), 'username','2025-07-04', 'username','2025-07-04' );

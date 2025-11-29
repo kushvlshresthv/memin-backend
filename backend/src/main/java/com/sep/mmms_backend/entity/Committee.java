@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -58,6 +59,7 @@ public class Committee {
     private Member coordinator;
 
     @Column(name = "committee_created_by", updatable = false, nullable = false)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "committee_created_date")
