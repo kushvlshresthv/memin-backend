@@ -34,9 +34,9 @@ public class MeetingMinuteController {
         }
 
         @GetMapping("api/getDataForMinute")
-        public ResponseEntity<Response> getDataForMinute(@RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
-            Committee committee = committeeService.findCommitteeById(committeeId);
+        public ResponseEntity<Response> getDataForMinute( @RequestParam int meetingId, Authentication authentication) {
             Meeting meeting =  meetingService.findMeetingById(meetingId);
+            Committee committee = meeting.getCommittee();
 
             MinuteDataDto minuteData = this.meetingMinutePreparationService.prepareDataForMinute(committee, meeting, authentication.getName());
 

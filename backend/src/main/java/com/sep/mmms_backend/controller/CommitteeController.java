@@ -140,6 +140,11 @@ public class CommitteeController {
         return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBERS_RETRIEVED_SUCCESSFULLY, membersOfCommittee));
     }
 
+    @GetMapping("/committee-summary")
+    public ResponseEntity<Response> getCommitteeSummary(@RequestParam(required=true) int committeeId, Authentication authentication) {
+        return ResponseEntity.ok(new Response(committeeService.getCommitteeExtendedSummary(committeeId, authentication.getName())));
+    }
+
 
 //    @Deprecated
 //    @PostMapping("/addMembersToCommittee")

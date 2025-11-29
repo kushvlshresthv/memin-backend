@@ -272,6 +272,13 @@ public class CommitteeService {
                 .collect(Collectors.toList());
     }
 
+    public CommitteeExtendedSummaryDto getCommitteeExtendedSummary(int committeeId, String username) {
+        Committee committee = getCommitteeIfAccessible(committeeId, username);
+        return new CommitteeExtendedSummaryDto(committee);
+    }
+
+
+
     /**
      * returns both Committee and Members associated with the committee
      * <br>

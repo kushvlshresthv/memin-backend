@@ -205,3 +205,9 @@ VALUES
     (5, 'Making the academic integrity workshop mandatory for all first-year students.', UUID(), 'username','2025-07-04', 'username','2025-07-04' ),
     (5, 'Postponement of the decision on issue concerning hostel rule violation until further evidence is obtained.',
      UUID(), 'username','2025-07-04', 'username','2025-07-04' );
+
+
+INSERT INTO meeting_invitees(member_id, meeting_id) VALUES
+    (7, 1),
+    (8, 1),
+    (9, 1);
