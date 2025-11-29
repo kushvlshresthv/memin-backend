@@ -11,21 +11,20 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
+@Deprecated
 public class MemberWithoutCommitteeDto {
 
     private final int memberId;
     private final String firstName;
     private final String lastName;
-//    private final String firstNameNepali;
-//    private final String lastNameNepali;
     private final String post;
+    private final String title;
 
-    public MemberWithoutCommitteeDto(Member member){
+    public MemberWithoutCommitteeDto(Member member, String title){
         this.memberId = member.getId();
         this.firstName = member.getFirstName();
         this.lastName = member.getLastName();
         this.post = member.getPost();
-//        this.firstNameNepali = member.getFirstNameNepali();
-//        this.lastNameNepali = member.getLastNameNepali();
+        this.title = member.getTitle();
     }
 }

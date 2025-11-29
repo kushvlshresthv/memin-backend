@@ -4,6 +4,7 @@ import com.sep.mmms_backend.entity.Committee;
 import com.sep.mmms_backend.exceptions.CommitteeDoesNotExistException;
 import com.sep.mmms_backend.exceptions.ExceptionMessages;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommitteeRepository extends JpaRepository<Committee, Integer> {
+public interface CommitteeRepository extends JpaRepository<Committee, Integer>, JpaSpecificationExecutor<Committee> {
 
     /**
      * if the committee is not found, the caller is responsible to check it and handle it
@@ -44,4 +45,16 @@ public interface CommitteeRepository extends JpaRepository<Committee, Integer> {
 
     @Query("Select c FROM Committee c where c.createdBy= :createdBy")
     List<Committee> getAllCommittees(@Param("createdBy") String username);
+
+
+//    @Query("""
+//       SELECT c
+//       FROM Committee c
+//       WHERE c.createdBy = :createdBy
+//       AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+//   """)
+//    List<Committee> searchEverywhere(
+//            @Param("keyword") String keyword,
+//            @Param("createdBy") String createdBy
+//    );
 }

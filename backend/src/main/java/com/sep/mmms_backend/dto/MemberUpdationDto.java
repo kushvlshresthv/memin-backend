@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Deprecated
 public class MemberUpdationDto {
     Integer id;
     private String firstName;

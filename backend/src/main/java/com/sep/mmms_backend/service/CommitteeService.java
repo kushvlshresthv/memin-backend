@@ -12,7 +12,9 @@ import com.sep.mmms_backend.repository.CommitteeMembershipRepository;
 import com.sep.mmms_backend.repository.CommitteeRepository;
 import com.sep.mmms_backend.repository.MemberRepository;
 import com.sep.mmms_backend.validators.EntityValidator;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -269,7 +271,6 @@ public class CommitteeService {
         return members.stream().map(member -> new MemberSummaryDto(member, committee.getId()))
                 .collect(Collectors.toList());
     }
-
 
     /**
      * returns both Committee and Members associated with the committee

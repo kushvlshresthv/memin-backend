@@ -97,8 +97,8 @@ public class MemberController {
     @GetMapping("/getAllMembers")
     public ResponseEntity<Response> getAllMembers(Authentication    authentication) {
         List<Member> members =  memberService.getAllMembers(authentication.getName());
-       List<MemberSearchResultDto> allMembers = new ArrayList<>();
-       members.forEach(member-> allMembers.add(new MemberSearchResultDto(member)));
+       List<MemberDetailsDto> allMembers = new ArrayList<>();
+       members.forEach(member-> allMembers.add(new MemberDetailsDto(member)));
        return ResponseEntity.ok(new Response("Found Members: ", allMembers));
     }
 }

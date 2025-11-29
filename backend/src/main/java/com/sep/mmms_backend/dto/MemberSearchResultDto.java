@@ -8,14 +8,10 @@ public class MemberSearchResultDto {
     private final int memberId;
     private final String firstName;
     private final String lastName;
-    private final String post;
-    private final String title;
 
     public MemberSearchResultDto(Member member) {
         this.memberId = member.getId();
         this.firstName = member.getFirstName();
         this.lastName = member.getLastName();
-        this.post = member.getPost();
-        this.title = member.getTitle();
     }
 }

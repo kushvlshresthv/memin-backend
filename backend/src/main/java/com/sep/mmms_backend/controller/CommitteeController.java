@@ -18,11 +18,9 @@ import java.util.List;
 public class CommitteeController {
 
     private final CommitteeService committeeService;
-    private final MemberService memberService;
 
     public CommitteeController(CommitteeService committeeService, MemberService memberService) {
         this.committeeService = committeeService;
-        this.memberService = memberService;
     }
 
 
@@ -105,6 +103,7 @@ public class CommitteeController {
             return ResponseEntity.ok().body(new Response("Committee status changed to Active"));
         }
     }
+
 
 
     //TODO: Create Tests
