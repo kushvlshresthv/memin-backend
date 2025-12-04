@@ -26,5 +26,5 @@ public class MinuteDataDto {
     String coordinatorFullName;
     List<DecisionDto> decisions;
     List<AgendaDto> agendas;
-    List<CommitteeMembershipDto> committeeMemberships;
+    List<CommitteeMembershipDto> participants;
 }

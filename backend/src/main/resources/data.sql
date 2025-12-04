@@ -208,6 +208,5 @@ VALUES
 
 
 INSERT INTO meeting_invitees(member_id, meeting_id) VALUES
-    (7, 1),
-    (8, 1),
-    (9, 1);
+    (15, 1),
+    (16, 1);

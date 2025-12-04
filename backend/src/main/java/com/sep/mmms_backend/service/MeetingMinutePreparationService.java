@@ -27,9 +27,11 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MeetingMinutePreparationService {
@@ -68,7 +70,7 @@ public class MeetingMinutePreparationService {
 
         minuteData.setAgendas(meeting.getAgendas().stream().map(agenda -> new AgendaDto(agenda.getAgendaId(), agenda.getAgenda())).toList());
 
-        minuteData.setCommitteeMemberships(getMembershipForMinute(committee));
+        minuteData.setParticipants(getParticipants(committee, meeting));
 
         return minuteData;
     }
@@ -79,17 +81,38 @@ public class MeetingMinutePreparationService {
         minuteDataDto.setMeetingHeldDate(meeting.getHeldDate());
     }
 
-    //TODO: all roles are being parsed manually, instead fetch it from nepal-profile of the members
-    private List<CommitteeMembershipDto> getMembershipForMinute(Committee committee) {
+    private List<CommitteeMembershipDto> getParticipants(Committee committee, Meeting meeting) {
         List<CommitteeMembershipDto> memberships;
 
         memberships = committee.getSortedMemberships().stream().map(membership -> {
             Member member = membership.getMember();
             String fullName = member.getPost() + " " + member.getFirstName() + " " + member.getLastName();
             return new CommitteeMembershipDto(fullName, membership.getRole());
-        }).toList();
+        }).collect(Collectors.toCollection(ArrayList::new));
 
+        String coordinatorRole = committee.getMinuteLanguage() == MinuteLanguage.ENGLISH ? "Coordinator" : "संयोजक";
+
+        memberships.addFirst(new CommitteeMembershipDto(getFullNameOfParticipant(committee.getCoordinator()),coordinatorRole ));
+
+        meeting.getInvitees().forEach( invitee -> {
+            String fullname = getFullNameOfParticipant(invitee);
+            String role;
+            if(committee.getMinuteLanguage() == MinuteLanguage.ENGLISH) {
+                role = "Invitee";
+            } else {
+                role = "आमन्त्रित";
+            }
+            memberships.add(new CommitteeMembershipDto(fullname, role));
+        });
         return memberships;
+    }
+
+    private String getFullNameOfParticipant(Member member) {
+        String fullname =  member.getPost() + " " + member.getFirstName() + " " + member.getLastName();
+        if(member.getTitle() != null && !member.getTitle().isBlank()) {
+           fullname = fullname + ", " + member.getTitle();
+        }
+        return fullname;
     }
 
 

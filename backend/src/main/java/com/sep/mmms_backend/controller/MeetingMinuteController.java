@@ -23,27 +23,24 @@ import java.time.format.DateTimeFormatter;
 
 @Controller
 public class MeetingMinuteController {
+    private final MeetingMinutePreparationService meetingMinutePreparationService;
+    private final MeetingService meetingService;
+    public MeetingMinuteController(MeetingMinutePreparationService meetingMinutePreparationService, MeetingService meetingService) {
+        this.meetingMinutePreparationService = meetingMinutePreparationService;
+        this.meetingService = meetingService;
+    }
 
-        private final MeetingMinutePreparationService meetingMinutePreparationService;
-        private final MeetingService meetingService;
-        private final CommitteeService committeeService;
-        public MeetingMinuteController(MeetingMinutePreparationService meetingMinutePreparationService, MeetingService meetingService, CommitteeService committeeService) {
-            this.meetingMinutePreparationService = meetingMinutePreparationService;
-            this.meetingService = meetingService;
-            this.committeeService = committeeService;
-        }
+    @GetMapping("api/getDataForMinute")
+    public ResponseEntity<Response> getDataForMinute( @RequestParam int meetingId, Authentication authentication) {
+        Meeting meeting =  meetingService.findMeetingById(meetingId);
+        Committee committee = meeting.getCommittee();
 
-        @GetMapping("api/getDataForMinute")
-        public ResponseEntity<Response> getDataForMinute( @RequestParam int meetingId, Authentication authentication) {
-            Meeting meeting =  meetingService.findMeetingById(meetingId);
-            Committee committee = meeting.getCommittee();
+        MinuteDataDto minuteData = this.meetingMinutePreparationService.prepareDataForMinute(committee, meeting, authentication.getName());
 
-            MinuteDataDto minuteData = this.meetingMinutePreparationService.prepareDataForMinute(committee, meeting, authentication.getName());
+        return ResponseEntity.ok(new Response("Meeting Minute Data: ", minuteData));
+    }
 
-            return ResponseEntity.ok(new Response("Meeting Minute Data: ", minuteData));
-        }
-
-        @PostMapping("api/getWordFileForMinute")
+    @PostMapping("api/getWordFileForMinute")
     public ResponseEntity<?> getWordFileForMinute(@RequestBody String htmlContent, Authentication authentication) {
             byte[] docxBytes;
             try {
