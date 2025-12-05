@@ -44,6 +44,12 @@ public class MemberController {
        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, member));
     }
 
+    @PatchMapping("/updateMember")
+    public ResponseEntity<Response> updateMember(@RequestBody(required=true) MemberCreationDto memberCreationDto, @RequestParam Integer memberId, Authentication authentication) {
+        memberService.updateMember(memberId, memberCreationDto, authentication.getName());
+        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_UPDATION_SUCCESS));
+    }
+
     @GetMapping("/getPossibleInvitees")
     public ResponseEntity<Response> getPossibleInvitees(@RequestParam(required=true) int committeeId, Authentication authentication) {
 

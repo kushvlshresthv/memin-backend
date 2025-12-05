@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -65,6 +66,28 @@ public class MemberService {
         if (member.getPost() != null)
             member.setPost(memberDto.getPost());
         return memberRepository.save(member);
+    }
+
+    @Transactional
+    public Member updateMember(int memberId, MemberCreationDto memberCreationDto, String username) {
+        entityValidator.validate(memberCreationDto);
+        Member member = getMemberIfAccesssible(memberId, username);
+
+        member.setFirstName(memberCreationDto.getFirstName());
+        member.setLastName(memberCreationDto.getLastName());
+        member.setTitle(memberCreationDto.getTitle());
+        member.setPost(memberCreationDto.getPost());
+        return memberRepository.save(member);
+    }
+
+    private Member getMemberIfAccesssible( int memberId, String username) {
+        Optional<Member> optionalMember = memberRepository.getMemberIfAccessible(memberId, username);
+
+        if(optionalMember.isEmpty()) {
+            throw new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, memberId);
+        }
+
+        return optionalMember.get();
     }
 
     //NEW IMPLEMENTATION

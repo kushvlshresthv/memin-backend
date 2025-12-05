@@ -109,6 +109,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpe
             @Param("username") String username
     );
 
+    @Query("SELECT m FROM Member m WHERE m.id = :memberId AND m.createdBy = :username")
+    public Optional<Member> getMemberIfAccessible(int memberId, String username);
+
 
 
     /**
