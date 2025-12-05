@@ -2,6 +2,7 @@ package com.sep.mmms_backend.service;
 
 import com.sep.mmms_backend.aop.interfaces.CheckCommitteeAccess;
 import com.sep.mmms_backend.dto.MemberCreationDto;
+import com.sep.mmms_backend.dto.MemberDetailsDto;
 import com.sep.mmms_backend.dto.MemberSearchResultDto;
 import com.sep.mmms_backend.dto.MemberWithoutCommitteeDto;
 import com.sep.mmms_backend.entity.Committee;
@@ -78,6 +79,13 @@ public class MemberService {
         member.setTitle(memberCreationDto.getTitle());
         member.setPost(memberCreationDto.getPost());
         return memberRepository.save(member);
+    }
+
+    @Transactional
+    public MemberDetailsDto getMemberDetails(int memberId, String username) {
+        Member member =  getMemberIfAccesssible(memberId, username);
+        MemberDetailsDto memberDetailsDto = new MemberDetailsDto(member);
+        return memberDetailsDto;
     }
 
     private Member getMemberIfAccesssible( int memberId, String username) {

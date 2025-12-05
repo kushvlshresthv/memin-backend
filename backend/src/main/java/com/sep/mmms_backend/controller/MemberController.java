@@ -21,7 +21,7 @@ public class MemberController {
     private final MemberService memberService;
     private final CommitteeService committeeService;
 
-    public MemberController(MemberService memberService, CommitteeService committeeService){
+    public MemberController(MemberService memberService, CommitteeService committeeService) {
         this.memberService = memberService;
         this.committeeService = committeeService;
     }
@@ -37,29 +37,33 @@ public class MemberController {
 //    }
 
 
-
     @PostMapping("/createMember")
-    public ResponseEntity<Response> createNewMember(@RequestBody(required=true) MemberCreationDto memberDto , Authentication authentication ) {
-       Member member = memberService.saveNewMember(memberDto, authentication.getName());
-       return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, member));
+    public ResponseEntity<Response> createNewMember(@RequestBody(required = true) MemberCreationDto memberDto, Authentication authentication) {
+        Member member = memberService.saveNewMember(memberDto, authentication.getName());
+        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_CREATION_SUCCESS, member));
+    }
+
+    @GetMapping("/getMemberDetails")
+    public ResponseEntity<Response> getMemberDetails(@RequestParam(required = true) int memberId, Authentication authentication) {
+        MemberDetailsDto memberDetailsDto = memberService.getMemberDetails(memberId, authentication.getName());
+
+        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_DETAIL_RETRIEVED_SUCCESSFULLY, memberDetailsDto));
     }
 
     @PatchMapping("/updateMember")
-    public ResponseEntity<Response> updateMember(@RequestBody(required=true) MemberCreationDto memberCreationDto, @RequestParam Integer memberId, Authentication authentication) {
+    public ResponseEntity<Response> updateMember(@RequestBody(required = true) MemberCreationDto memberCreationDto, @RequestParam Integer memberId, Authentication authentication) {
         memberService.updateMember(memberId, memberCreationDto, authentication.getName());
         return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_UPDATION_SUCCESS));
     }
 
     @GetMapping("/getPossibleInvitees")
-    public ResponseEntity<Response> getPossibleInvitees(@RequestParam(required=true) int committeeId, Authentication authentication) {
+    public ResponseEntity<Response> getPossibleInvitees(@RequestParam(required = true) int committeeId, Authentication authentication) {
 
         Committee committee = committeeService.findCommitteeById(committeeId);
         List<MemberSearchResultDto> possibleInvitees = memberService.getPossibleInvitees(committee, authentication.getName());
 
         return ResponseEntity.ok(new Response("Possible Invitees: ", possibleInvitees));
     }
-
-
 
 
     //This route is simular to 'createMember' but does not create a membership for the member
@@ -83,28 +87,29 @@ public class MemberController {
 //        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_UPDATION_SUCCESS, updatedMemberWithoutCommitteeDto));
 //    }
 
-    /** <h2>IMPORTANT NOTE</h2>
+    /**
+     * <h2>IMPORTANT NOTE</h2>
      * whether a particular member is acceesbile by a particular user is checked by com  aring username
-       <br> <br>
+     * <br> <br>
      * if the username is made changeable in the future, this has to be updated as well
-       <br> <br>
+     * <br> <br>
      * the resason the 'created_by' section was not choosen to be 'id' is because, to retreive the 'id' of the current user, a database operation is required, which flushes the context to save the entity before the 'created_by' section is populated in the entity causing an error
      */
 
 //    @Deprecated
 //    @GetMapping("/getMemberDetails")
 //    public ResponseEntity<Response> getMemberDetails(@RequestParam(required=true) int memberId, Authentication authentication) {
-//        MemberDetailsDto memberDetailsDto = memberService.getMemberDetails(memberId, authentication.getName());
-//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBER_DETAIL_RETRIEVED_SUCCESSFULLY, memberDetailsDto));
+//        MemberDetailsDto memberDetailsDto = memberService.getMemberDetails(memberId, authentication.getName()); return
+//        RsponseEntity.ok(new Response(ResponseMessages.MEMBER_DETAIL_RETRIEVED_SUCCESSFULLY, memberDetailsDto));
 //    }
 
 
     //TODO: Create Tests
     @GetMapping("/getAllMembers")
-    public ResponseEntity<Response> getAllMembers(Authentication    authentication) {
-        List<Member> members =  memberService.getAllMembers(authentication.getName());
-       List<MemberDetailsDto> allMembers = new ArrayList<>();
-       members.forEach(member-> allMembers.add(new MemberDetailsDto(member)));
-       return ResponseEntity.ok(new Response("Found Members: ", allMembers));
+    public ResponseEntity<Response> getAllMembers(Authentication authentication) {
+        List<Member> members = memberService.getAllMembers(authentication.getName());
+        List<MemberDetailsDto> allMembers = new ArrayList<>();
+        members.forEach(member -> allMembers.add(new MemberDetailsDto(member)));
+        return ResponseEntity.ok(new Response("Found Members: ", allMembers));
     }
 }
