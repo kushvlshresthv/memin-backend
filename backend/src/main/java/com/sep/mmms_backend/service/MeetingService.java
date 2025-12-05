@@ -38,19 +38,19 @@ public class MeetingService {
         meeting.setHeldDate(meetingCreationDto.getHeldDate());
         meeting.setHeldTime(meetingCreationDto.getHeldTime());
         meeting.setHeldPlace(meetingCreationDto.getHeldPlace());
-        meetingCreationDto.getDecisions().forEach(decisionString -> {
+        meetingCreationDto.getDecisions().forEach(decisionDto -> {
             //check if decision string is blank, if yes, don't save it
-            if (decisionString != null && !decisionString.isBlank()) {
+            if (decisionDto.getDecision() != null && !decisionDto.getDecision().isBlank()) {
                 Decision decision = new Decision();
-                decision.setDecision(decisionString);
+                decision.setDecision(decisionDto.getDecision());
                 meeting.addDecision(decision);
             }
         });
 
-        meetingCreationDto.getAgendas().forEach(agendaString -> {
-            if (agendaString != null && !agendaString.isBlank()) {
+        meetingCreationDto.getAgendas().forEach(agendaDto -> {
+            if (agendaDto.getAgenda() != null && !agendaDto.getAgenda().isBlank()) {
                 Agenda agenda = new Agenda();
-                agenda.setAgenda(agendaString);
+                agenda.setAgenda(agendaDto.getAgenda());
                 meeting.addAgenda(agenda);
             }
         });

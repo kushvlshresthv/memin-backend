@@ -32,7 +32,7 @@ public class MeetingCreationDto {
 
     private LinkedHashSet<Integer> inviteeIds = new LinkedHashSet<>();
 
-    private List<String> decisions = new ArrayList<>();
+    private List<DecisionDto> decisions = new ArrayList<>();
 
-    private List<String> agendas = new ArrayList<>();
+    private List<AgendaDto> agendas = new ArrayList<>();
 }

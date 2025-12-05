@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -19,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "agendas")
+@EntityListeners(AuditingEntityListener.class)
 public class Agenda {
     @Id
     @Column(name="agenda_id")
@@ -46,11 +50,11 @@ public class Agenda {
     private LocalDate createdDate;
 
     @Column(name = "agenda_modified_by",  nullable = false)
-    @CreatedBy
+    @LastModifiedBy
     private String modifiedBy;
 
     @Column(name = "agenda_modified_date", nullable = false)
-    @CreatedDate
+    @LastModifiedDate
     private LocalDate modifiedDate;
 
 

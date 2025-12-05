@@ -47,8 +47,8 @@ public class Meeting {
     @Column(name = "meeting_held_place")
     private String heldPlace;
 
-    @CreatedBy
     @Column(name = "created_by", updatable = false, nullable = false)
+    @CreatedBy
     private String createdBy;
 
     @LastModifiedBy
