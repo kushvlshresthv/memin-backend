@@ -66,6 +66,14 @@ public class MemberController {
     }
 
 
+//    @GetMapping("getPossibleInviteesForMeeting")
+//    public ResponseEntity<Response> getPossibleInviteesForMeeting(@RequestParam int meetingId, @RequestParam int committeeId, Authentication authentication) {
+//        List<MemberSearchResultDto> possibleInvitees = memberService.getPossibleInviteesForMeeting(meetingId, committeeId, authentication.getName());
+//
+//        return ResponseEntity.ok(new Response(possibleInvitees));
+//    }
+
+
     //This route is simular to 'createMember' but does not create a membership for the member
 
 //    @PostMapping("/createInvitee")

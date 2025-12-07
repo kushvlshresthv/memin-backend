@@ -308,7 +308,9 @@ public class MeetingService {
 
     public MeetingDetailsForEditDto getMeetingDetails(Integer meetingId, String username) {
         Meeting meeting = getMeetingIfAccessible(meetingId, username);
-        return new MeetingDetailsForEditDto(meeting);
+        List<Member> possibleInvitees = memberRepository.getPossibleInviteesForMeeting(meetingId, meeting.getCommittee().getId(), username);
+        List<MemberSearchResultDto> possibleInviteesFormatted = possibleInvitees.stream().map(MemberSearchResultDto::new).toList();
+       return new MeetingDetailsForEditDto(meeting, possibleInviteesFormatted);
     }
 
     private Meeting getMeetingIfAccessible(Integer memberId, String username) {

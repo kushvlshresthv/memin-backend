@@ -112,6 +112,21 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpe
     @Query("SELECT m FROM Member m WHERE m.id = :memberId AND m.createdBy = :username")
     public Optional<Member> getMemberIfAccessible(int memberId, String username);
 
+    @Query("""
+    SELECT m FROM Member m
+    WHERE m.id NOT IN (
+        SELECT mm.id FROM Member mm
+        JOIN mm.invitedMeetings meet
+        WHERE meet.id = :meetingId
+    )
+    AND m.id NOT IN (
+        SELECT cm.member.id FROM CommitteeMembership cm
+        WHERE cm.committee.id = :committeeId
+    )
+    AND m.createdBy = :username
+    """)
+    public List<Member> getPossibleInviteesForMeeting(Integer meetingId, Integer committeeId, String username);
+
 
 
     /**

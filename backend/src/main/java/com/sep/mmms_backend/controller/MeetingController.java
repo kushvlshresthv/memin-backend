@@ -100,4 +100,5 @@ public class MeetingController {
         MeetingDetailsForEditDto meetingDetailsForEditDto = meetingService.getMeetingDetails(meetingId, authentication.getName());
         return ResponseEntity.ok(new Response("Requested meeting details: ", meetingDetailsForEditDto));
     }
+
 }

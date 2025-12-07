@@ -19,11 +19,13 @@ public class MeetingDetailsForEditDto {
     private final LocalDate heldDate;
     private final LocalTime heldTime;
     private final String heldPlace;
-    private final List<MemberIdWithNameDto> invitees = new LinkedList<>();
+    private final List<MemberSearchResultDto> selectedInvitees = new LinkedList<>();
+    private final List<MemberSearchResultDto> possibleInvitees;
     private final List<DecisionDto> decisions = new ArrayList<>();
     private final List<AgendaDto> agendas = new ArrayList<>();
 
-    public MeetingDetailsForEditDto(Meeting meeting) {
+    public MeetingDetailsForEditDto(Meeting meeting, List<MemberSearchResultDto> possibleInvitees) {
+        this.possibleInvitees = possibleInvitees;
         this.meetingId = meeting.getId();
         this.committeeId = meeting.getCommittee().getId();
         this.title = meeting.getTitle();
@@ -31,7 +33,7 @@ public class MeetingDetailsForEditDto {
         this.heldTime = meeting.getHeldTime();
         this.heldPlace = meeting.getHeldPlace();
         for(Member invitee: meeting.getInvitees()) {
-            this.invitees.add(new MemberIdWithNameDto(invitee.getId(), invitee.getFirstName() + " " + invitee.getLastName()));
+            this.selectedInvitees.add(new MemberSearchResultDto(invitee));
         }
 
         for(Decision decision: meeting.getDecisions()) {

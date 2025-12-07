@@ -152,4 +152,10 @@ public class MemberService {
     public Member findMemberById(int memberId) {
         return memberRepository.findMemberById(memberId);
     }
+
+
+//    public List<MemberSearchResultDto> getPossibleInviteesForMeeting(Integer meetingId, Integer committeeId, String username) {
+//        List<Member> possibleInvitee = memberRepository.getPossibleInviteesForMeeting(meetingId, committeeId, username);
+//        return possibleInvitee.stream().map(MemberSearchResultDto::new).toList();
+//    }
 }
