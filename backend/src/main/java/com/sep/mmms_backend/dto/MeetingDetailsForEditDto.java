@@ -9,37 +9,29 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
-public class MeetingDetailsDto {
-    private final int id;
+public class MeetingDetailsForEditDto {
+    private final int meetingId;
+    private final int committeeId;
     private final String title;
-    private final String description;
     private final LocalDate heldDate;
     private final LocalTime heldTime;
     private final String heldPlace;
-    private final LocalDate createdDate;
-    private final LocalDate updatedDate;
-    private final Set<MemberSummaryDto> invitees = new HashSet<>();
+    private final List<MemberIdWithNameDto> invitees = new LinkedList<>();
     private final List<DecisionDto> decisions = new ArrayList<>();
     private final List<AgendaDto> agendas = new ArrayList<>();
 
-    public MeetingDetailsDto(Meeting meeting) {
-        this.id = meeting.getId();
+    public MeetingDetailsForEditDto(Meeting meeting) {
+        this.meetingId = meeting.getId();
+        this.committeeId = meeting.getCommittee().getId();
         this.title = meeting.getTitle();
-        this.description = meeting.getDescription();
         this.heldDate = meeting.getHeldDate();
         this.heldTime = meeting.getHeldTime();
         this.heldPlace = meeting.getHeldPlace();
-        this.createdDate = meeting.getCreatedDate();
-        this.updatedDate = meeting.getUpdatedDate();
-
         for(Member invitee: meeting.getInvitees()) {
-            this.invitees.add(new MemberSummaryDto(invitee, meeting.getCommittee().getId()));
+            this.invitees.add(new MemberIdWithNameDto(invitee.getId(), invitee.getFirstName() + " " + invitee.getLastName()));
         }
 
         for(Decision decision: meeting.getDecisions()) {

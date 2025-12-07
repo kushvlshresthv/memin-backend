@@ -162,76 +162,76 @@ public class MeetingService {
      * Else it saves the new agenda id along with the agenda string in the database
      * Same is the case for decisions
      */
-    @Transactional
-    @Deprecated
-    public Meeting updateExistingMeetingDetails(MeetingUpdationDto newMeetingData, String username) {
-
-        if (newMeetingData.getMeetingId() == null) {
-            throw new IllegalOperationException("TODO: Exception (handle this exception)");
-        }
-
-        Meeting existingMeeting = meetingRepository.findMeetingById(newMeetingData.getMeetingId());
-
-        if (!existingMeeting.getCreatedBy().equals(username)) {
-            throw new MeetingNotAccessibleException(ExceptionMessages.MEETING_NOT_ACCESSIBLE, existingMeeting.getTitle());
-        }
-
-        if (newMeetingData.getTitle() != null && !newMeetingData.getTitle().isBlank())
-            existingMeeting.setTitle(newMeetingData.getTitle());
-        if (newMeetingData.getDescription() != null && !newMeetingData.getDescription().isBlank())
-            existingMeeting.setDescription(newMeetingData.getDescription());
-        if (newMeetingData.getHeldDate() != null) existingMeeting.setHeldDate(newMeetingData.getHeldDate());
-        if (newMeetingData.getHeldTime() != null) existingMeeting.setHeldTime(newMeetingData.getHeldTime());
-        if (newMeetingData.getHeldPlace() != null && !newMeetingData.getHeldPlace().isBlank())
-            existingMeeting.setHeldPlace(newMeetingData.getHeldPlace());
-
-
-        Map<Integer, Agenda> existingAgendas = existingMeeting.getAgendas().stream().collect(Collectors.toMap(Agenda::getAgendaId, agenda -> agenda));
-
-        List<Agenda> updatedAgendas = new ArrayList<>();
-        if (!newMeetingData.getAgendas().isEmpty()) {
-            newMeetingData.getAgendas().forEach(newAgendaDto -> {
-                if (newAgendaDto.getAgendaId() != null && existingAgendas.containsKey(newAgendaDto.getAgendaId())) {
-                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
-                        existingAgendas.get(newAgendaDto.getAgendaId()).setAgenda(newAgendaDto.getAgenda());
-                        updatedAgendas.add(existingAgendas.get(newAgendaDto.getAgendaId()));
-                    }
-                } else {
-                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
-                        Agenda newAgenda = new Agenda();
-                        newAgenda.setAgenda(newAgendaDto.getAgenda());
-                        updatedAgendas.add(newAgenda);
-                    }
-                }
-            });
-        }
-        existingMeeting.getAgendas().clear();
-        existingMeeting.addAllAgendas(updatedAgendas);
-
-        Map<Integer, Decision> existingDecisions = existingMeeting.getDecisions().stream().collect(Collectors.toMap(Decision::getDecisionId, decision -> decision));
-
-        List<Decision> updatedDecisions = new ArrayList<>();
-        if (!newMeetingData.getDecisions().isEmpty()) {
-            newMeetingData.getDecisions().forEach(newDecisionDto -> {
-                if (newDecisionDto.getDecisionId() != null && existingDecisions.containsKey(newDecisionDto.getDecisionId())) {
-                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
-                        existingDecisions.get(newDecisionDto.getDecisionId()).setDecision(newDecisionDto.getDecision());
-                        updatedDecisions.add(existingDecisions.get(newDecisionDto.getDecisionId()));
-                    }
-                } else {
-                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
-                        Decision newDecision = new Decision();
-                        newDecision.setDecision(newDecisionDto.getDecision());
-                        updatedDecisions.add(newDecision);
-                    }
-                }
-            });
-        }
-        existingMeeting.getDecisions().clear();
-        existingMeeting.addAllDecisions(updatedDecisions);
-
-        return meetingRepository.save(existingMeeting);
-    }
+//    @Transactional
+//    @Deprecated
+//    public Meeting updateExistingMeetingDetails(MeetingUpdationDto newMeetingData, String username) {
+//
+//        if (newMeetingData.getMeetingId() == null) {
+//            throw new IllegalOperationException("TODO: Exception (handle this exception)");
+//        }
+//
+//        Meeting existingMeeting = meetingRepository.findMeetingById(newMeetingData.getMeetingId());
+//
+//        if (!existingMeeting.getCreatedBy().equals(username)) {
+//            throw new MeetingNotAccessibleException(ExceptionMessages.MEETING_NOT_ACCESSIBLE, existingMeeting.getTitle());
+//        }
+//
+//        if (newMeetingData.getTitle() != null && !newMeetingData.getTitle().isBlank())
+//            existingMeeting.setTitle(newMeetingData.getTitle());
+//        if (newMeetingData.getDescription() != null && !newMeetingData.getDescription().isBlank())
+//            existingMeeting.setDescription(newMeetingData.getDescription());
+//        if (newMeetingData.getHeldDate() != null) existingMeeting.setHeldDate(newMeetingData.getHeldDate());
+//        if (newMeetingData.getHeldTime() != null) existingMeeting.setHeldTime(newMeetingData.getHeldTime());
+//        if (newMeetingData.getHeldPlace() != null && !newMeetingData.getHeldPlace().isBlank())
+//            existingMeeting.setHeldPlace(newMeetingData.getHeldPlace());
+//
+//
+//        Map<Integer, Agenda> existingAgendas = existingMeeting.getAgendas().stream().collect(Collectors.toMap(Agenda::getAgendaId, agenda -> agenda));
+//
+//        List<Agenda> updatedAgendas = new ArrayList<>();
+//        if (!newMeetingData.getAgendas().isEmpty()) {
+//            newMeetingData.getAgendas().forEach(newAgendaDto -> {
+//                if (newAgendaDto.getAgendaId() != null && existingAgendas.containsKey(newAgendaDto.getAgendaId())) {
+//                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
+//                        existingAgendas.get(newAgendaDto.getAgendaId()).setAgenda(newAgendaDto.getAgenda());
+//                        updatedAgendas.add(existingAgendas.get(newAgendaDto.getAgendaId()));
+//                    }
+//                } else {
+//                    if (newAgendaDto.getAgenda() != null && !newAgendaDto.getAgenda().isBlank()) {
+//                        Agenda newAgenda = new Agenda();
+//                        newAgenda.setAgenda(newAgendaDto.getAgenda());
+//                        updatedAgendas.add(newAgenda);
+//                    }
+//                }
+//            });
+//        }
+//        existingMeeting.getAgendas().clear();
+//        existingMeeting.addAllAgendas(updatedAgendas);
+//
+//        Map<Integer, Decision> existingDecisions = existingMeeting.getDecisions().stream().collect(Collectors.toMap(Decision::getDecisionId, decision -> decision));
+//
+//        List<Decision> updatedDecisions = new ArrayList<>();
+//        if (!newMeetingData.getDecisions().isEmpty()) {
+//            newMeetingData.getDecisions().forEach(newDecisionDto -> {
+//                if (newDecisionDto.getDecisionId() != null && existingDecisions.containsKey(newDecisionDto.getDecisionId())) {
+//                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
+//                        existingDecisions.get(newDecisionDto.getDecisionId()).setDecision(newDecisionDto.getDecision());
+//                        updatedDecisions.add(existingDecisions.get(newDecisionDto.getDecisionId()));
+//                    }
+//                } else {
+//                    if (newDecisionDto.getDecision() != null && !newDecisionDto.getDecision().isBlank()) {
+//                        Decision newDecision = new Decision();
+//                        newDecision.setDecision(newDecisionDto.getDecision());
+//                        updatedDecisions.add(newDecision);
+//                    }
+//                }
+//            });
+//        }
+//        existingMeeting.getDecisions().clear();
+//        existingMeeting.addAllDecisions(updatedDecisions);
+//
+//        return meetingRepository.save(existingMeeting);
+//    }
 
 
     /**
@@ -306,9 +306,17 @@ public class MeetingService {
         return meetingRepository.findById(meetingId);
     }
 
-    //TODO: Create Tests
-    @CheckCommitteeAccess(shouldValidateMeeting = true)
-    public Meeting getMeetingDetails(Committee committee, Meeting meeting, String username) {
-        return meeting;
+    public MeetingDetailsForEditDto getMeetingDetails(Integer meetingId, String username) {
+        Meeting meeting = getMeetingIfAccessible(meetingId, username);
+        return new MeetingDetailsForEditDto(meeting);
     }
+
+    private Meeting getMeetingIfAccessible(Integer memberId, String username) {
+        Optional<Meeting> optionalMeeting = meetingRepository.getMeetingIfAccessible(memberId, username);
+        if(optionalMeeting.isEmpty()) {
+            throw new MeetingDoesNotExistException();
+        }
+        return optionalMeeting.get();
+    }
+
 }

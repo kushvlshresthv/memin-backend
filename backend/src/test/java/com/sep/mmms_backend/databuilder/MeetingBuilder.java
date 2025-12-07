@@ -24,7 +24,6 @@ import java.util.*;
 
 public class MeetingBuilder {
     private String title = "meetingTitle";
-    private String description = "meetingDescription";
     private LocalDate heldDate = LocalDate.now();
     private LocalTime heldTime = LocalTime.of(10, 0);
     private String heldPlace = "meetingHeldPlace";
@@ -42,10 +41,6 @@ public class MeetingBuilder {
         return new MeetingBuilder();
     }
 
-    public MeetingBuilder withDescription(String description) {
-        this.description = description;
-        return this;
-    }
 
     public MeetingBuilder withHeldDate(LocalDate heldDate) {
         this.heldDate = heldDate;
@@ -86,7 +81,6 @@ public class MeetingBuilder {
     public Meeting build() {
         Meeting meeting = new Meeting();
         meeting.setTitle(this.title);
-        meeting.setDescription(this.description);
         meeting.setHeldDate(this.heldDate);
         meeting.setHeldTime(this.heldTime);
         meeting.setHeldPlace(this.heldPlace);

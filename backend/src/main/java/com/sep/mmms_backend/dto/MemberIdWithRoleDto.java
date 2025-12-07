@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Deprecated
 public class MemberIdWithRoleDto {
     Integer memberId;
     String role;

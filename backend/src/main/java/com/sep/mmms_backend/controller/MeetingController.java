@@ -56,19 +56,21 @@ public class MeetingController {
 
 
     //TODO: Create Tests
-    @PostMapping("/updateMeetingDetails")
-    public ResponseEntity<Response> updateMeetingDetails(
-            @RequestBody(required = true) MeetingUpdationDto meetingUpdationDto,
-            Authentication authentication) {
-
-        Meeting savedMeeting = meetingService.updateExistingMeetingDetails(meetingUpdationDto, authentication.getName());
-
-        MeetingDetailsDto meetingDetailsDto = new MeetingDetailsDto(savedMeeting);
-        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS, meetingDetailsDto));
-    }
+//    @Deprecated
+//    @PostMapping("/updateMeetingDetails")
+//    public ResponseEntity<Response> updateMeetingDetails(
+//            @RequestBody(required = true) MeetingUpdationDto meetingUpdationDto,
+//            Authentication authentication) {
+//
+//        Meeting savedMeeting = meetingService.updateExistingMeetingDetails(meetingUpdationDto, authentication.getName());
+//
+//        MeetingDetailsForEditDto meetingDetailsForEditDto = new MeetingDetailsForEditDto(savedMeeting);
+//        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS, meetingDetailsForEditDto));
+//    }
 
 
     //TODO: Create Tests
+    @Deprecated
     @PostMapping("addInviteesToMeeting")
     public ResponseEntity<Response> addInviteesToMeeting(@RequestParam int committeeId, @RequestParam int meetingId, @RequestBody LinkedHashSet<Integer> newInviteeIds, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
@@ -83,6 +85,7 @@ public class MeetingController {
     //TODO: Create Tests
     //TODO: Figure out the appropriate HTTP verb for this
     @PostMapping("removeInviteeFromMeeting")
+    @Deprecated
     public ResponseEntity<Response> removeInviteeFromMeeting(@RequestParam int committeeId, @RequestParam int meetingId, @RequestParam("memberId") int inviteeToBeRemoved, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
         Meeting meeting = meetingService.findMeetingById(meetingId);
@@ -92,14 +95,9 @@ public class MeetingController {
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_INVITEE_REMOVAL_SUCCESS));
     }
 
-    //TODO: Create Tests
-    @GetMapping("getMeetingDetails")
-    public ResponseEntity<Response> getMeetingDetails(@RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        Meeting meeting = meetingService.findMeetingById(meetingId);
-        Meeting meetingDetails = meetingService.getMeetingDetails(committee, meeting, authentication.getName());
-
-        MeetingDetailsDto meetingDto = new MeetingDetailsDto(meetingDetails);
-        return ResponseEntity.ok(new Response("Requested meeting details: ", meetingDto));
+    @GetMapping("getMeetingDetailsForEdit")
+    public ResponseEntity<Response> getMeetingDetailsForEdit(@RequestParam int meetingId, Authentication authentication) {
+        MeetingDetailsForEditDto meetingDetailsForEditDto = meetingService.getMeetingDetails(meetingId, authentication.getName());
+        return ResponseEntity.ok(new Response("Requested meeting details: ", meetingDetailsForEditDto));
     }
 }

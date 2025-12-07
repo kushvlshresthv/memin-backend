@@ -16,12 +16,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-@Entity(name = "meetings")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="meetings")
 @EntityListeners(AuditingEntityListener.class)
 public class Meeting {
     @Id
@@ -34,9 +35,6 @@ public class Meeting {
 
     @Column(name = "meeting_title")
     private String title;
-
-    @Column(name = "meeting_description")
-    private String description;
 
     @Column(name = "meeting_held_date")
     private LocalDate heldDate;

@@ -230,7 +230,6 @@ public class MeetingRepositoryTest {
 
            meeting = MeetingBuilder.builder()
                    .withTitle(meetingTitle)
-                   .withDescription(meetingDescription)
                    .withHeldDate(meetingDate)
                    .withHeldTime(meetingTime)
                    .withHeldPlace(meetingPlace)
@@ -248,7 +247,6 @@ public class MeetingRepositoryTest {
 
            // Verify all fields are persisted correctly
            Assertions.assertThat(foundMeeting.getTitle()).isEqualTo(meetingTitle);
-           Assertions.assertThat(foundMeeting.getDescription()).isEqualTo(meetingDescription);
            Assertions.assertThat(foundMeeting.getHeldDate()).isEqualTo(meetingDate);
            Assertions.assertThat(foundMeeting.getHeldTime()).isEqualTo(meetingTime);
            Assertions.assertThat(foundMeeting.getHeldPlace()).isEqualTo(meetingPlace);

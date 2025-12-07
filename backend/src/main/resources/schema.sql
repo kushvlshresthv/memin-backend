@@ -62,7 +62,6 @@ CREATE TABLE meetings (
           uuid VARCHAR(36) NOT NULL UNIQUE,
 
           meeting_title VARCHAR(255) NOT NULL,
-          meeting_description TEXT,
           meeting_held_date DATE NOT NULL,
           meeting_held_time TIME NOT NULL,  -- Added this line for LocalTime
           meeting_held_place VARCHAR(255) NOT NULL,
