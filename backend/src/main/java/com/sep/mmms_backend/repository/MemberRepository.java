@@ -120,6 +120,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpe
         SELECT cm.member.id FROM CommitteeMembership cm
         WHERE cm.committee.id = :committeeId
     )
+    AND m.id NOT IN (
+        SELECT c.coordinator.id FROM Committee c WHERE c.id = :committeeId
+    )
     AND m.createdBy = :username
     """)
     public List<Member> getPossibleInviteesForMeeting(Integer meetingId, Integer committeeId, String username);
