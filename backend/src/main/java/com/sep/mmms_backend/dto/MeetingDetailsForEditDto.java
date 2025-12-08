@@ -13,8 +13,7 @@ import java.util.*;
 
 @Getter
 public class MeetingDetailsForEditDto {
-    private final int meetingId;
-    private final int committeeId;
+    private final String committeeName;
     private final String title;
     private final LocalDate heldDate;
     private final LocalTime heldTime;
@@ -26,8 +25,7 @@ public class MeetingDetailsForEditDto {
 
     public MeetingDetailsForEditDto(Meeting meeting, List<MemberSearchResultDto> possibleInvitees) {
         this.possibleInvitees = possibleInvitees;
-        this.meetingId = meeting.getId();
-        this.committeeId = meeting.getCommittee().getId();
+        this.committeeName = meeting.getCommittee().getName();
         this.title = meeting.getTitle();
         this.heldDate = meeting.getHeldDate();
         this.heldTime = meeting.getHeldTime();

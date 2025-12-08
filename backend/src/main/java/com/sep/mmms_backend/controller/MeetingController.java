@@ -101,4 +101,10 @@ public class MeetingController {
         return ResponseEntity.ok(new Response("Requested meeting details: ", meetingDetailsForEditDto));
     }
 
+    @PatchMapping("updateMeeting")
+    public ResponseEntity<Response> updateMeeting(@RequestBody MeetingCreationDto meetingCreationDto, @RequestParam Integer meetingId, Authentication authentication) {
+       Meeting meeting = meetingService.updateExistingMeeting(meetingCreationDto, meetingId, authentication.getName());
+       return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS));
+    }
+
 }

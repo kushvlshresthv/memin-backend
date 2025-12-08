@@ -128,10 +128,10 @@ public class CommitteeService {
 
         List<CommitteeMembership> newMemberships = committee.getMemberships();
 
-        List<CommitteeMembership> currentMemberships = existingCommittee.getMemberships();
+        List<CommitteeMembership> existingMemberships = existingCommittee.getMemberships();
 
         // Remove memberships that are NOT in the new list
-        currentMemberships.removeIf(existing ->
+        existingMemberships.removeIf(existing ->
                 newMemberships.stream().noneMatch(newMem ->
                         newMem.getMember().getId() == existing.getMember().getId()
                 )
@@ -145,7 +145,7 @@ public class CommitteeService {
         for (CommitteeMembership newMem : newMemberships) {
 
             // Check if this member is already in the current list
-            CommitteeMembership existingMem = currentMemberships.stream()
+            CommitteeMembership existingMem = existingMemberships.stream()
                     .filter(e -> e.getMember().getId() == newMem.getMember().getId())
                     .findFirst()
                     .orElse(null);

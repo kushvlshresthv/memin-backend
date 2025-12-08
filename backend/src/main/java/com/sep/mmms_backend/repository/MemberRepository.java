@@ -1,7 +1,5 @@
 package com.sep.mmms_backend.repository;
 
-import com.sep.mmms_backend.entity.CommitteeMembership;
-import com.sep.mmms_backend.entity.Meeting;
 import com.sep.mmms_backend.entity.Member;
 import com.sep.mmms_backend.exceptions.ExceptionMessages;
 import com.sep.mmms_backend.exceptions.MemberDoesNotExistException;
@@ -12,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpecificationExecutor<Member> {
@@ -105,7 +102,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpe
 
 
     @Query("SELECT m FROM Member m WHERE m.createdBy = :username")
-    List<Member> findAccessibleMembers(
+    List<Member> findAllAccessibleMembers(
             @Param("username") String username
     );
 
@@ -126,6 +123,9 @@ public interface MemberRepository extends JpaRepository<Member, Integer>, JpaSpe
     AND m.createdBy = :username
     """)
     public List<Member> getPossibleInviteesForMeeting(Integer meetingId, Integer committeeId, String username);
+
+    @Query("Select m from Member m where m.id = :memberId AND m.createdBy = :username")
+    public Optional<Member> findAccessibleMember(Integer memberId, String username);
 
 
 

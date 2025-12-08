@@ -104,7 +104,7 @@ public class MemberService {
     public List<MemberSearchResultDto> getPossibleInvitees(Committee committee, String username) {
         List<Member> committeeMembers = committee.getMemberships().stream().map(CommitteeMembership::getMember).toList();
 
-        List<Member> allAccessibleMembers = memberRepository.findAccessibleMembers(username);
+        List<Member> allAccessibleMembers = memberRepository.findAllAccessibleMembers(username);
 
         allAccessibleMembers.removeAll(committeeMembers);
         allAccessibleMembers.remove(committee.getCoordinator());

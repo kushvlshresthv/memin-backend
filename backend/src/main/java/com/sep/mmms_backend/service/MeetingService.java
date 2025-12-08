@@ -310,15 +310,93 @@ public class MeetingService {
         Meeting meeting = getMeetingIfAccessible(meetingId, username);
         List<Member> possibleInvitees = memberRepository.getPossibleInviteesForMeeting(meetingId, meeting.getCommittee().getId(), username);
         List<MemberSearchResultDto> possibleInviteesFormatted = possibleInvitees.stream().map(MemberSearchResultDto::new).toList();
-       return new MeetingDetailsForEditDto(meeting, possibleInviteesFormatted);
+        return new MeetingDetailsForEditDto(meeting, possibleInviteesFormatted);
     }
 
     private Meeting getMeetingIfAccessible(Integer memberId, String username) {
         Optional<Meeting> optionalMeeting = meetingRepository.getMeetingIfAccessible(memberId, username);
-        if(optionalMeeting.isEmpty()) {
+        if (optionalMeeting.isEmpty()) {
             throw new MeetingDoesNotExistException();
         }
         return optionalMeeting.get();
     }
 
+
+    public Meeting updateExistingMeeting(MeetingCreationDto meetingCreationDto, Integer meetingId, String username) {
+        entityValidator.validate(meetingCreationDto);
+        Meeting existingMeeting = getMeetingIfAccessible(meetingId, username);
+
+        //reassign the updated values
+        existingMeeting.setTitle(meetingCreationDto.getTitle());
+        existingMeeting.setHeldPlace(meetingCreationDto.getHeldPlace());
+        existingMeeting.setHeldTime(meetingCreationDto.getHeldTime());
+        existingMeeting.setHeldDate(meetingCreationDto.getHeldDate());
+
+        List<Agenda> existingAgendas = existingMeeting.getAgendas();
+
+        //remove agendas that are NOT in the new list
+        existingAgendas.removeIf(existing -> meetingCreationDto.getAgendas().stream().noneMatch(newAgenda -> newAgenda.getAgendaId() == existing.getAgendaId()));
+
+        //add new ones or update existing ones
+        for (AgendaDto newAgendaDto : meetingCreationDto.getAgendas()) {
+
+            //check if the agenda is already in the current list
+            Agenda existingAgenda = existingAgendas.stream().filter(agenda -> agenda.getAgendaId() == newAgendaDto.getAgendaId()).findFirst().orElse(null);
+
+            if(existingAgenda == null) {
+                //CASE: It's a new agenda -> Add It
+                Agenda newAgenda = new Agenda();
+                newAgenda.setAgenda(newAgendaDto.getAgenda());
+                newAgenda.setMeeting(existingMeeting);
+                existingMeeting.getAgendas().add(newAgenda);
+            } else {
+                //CASE: Agenda exists -> Update Agenda data
+                existingAgenda.setAgenda(newAgendaDto.getAgenda());
+            }
+        }
+
+        List<Decision> existingDecisions = existingMeeting.getDecisions();
+
+        //remove decisions that are NOT in the new list
+        existingDecisions.removeIf(existing -> meetingCreationDto.getDecisions().stream().noneMatch(newDecision -> newDecision.getDecisionId() == existing.getDecisionId()));
+
+        //add new ones or update existing ones
+        for (DecisionDto newDecisionDto : meetingCreationDto.getDecisions()) {
+            //check if the decision is already in the current list
+            Decision existingDecision = existingDecisions.stream().filter(decision -> decision.getDecisionId() == newDecisionDto.getDecisionId()).findFirst().orElse(null);
+
+            if(existingDecision == null) {
+                //CASE: It's a new decision -> Add It
+                Decision newDecision = new Decision();
+                newDecision.setDecision(newDecisionDto.getDecision());
+                newDecision.setMeeting(existingMeeting);
+                existingMeeting.getDecisions().add(newDecision);
+            } else {
+                //CASE: Decision exists -> Update Decision data
+                existingDecision.setDecision(newDecisionDto.getDecision());
+            }
+        }
+
+        //remove invitees that are not in the new list
+        List<Member> existingInvitees = existingMeeting.getInvitees();
+
+        //take existing invitee, compare with all new ids, if returns false, remove
+        existingInvitees.removeIf(existing -> meetingCreationDto.getInviteeIds().stream().noneMatch(newInviteeId -> newInviteeId == existing.getId()));
+
+        //add new Invitees
+        for(Integer newInviteeId: meetingCreationDto.getInviteeIds()) {
+
+            boolean noneMatch = (existingMeeting.getInvitees().stream().noneMatch(invitee -> invitee.getId() == newInviteeId));
+
+            if(noneMatch) {
+                //fetch the new invitee member and add
+                Optional<Member> member = memberRepository.findAccessibleMember(newInviteeId, username);
+                if(member.isEmpty()) {
+                    throw new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, newInviteeId);
+                }
+                existingMeeting.getInvitees().add(member.get());
+            }
+        }
+        return meetingRepository.save(existingMeeting);
+    }
 }
