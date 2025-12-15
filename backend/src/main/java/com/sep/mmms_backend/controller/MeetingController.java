@@ -27,7 +27,7 @@ public class MeetingController {
 
 
     //TODO: Create Tests
-    @PostMapping("/createMeeting")
+    @PostMapping("/meeting")
     public ResponseEntity<Response> createMeeting(
             @RequestBody(required = true) MeetingCreationDto meetingCreationDto,
             Authentication authentication) {
@@ -38,14 +38,14 @@ public class MeetingController {
     }
 
 
-    @PostMapping("/updateMinute")
+    @PatchMapping("/minute")
     public ResponseEntity<Response> createMeeting(@RequestBody MinuteUpdationDto meetingUpdationDto, @RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
         meetingService.updateExistingMeetingMinute(meetingUpdationDto, committeeId, meetingId, authentication.getName());
 
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS));
     }
 
-    @GetMapping("/getMeetingsOfCommittee")
+    @GetMapping("/meetings-of-committee")
     public ResponseEntity<Response> getMeetingsOfCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
 
@@ -54,54 +54,13 @@ public class MeetingController {
         return ResponseEntity.ok(new Response(ResponseMessages.MEETINGS_OF_COMMITTEE, meetings));
     }
 
-
-    //TODO: Create Tests
-//    @Deprecated
-//    @PostMapping("/updateMeetingDetails")
-//    public ResponseEntity<Response> updateMeetingDetails(
-//            @RequestBody(required = true) MeetingUpdationDto meetingUpdationDto,
-//            Authentication authentication) {
-//
-//        Meeting savedMeeting = meetingService.updateExistingMeetingDetails(meetingUpdationDto, authentication.getName());
-//
-//        MeetingDetailsForEditDto meetingDetailsForEditDto = new MeetingDetailsForEditDto(savedMeeting);
-//        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS, meetingDetailsForEditDto));
-//    }
-
-
-    //TODO: Create Tests
-    @Deprecated
-    @PostMapping("addInviteesToMeeting")
-    public ResponseEntity<Response> addInviteesToMeeting(@RequestParam int committeeId, @RequestParam int meetingId, @RequestBody LinkedHashSet<Integer> newInviteeIds, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        Meeting meeting = meetingService.findMeetingById(meetingId);
-
-        meetingService.addInviteesToMeeting(newInviteeIds, committee, meeting, authentication.getName());
-
-        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_INVITEES_ADDITION_SUCCESS));
-    }
-
-
-    //TODO: Create Tests
-    //TODO: Figure out the appropriate HTTP verb for this
-    @PostMapping("removeInviteeFromMeeting")
-    @Deprecated
-    public ResponseEntity<Response> removeInviteeFromMeeting(@RequestParam int committeeId, @RequestParam int meetingId, @RequestParam("memberId") int inviteeToBeRemoved, Authentication authentication) {
-        Committee committee = committeeService.findCommitteeById(committeeId);
-        Meeting meeting = meetingService.findMeetingById(meetingId);
-
-        meetingService.removeInviteeFromMeetig(inviteeToBeRemoved, committee, meeting, authentication.getName());
-
-        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_INVITEE_REMOVAL_SUCCESS));
-    }
-
-    @GetMapping("getMeetingDetailsForEdit")
+    @GetMapping("meeting-details-for-edit")
     public ResponseEntity<Response> getMeetingDetailsForEdit(@RequestParam int meetingId, Authentication authentication) {
         MeetingDetailsForEditDto meetingDetailsForEditDto = meetingService.getMeetingDetails(meetingId, authentication.getName());
         return ResponseEntity.ok(new Response("Requested meeting details: ", meetingDetailsForEditDto));
     }
 
-    @PatchMapping("updateMeeting")
+    @PatchMapping("meeting")
     public ResponseEntity<Response> updateMeeting(@RequestBody MeetingCreationDto meetingCreationDto, @RequestParam Integer meetingId, Authentication authentication) {
        Meeting meeting = meetingService.updateExistingMeeting(meetingCreationDto, meetingId, authentication.getName());
        return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS));
