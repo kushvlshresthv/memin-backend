@@ -64,7 +64,7 @@ public class MemberService {
         member.setFirstName(memberDto.getFirstName());
         member.setLastName(memberDto.getLastName());
         member.setTitle(memberDto.getTitle());
-        if (member.getPost() != null)
+        if (memberDto.getPost() != null)
             member.setPost(memberDto.getPost());
         return memberRepository.save(member);
     }

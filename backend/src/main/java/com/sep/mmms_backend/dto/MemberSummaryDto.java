@@ -11,7 +11,6 @@ import lombok.Getter;
  * returns the summary of the member along with role of the member in a particular committee
  */
 @Getter
-@Deprecated
 public class MemberSummaryDto {
     private final int memberId;
     private final String firstName;

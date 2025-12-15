@@ -24,9 +24,7 @@ public class CommitteeController {
     }
 
 
-    //TODO: Create Tests
-    //TODO: Fix this route should check if there is exactly one coordinator
-    @PostMapping("/createCommittee")
+    @PostMapping("/committee")
     public ResponseEntity<Response> createCommittee(@RequestBody CommitteeCreationDto committeeCreationDto, Authentication authentication) {
         Committee savedCommittee = committeeService.saveNewCommittee(committeeCreationDto, authentication.getName());
         CommitteeSummaryDto committeeSummaryDto = new CommitteeSummaryDto(savedCommittee);
@@ -34,7 +32,7 @@ public class CommitteeController {
     }
 
 
-    @GetMapping("/getCommitteeDetailsForEditPage")
+    @GetMapping("/committee-details-for-edit-page")
     public ResponseEntity<Response> getCommitteeDetailsForEditPage(@RequestParam int committeeId, Authentication authentication) {
         Committee committee = this.committeeService.getCommitteeIfAccessible(committeeId, authentication.getName());
 
@@ -44,15 +42,14 @@ public class CommitteeController {
     }
 
 
-    //TODO: Create Tests
-    @PostMapping("/updateCommitteeDetails")
+    @PatchMapping("/committee")
     public ResponseEntity<Response> updateExistingCommittee(@RequestBody CommitteeCreationDto committeeCreationDto, @RequestParam Integer committeeId, Authentication authentication) {
         committeeService.updateExistingCommittee(committeeCreationDto, committeeId, authentication.getName());
         return ResponseEntity.ok().body(new Response(ResponseMessages.COMMITTEE_UPDATION_SUCCESS));
     }
 
 
-    @GetMapping("/getMyActiveCommitteeNamesAndIds")
+    @GetMapping("/my-active-committee-names-and-ids")
     //returns the name and id of 'ACTIVE' all committes for create meeting page
     public ResponseEntity<Response> getMyCommitteeNamesAndIds(Authentication authentication) {
         List<Committee> allCommittees = committeeService.getAllActiveCommittees(authentication.getName());
@@ -66,8 +63,7 @@ public class CommitteeController {
         return ResponseEntity.ok(new Response(committeeIdsAndNames));
     }
 
-    //TODO: Create Tests
-    @GetMapping("/getMyActiveCommittees")
+    @GetMapping("/my-active-committees")
     //returns all the ACTIVE committees for the user
     public ResponseEntity<Response> getMyActiveCommittees(Authentication authentication) {
         List<Committee> committees = committeeService.getAllActiveCommittees(authentication.getName());
@@ -80,7 +76,7 @@ public class CommitteeController {
     }
 
 
-    @GetMapping("/getMyInactiveCommittees")
+    @GetMapping("/my-inactive-committees")
     //returns all the ACTIVE committees for the user
     public ResponseEntity<Response> getMyInactiveCommittees(Authentication authentication) {
         List<Committee> committees = committeeService.getAllInactiveCommittees(authentication.getName());
@@ -93,7 +89,7 @@ public class CommitteeController {
     }
 
 
-    @PatchMapping("/toggleCommitteeStatus")
+    @PatchMapping("/toggle-committee-status")
     public ResponseEntity<Response> toggleCommitteeStatus(@RequestParam int committeeId, Authentication authentication) {
         boolean result = committeeService.toggleCommitteeStatus(committeeId, authentication.getName());
 
@@ -104,26 +100,13 @@ public class CommitteeController {
         }
     }
 
-
-
-    //TODO: Create Tests
-//    @Deprecated
-//    @PostMapping("/deleteCommittee")
-//    public ResponseEntity<Response> deleteCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
-//        Committee committee = committeeService.findCommitteeById(committeeId);
-//        committeeService.deleteCommittee(committee, authentication.getName());
-//        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_DELETED_SUCCESSFULLY));
-//    }
-
-
     /**
      * this route fetches the committee from the database, checks if the committee is accessible by the current user
      * <p>
      * then fetches all the members associated with the committee and sends both of them as response
      */
 
-
-    @GetMapping("/getCommitteeOverview")
+    @GetMapping("/committee-overview")
     public ResponseEntity<Response> getCommitteeOverview(@RequestParam(required = true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
         CommitteeOverviewDto overview = committeeService.getCommitteeOverview(committee, authentication.getName());
@@ -131,7 +114,7 @@ public class CommitteeController {
         return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_OVERVIEW_RETRIEVED_SUCCESSFULLY, overview));
     }
 
-    @GetMapping("/getAllMembersOfCommittee")
+    @GetMapping("/all-members-of-committee")
     public ResponseEntity<Response> getAllMembersOfCommittee(@RequestParam(required = true) int committeeId, Authentication authentication) {
         Committee committee = committeeService.findCommitteeById(committeeId);
 
@@ -144,27 +127,4 @@ public class CommitteeController {
     public ResponseEntity<Response> getCommitteeSummary(@RequestParam(required=true) int committeeId, Authentication authentication) {
         return ResponseEntity.ok(new Response(committeeService.getCommitteeExtendedSummary(committeeId, authentication.getName())));
     }
-
-
-//    @Deprecated
-//    @PostMapping("/addMembersToCommittee")
-//    //NOTE: LinkedHashSet is made LinkedHashSet to preserve order and avoid duplicate memberIds
-//    //TODO: Fix (this route should not add more coordinator to the committee)
-//    //TODO: Create Tests
-//    public ResponseEntity<Response> addMembershipsToCommittee(@RequestParam int committeeId, @RequestBody LinkedHashSet<NewMembershipRequest> newMemberships, Authentication authentication) {
-//        Committee committee = committeeService.findCommitteeById(committeeId);
-//        committeeService.addMembershipsToCommittee(committee, newMemberships, authentication.getName());
-//        return ResponseEntity.ok(new Response(ResponseMessages.COMMITTEE_MEMBER_ADDITION_SUCCESS));
-//    }
-
-
-//    @Deprecated
-//    @DeleteMapping("/removeCommitteeMembership")
-//    //TODO: Create Tests
-//    public ResponseEntity<Response> removeCommitteeMembership(@RequestParam int committeeId, @RequestParam int memberId, Authentication authentication) {
-//        Committee committee = committeeService.findCommitteeById(committeeId);
-//        Member member = memberService.findMemberById(memberId);
-//        committeeService.removeCommitteeMembership(committee, member, authentication.getName());
-//        return ResponseEntity.ok(new Response(ResponseMessages.MEMBERSHIP_REMOVED_SUCCESSFULLY));
-//    }
 }

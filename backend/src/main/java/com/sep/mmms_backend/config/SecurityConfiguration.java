@@ -78,7 +78,7 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                      .allowedOrigins(GlobalConstants.FRONTEND_URL)
+                      .allowedOrigins("https://kushvlshresthv.github.io", "https://memin-frontend.vercel.app/", GlobalConstants.FRONTEND_URL)
                         .allowedMethods("*")
                         .allowCredentials(true);
             }

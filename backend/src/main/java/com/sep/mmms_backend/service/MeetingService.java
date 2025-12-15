@@ -70,6 +70,7 @@ public class MeetingService {
 
     @Transactional
     public void updateExistingMeetingMinute(MinuteUpdationDto minuteUpdationDto, int meetingId, int committeeId, String username) {
+        entityValidator.validate(minuteUpdationDto);
         Meeting existingMeeting = meetingRepository.findMeetingById(meetingId);
         if (!existingMeeting.getCreatedBy().equals(username)) {
             //TODO: throw exception

@@ -26,16 +26,12 @@ public class CommitteeService {
 
     private final CommitteeRepository committeeRepository;
     private final EntityValidator entityValidator;
-    private final AppUserService appUserService;
     private final MemberRepository memberRepository;
-    private final CommitteeMembershipRepository committeeMembershipRepository;
 
     public CommitteeService(CommitteeRepository committeeRepository, AppUserService appUserService, EntityValidator entityValidator, MemberRepository memberRepository, CommitteeMembershipRepository committeeMembershipRepository) {
         this.committeeRepository = committeeRepository;
-        this.appUserService = appUserService;
         this.entityValidator = entityValidator;
         this.memberRepository = memberRepository;
-        this.committeeMembershipRepository = committeeMembershipRepository;
     }
 
 
@@ -235,15 +231,6 @@ public class CommitteeService {
         return membersOfCommittee;
     }
 
-
-//    @Transactional
-//    @CheckCommitteeAccess
-//    @Deprecated
-//    public void deleteCommittee(Committee committeeToBeDeleted, String username) {
-//        committeeRepository.delete(committeeToBeDeleted);
-//    }
-
-
     public Optional<Committee> findCommitteeByIdNoException(int committeeId) {
         return committeeRepository.findById(committeeId);
     }
@@ -277,77 +264,12 @@ public class CommitteeService {
         return new CommitteeExtendedSummaryDto(committee);
     }
 
-
-
-    /**
-     * returns both Committee and Members associated with the committee
-     * <br>
-     * NOTE: membership is populated in the Members object, not in the committee object
-     */
-
-
     public boolean existsById(int committeeId) {
         return committeeRepository.existsById(committeeId);
     }
 
-
-    /**
-     * BUG FIX: This method won't work IF we try to populate the 'committee' with the new 'memberships' because  when trying to save memberships from cascading, JPA will decide whether the membership is either new or not by checking whether membership's primary key value is null or not(which it isn't.
-     * <br><br>
-     * Since, not null, JPA will try to merge(), but since the row is not present in the database, it will throw EntityNotExistException.
-     * <br><br>
-     * Here, since we are using CommitteeMembershipRepository, JPA will decide whether the membership is either new or not by calling isNew() method since CommmiteeMembership implements Presistable interface
-     */
-//    //TODO: Create Tests
-//    @CheckCommitteeAccess
-//    @Transactional
-//    @Deprecated
-//    public void addMembershipsToCommittee(Committee committee, LinkedHashSet<NewMembershipRequest> newMembershipRequests, String username) {
-//        List<Integer> newMemberIds = newMembershipRequests.stream().map(NewMembershipRequest::memberId).collect(Collectors.toList());
-//
-//        List<Member> validNewMembers = memberRepository.findAccessibleMembersByIds(newMemberIds, username);
-//        memberRepository.validateWhetherAllMembersAreFound(newMemberIds, validNewMembers);
-//
-//        //check if the membership for the member and committee already exists
-//        List<CommitteeMembership> alreadyExistingMemberships = committeeMembershipRepository.findExistingMemberships(newMemberIds, committee.getId());
-//        if (!alreadyExistingMemberships.isEmpty()) {
-//            Map<Integer, String> memberIdAndRole = alreadyExistingMemberships.stream().collect(Collectors.toMap(membership -> membership.getMember().getId(), CommitteeMembership::getRole));
-//            throw new MembershipAlreadyExistsException(ExceptionMessages.MEMBERSHIP_ALREADY_EXISTS, memberIdAndRole);
-//        }
-//
-//
-//        Map<Integer, String> rolesMap = newMembershipRequests.stream().collect(Collectors.toMap(NewMembershipRequest::memberId, NewMembershipRequest::role));
-//        List<CommitteeMembership> newMemberships = new ArrayList<>();
-//
-//        for (Member member : validNewMembers) {
-//            CommitteeMembership newMembership = new CommitteeMembership();
-//            newMembership.setCommittee(committee);
-//            newMembership.setMember(member);
-//            newMembership.setRole(rolesMap.get(member.getId()));
-//            newMemberships.add(newMembership);
-//        }
-//
-//        committeeMembershipRepository.saveAll(newMemberships);
-//    }
     public Committee findCommitteeById(int committeeId) {
         return committeeRepository.findCommitteeById(committeeId);
     }
 
-//    //TODO: Check this implementation properly as this is not checked carefully
-//    @CheckCommitteeAccess
-//    @Deprecated
-//    public void removeCommitteeMembership(Committee committee, Member member, String username) {
-//        if (!member.getCreatedBy().equals(username)) {
-//            throw new IllegalOperationException("Membership not accessible");
-//            //TODO: Error (handle this properly by creating a custom exception)
-//        }
-//
-//        CommitteeMembership membershipToBeDeleted = committeeMembershipRepository.findMembershipBetweenCommitteeAndMember(committee.getId(), member.getId()).orElseThrow(() -> new MembershipDoesNotExistException(ExceptionMessages.MEMBERSHIP_DOES_NOT_EXIST));
-//
-//        if (membershipToBeDeleted.getRole().equalsIgnoreCase("coordinator"))
-//            throw new IllegalOperationException("Coordinator can't be removed from the committee");
-//        //TODO: Error (handle this properly)
-//
-//        committeeMembershipRepository.delete(membershipToBeDeleted);
-//    }
 }

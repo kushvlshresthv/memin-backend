@@ -45,16 +45,4 @@ public interface CommitteeRepository extends JpaRepository<Committee, Integer>, 
 
     @Query("Select c FROM Committee c where c.createdBy= :createdBy")
     List<Committee> getAllCommittees(@Param("createdBy") String username);
-
-
-//    @Query("""
-//       SELECT c
-//       FROM Committee c
-//       WHERE c.createdBy = :createdBy
-//       AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
-//   """)
-//    List<Committee> searchEverywhere(
-//            @Param("keyword") String keyword,
-//            @Param("createdBy") String createdBy
-//    );
 }
