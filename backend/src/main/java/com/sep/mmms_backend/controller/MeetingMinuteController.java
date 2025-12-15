@@ -30,7 +30,7 @@ public class MeetingMinuteController {
         this.meetingService = meetingService;
     }
 
-    @GetMapping("api/getDataForMinute")
+    @GetMapping("api/data-for-minute")
     public ResponseEntity<Response> getDataForMinute( @RequestParam int meetingId, Authentication authentication) {
         Meeting meeting =  meetingService.findMeetingById(meetingId);
         Committee committee = meeting.getCommittee();
@@ -40,7 +40,7 @@ public class MeetingMinuteController {
         return ResponseEntity.ok(new Response("Meeting Minute Data: ", minuteData));
     }
 
-    @PostMapping("api/getWordFileForMinute")
+    @PostMapping("api/word-file-for-minute")
     public ResponseEntity<?> getWordFileForMinute(@RequestBody String htmlContent, Authentication authentication) {
             byte[] docxBytes;
             try {

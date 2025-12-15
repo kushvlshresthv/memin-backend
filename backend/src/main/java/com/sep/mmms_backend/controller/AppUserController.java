@@ -34,6 +34,7 @@ public class AppUserController {
 
 
     @PostMapping("/register")
+    @Deprecated
     public ResponseEntity<Response> registerUser(@RequestBody @Valid AppUser appUser, Errors errors) {
         if(errors.hasErrors()){
             throw new ValidationFailureException(ExceptionMessages.VALIDATION_FAILED, errors);
@@ -50,6 +51,7 @@ public class AppUserController {
      * validation for the updated user data is performed inside the service class
      */
     @PostMapping("/api/updateUser")
+    @Deprecated
     public ResponseEntity<Response> updateUser(@RequestBody AppUser appUser, Authentication authentication) {
         appUserService.updateUser(appUser,authentication.getName());
         return ResponseEntity.ok().body(new Response(ResponseMessages.USER_UPDATION_SUCCESS));
