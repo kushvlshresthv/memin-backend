@@ -30,29 +30,6 @@ public class MemberService {
         this.entityValidator = entityValidator;
     }
 
-//    @Deprecated
-//    /**
-//     * Searches members based on a keyword.
-//     * - If the keyword is one word, it searches both first and last names.
-//     * - If the keyword is two or more words, it uses the first two words to search
-//     * for a match in the first and last name fields.
-//     */
-//    //TODO: Create Tests
-//    //TODO: Optimization This fetches all data of members, but only memberId, firstName, lastName, and post is required
-//    public List<Member> searchMemberByName(String keyword) {
-//        if (!StringUtils.hasText(keyword)) {
-//            return Collections.emptyList();
-//        }
-//
-//        String[] parts = keyword.trim().split("\\s+");
-//
-//        if (parts.length == 1) {
-//            return memberRepository.findByFirstNameOrLastName(parts[0]);
-//        } else {
-//            return memberRepository.findByFullName(parts[0], parts[1]);
-//        }
-//    }
-
 
     //NEW IMPLEMENTATION
     @Transactional
@@ -70,7 +47,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member updateMember(int memberId, MemberCreationDto memberCreationDto, String username) {
+    public void updateMember(int memberId, MemberCreationDto memberCreationDto, String username) {
         entityValidator.validate(memberCreationDto);
         Member member = getMemberIfAccesssible(memberId, username);
 
@@ -78,20 +55,20 @@ public class MemberService {
         member.setLastName(memberCreationDto.getLastName());
         member.setTitle(memberCreationDto.getTitle());
         member.setPost(memberCreationDto.getPost());
-        return memberRepository.save(member);
+        memberRepository.save(member);
     }
 
     @Transactional
     public MemberDetailsDto getMemberDetails(int memberId, String username) {
-        Member member =  getMemberIfAccesssible(memberId, username);
+        Member member = getMemberIfAccesssible(memberId, username);
         MemberDetailsDto memberDetailsDto = new MemberDetailsDto(member);
         return memberDetailsDto;
     }
 
-    private Member getMemberIfAccesssible( int memberId, String username) {
+    private Member getMemberIfAccesssible(int memberId, String username) {
         Optional<Member> optionalMember = memberRepository.getMemberIfAccessible(memberId, username);
 
-        if(optionalMember.isEmpty()) {
+        if (optionalMember.isEmpty()) {
             throw new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, memberId);
         }
 
@@ -125,24 +102,6 @@ public class MemberService {
                 new MemberDoesNotExistException(ExceptionMessages.MEMBER_DOES_NOT_EXIST, memberId));
     }
 
-    /**
-     * @param member:      shouldn't be null
-     * @param committeeId: committeeId for which the member's role is required
-     * @return returns role of the user in the committee if found, else returns null
-     * <p>
-     * NOTE: this method iterates through all the memberships for a particular member to get the membership associated with a particular committeeId
-     */
-    @Deprecated
-    public CommitteeMembership getMembership(Member member, int committeeId) {
-        List<CommitteeMembership> memberships = member.getMemberships();
-        for (CommitteeMembership membership : memberships) {
-            if (membership.getId().getCommitteeId() == committeeId) {
-                return membership;
-            }
-        }
-        return null;
-    }
-
     public List<Member> getAllMembers(String username) {
         List<MemberWithoutCommitteeDto> allMembersDto = new ArrayList<>();
         List<Member> allMembers = memberRepository.findAllMembersByCreatedBy(username);
@@ -153,9 +112,4 @@ public class MemberService {
         return memberRepository.findMemberById(memberId);
     }
 
-
-//    public List<MemberSearchResultDto> getPossibleInviteesForMeeting(Integer meetingId, Integer committeeId, String username) {
-//        List<Member> possibleInvitee = memberRepository.getPossibleInviteesForMeeting(meetingId, committeeId, username);
-//        return possibleInvitee.stream().map(MemberSearchResultDto::new).toList();
-//    }
 }

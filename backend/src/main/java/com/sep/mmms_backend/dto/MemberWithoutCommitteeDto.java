@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-@Deprecated
 public class MemberWithoutCommitteeDto {
 
     private final int memberId;
