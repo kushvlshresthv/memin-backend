@@ -40,7 +40,7 @@ public class MeetingController {
 
     @PatchMapping("/minute")
     public ResponseEntity<Response> createMeeting(@RequestBody MinuteUpdationDto meetingUpdationDto, @RequestParam int committeeId, @RequestParam int meetingId, Authentication authentication) {
-        meetingService.updateExistingMeetingMinute(meetingUpdationDto, committeeId, meetingId, authentication.getName());
+        meetingService.updateExistingMeetingMinute(meetingUpdationDto, meetingId, committeeId, authentication.getName());
 
         return ResponseEntity.ok(new Response(ResponseMessages.MEETING_UPDATION_SUCCESS));
     }

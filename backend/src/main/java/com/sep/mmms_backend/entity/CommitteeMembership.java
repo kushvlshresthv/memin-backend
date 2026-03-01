@@ -51,9 +51,9 @@ public class CommitteeMembership implements Persistable<CommitteeMembershipId> {
 
     @Column(name = "uuid", nullable = false, unique = true, updatable = false)
     /*
-       BUG FIX: when two new membership is created, both will have uuid = 0. If i add both the membership into member or committee, only one will be added, because the memberships is tracked in a 'Set' container in both member and committee.
+       BUG FIX: when two new membership is created, both will have id = 0. If i add both the membership into member or committee, only one will be added, because the memberships is tracked in a 'Set' container in both member and committee.
 
-       The equation of membership object depends on uuid of the object. Therefore, both the newly created membership is deemed as equal by the JPA.
+       The equality of membership object depends on uuid of the object. Therefore, both the newly created membership is deemed as equal by the JPA.
 
        First membership is accepted by the 'Set' container, but the second membership will be rejected by the 'Set' container.
      */
